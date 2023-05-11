@@ -1,0 +1,39 @@
+name: "Pre-commit autoupdate"
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  autoupdate:
+    name: autoupdate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: 3.8
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run autoupdate
+        run: pre-commit autoupdate
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+      - uses: peter-evans/create-pull-request@v4.2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore-update-pre-commit-hooks
+          title: Update pre-commit hooks
+          commit-message: "Update pre-commit hooks"
+          body: |
+            # Update pre-commit hooks 
+            
+            - Update pre-commit hooks to the latest version.
+          delete-branch: true

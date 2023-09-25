@@ -14,7 +14,7 @@ def main() -> None:
 
 @main.command()
 @click.argument("directory", type=click.Path(exists=True, file_okay=False, dir_okay=True))
-@click.option("-e", "--experiment", help="Specify an experiment name to filter directories")
+@click.argument("experiment", required=False)
 def main(directory: str, experiment: str) -> None:
     """Process Spinsolve data in a directory."""
     path_entry = Path(directory)
@@ -30,13 +30,17 @@ def main(directory: str, experiment: str) -> None:
                 sample_dir_list += [
                     diracqu.parent for diracqu in path_entry.glob(f"*{experiment_name}*/acqu.par")
                 ]
+        elif all:
+            sample_dir_list = [diracqu.parent for diracqu in path_entry.glob("*/acqu.par")]
 
             if not sample_dir_list:
                 click.echo(f"Error: No directories found for experiment {experiment}")
             else:
                 click.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
         else:
-            sample_dir_list = [diracqu.parent for diracqu in path_entry.glob("*/acqu.par")]
+            click.echo(
+                "Error: Please provide an experiment name or use --all to process all experiments."
+            )
 
         for sample_dir in sample_dir_list:
             experiment = SpinsolveExperiment(sample_dir)

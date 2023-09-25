@@ -8,7 +8,7 @@ from spinsolveproc.spinsolveproc import SpinsolveExperiment, __version__
 
 @click.group()
 @click.version_option(version=__version__)
-def main() -> None:
+def cli() -> None:
     """Console script for spinsolveproc."""
 
 
@@ -18,7 +18,7 @@ def main() -> None:
 @click.option(
     "--all", "process_all", is_flag=True, help="Process all experiments in the directory"
 )
-def process(directory: str, experiment: str, process_all: bool) -> None:
+def cli2(directory: str, experiment: str, process_all: bool) -> None:
     """Process Spinsolve data in a directory."""
     path_entry = Path(directory)
 
@@ -63,4 +63,4 @@ def process(directory: str, experiment: str, process_all: bool) -> None:
 
 
 if __name__ == "__main__":
-    process()
+    cli()

@@ -17,8 +17,8 @@ def fig_proton(save_dir: Path, fig_proton: Figure) -> None:
         save_dir (Path): The directory where the figure will be saved.
         fig_proton (Figure): The Proton experiment figure to save.
     """
-    filename_save = "FID_decay_spectrum.jpg"
-    pio.write_image(fig_proton, save_dir / filename_save, engine="kaleido")
+    filename_save = "FID_decay_spectrum.html"
+    pio.write_html(fig_proton, save_dir / filename_save)
     print(f"Saved figure: {filename_save}\n")
 
 

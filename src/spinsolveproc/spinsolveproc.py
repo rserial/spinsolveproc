@@ -98,12 +98,12 @@ class SpinsolveExperiment:
             output_dict = {}
 
             processing_function = processing_functions[self.name]
-            output = processing_function(self.experiment_path, self.type)
+            output = processing_function(self.experiment_path, self.spinsolve_type)
 
             output_dict[self.name] = output
             return output_dict
         else:
-            print(f'Data not found for experiment type "{self.name}".')
+            print(f' Data not found for experiment type "{self.name}".')
 
     def plot(self, output_dict: dict) -> tuple:
         """

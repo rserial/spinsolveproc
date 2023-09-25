@@ -15,7 +15,7 @@ def main() -> None:
 @main.command()
 @click.argument("directory", type=click.Path(exists=True, file_okay=False, dir_okay=True))
 @click.option("-e", "--experiment", help="Specify an experiment name to filter directories")
-def process(directory: str, experiment: str) -> None:
+def main(directory: str, experiment: str) -> None:
     """Process Spinsolve data in a directory."""
     path_entry = Path(directory)
 

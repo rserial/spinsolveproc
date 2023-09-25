@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from spinsolveproc import SpinsolveExperiment, __version__
+from spinsolveproc.spinsolveproc import SpinsolveExperiment, __version__
 
 
 @click.group()

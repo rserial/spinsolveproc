@@ -4,8 +4,12 @@ from pathlib import Path
 
 import plotly.graph_objects as go
 
-from src.spinsolveproc import plot, process, save, utils
+import spinsolveproc.plot as plot
+import spinsolveproc.process as process
+import spinsolveproc.save as save
+import spinsolveproc.utils as utils
 
+__version__ = "1.0.0"
 logger = logging.getLogger(__name__)
 
 

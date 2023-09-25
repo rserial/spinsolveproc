@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Tuple
 
-from src.spinsolveproc import utils
+import spinsolveproc.utils as utils
 
 
 def proton(file_path: Path, spinsolve_type: str) -> Tuple:

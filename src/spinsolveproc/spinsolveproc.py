@@ -74,11 +74,9 @@ class SpinsolveExperiment:
                 par_name, par_value = utils.parse_spinsolve_par_line(line)
                 self.parameters[par_name] = par_value
         except FileNotFoundError as e:
-            # Handle the case when the file is not found.
             logger.exception("Error loading parameters")
             raise e
         except IOError:
-            # Handle input/output errors.
             logger.error("IO Error while loading parameters")
 
     def process(self) -> dict:
@@ -92,6 +90,9 @@ class SpinsolveExperiment:
 
         processing_functions = {
             "Proton": process.proton,
+            "1D EXTENDED+": process.proton,
+            "T2": process.T2,
+            "T2Bulk": process.T2Bulk,
         }
 
         if self.name in processing_functions:
@@ -121,6 +122,9 @@ class SpinsolveExperiment:
 
         plotting_functions = {
             "Proton": plot.setup_fig_proton,
+            "1D EXTENDED+": plot.setup_fig_proton,
+            "T2": plot.setup_fig_T2,
+            "T2Bulk": plot.setup_fig_T2Bulk,
         }
 
         if self.name not in plotting_functions:
@@ -146,6 +150,9 @@ class SpinsolveExperiment:
 
         saving_functions = {
             "Proton": save.fig_proton,
+            "1D EXTENDED+": save.fig_proton,
+            "T2": save.fig_T2,
+            "T2Bulk": save.fig_T2Bulk,
         }
         if experiment_name in saving_functions:
             saving_function = saving_functions[experiment_name]
@@ -171,6 +178,9 @@ class SpinsolveExperiment:
         if self.name in output_dict:
             saving_functions = {
                 "Proton": save.data_proton,
+                "1D EXTENDED+": save.data_proton,
+                "T2": save.data_T2,
+                "T2Bulk": save.data_T2Bulk,
             }
 
             if experiment_name in saving_functions:

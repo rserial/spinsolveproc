@@ -324,6 +324,6 @@ def setup_fig_Tdecay_fit(
 
     list_fitTdecay = {"Amplitude": amplitude, "Time decay [s]": time_decay}
     df = pd.DataFrame(list_fitTdecay, columns=["Amplitude", "Time decay [s]"])
-    print(f"Results {num_exponentials} exp. fit from plot", df)
+    print(f"Results {num_exponentials} exp. fit from plot \\n", df)
 
     return fig

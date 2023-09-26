@@ -4,6 +4,9 @@ name = "spinsolveproc"
 version = "0.1.0"
 description = "Python library to process Spinsolve NMR experiments"
 authors = ["Raquel Serial <raquel.serial@tuhh.de>"]
+packages = [
+    {include = "ordered_set-stubs"}
+]
 
 readme = "README.md"
 homepage = "https://github.com/rserial/spinsolveproc"

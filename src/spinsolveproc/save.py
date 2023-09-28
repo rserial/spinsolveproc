@@ -154,15 +154,17 @@ def data_T2(
         peak_ppm_positions (np.ndarray): An array of peak ppm positions.
         peak_T2decay (np.ndarray): A 2D array of peak T2 decay data.
     """
-    amplitude, decay, intercept, R2 = utils.fit_monoexponential(
-        T2_scale, np.real(peak_T2decay[0, :]), utils.mono_exponential
-    )
+    # amplitude, decay, intercept, R2 = utils.fit_monoexponential(
+    #     T2_scale, np.real(peak_T2decay[0, :]), utils.mono_exponential
+    # )
 
-    T2decay_filename = f"T2decay_Peak_{np.round(peak_ppm_positions[0], 1)}ppm.dat"
-    save_1d_decay_data(save_dir, T2_scale, peak_T2decay[0, :], T2decay_filename)
+    # T2decay_filename = f"T2decay_Peak_{np.round(peak_ppm_positions[0], 1)}ppm.dat"
+    # save_1d_decay_data(save_dir, T2_scale, peak_T2decay[0, :], T2decay_filename)
 
-    fitT2decay_filename = f"fitT2decay_Peak_{np.round(peak_ppm_positions[0], 1)}_Monoexp.dat"
-    save_T_decay_fit_parameters(save_dir, fitT2decay_filename, amplitude, decay, intercept)
+    # fitT2decay_filename = f"fitT2decay_Peak_{np.round(peak_ppm_positions[0], 1)}_Monoexp.dat"
+    # save_T_decay_fit_parameters(save_dir, fitT2decay_filename, amplitude, decay, intercept)
+
+    data_T2Bulk(save_dir, T2_scale, peak_T2decay)
 
     h5_filename = "T2spec_2Ddata.h5"
     data_filename = "2Dmap"
@@ -213,7 +215,11 @@ def save_2d_Tspectrum_and_axes_to_hdf5(
 
 
 def save_T_decay_fit_parameters(
-    save_dir: Path, fitTdecay_filename: str, amplitude: float, decay: float, intercept: float
+    save_dir: Path,
+    fitTdecay_filename: str,
+    amplitude: np.ndarray,
+    decay: np.ndarray,
+    intercept: np.ndarray,
 ) -> None:
     """
     Save T decay fit parameters to a CSV file.
@@ -221,9 +227,9 @@ def save_T_decay_fit_parameters(
     Args:
         save_dir (Path): The directory where the CSV file will be saved.
         fitTdecay_filename (str): The name of the CSV file.
-        amplitude (float): The amplitude of the fit.
-        decay (float): The decay time in seconds.
-        intercept (float): The fit intercept.
+        amplitude (np.ndarray): The amplitude of the fit.
+        decay (np.ndarray): The decay time in seconds.
+        intercept (np.ndarray): The fit intercept.
     """
     list_fitTdecay = {
         "Amplitude": [amplitude],

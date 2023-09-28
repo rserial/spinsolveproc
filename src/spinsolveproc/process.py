@@ -27,7 +27,6 @@ def proton(file_path: Path, spinsolve_type: str) -> Tuple:
         print("... Error! Data file not found", "\n")
 
     dic, FIDdecay = utils.read_autophase_data1d(file_path)
-    FIDdecay = np.array(FIDdecay)
     time_scale = dic["spectrum"]["xaxis"]
     ppm_scale = utils.create_ppm_scale(dic)
     spectrum = utils.fft_autophase(file_path, FIDdecay)

@@ -125,16 +125,16 @@ def read_autophase_data1d(file_path: Path) -> Tuple[dict, List]:
     return dic, FIDdecay
 
 
-def fft_autophase(file_path: Path, FIDdecay: List) -> List:
+def fft_autophase(file_path: Path, FIDdecay: np.array) -> np.array:
     """
     Perform Fourier transformation and autophase on the spectrum.
 
     Args:
         file_path (Path): The path to the data directory.
-        FIDdecay (List): The FIDdecay data.
+        FIDdecay (np.array): The FIDdecay data.
 
     Returns:
-        Spectrum (List): The autophased spectrum.
+        Spectrum (np.array): The autophased spectrum.
     """
     spectrum = ng.proc_base.fft(FIDdecay)  # Fourier transformation
     # Autophase spectrum

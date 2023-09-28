@@ -1,6 +1,5 @@
 """Plotting save for spinsolveproc."""
 from pathlib import Path
-from typing import List
 
 import h5py
 import numpy as np
@@ -28,20 +27,20 @@ def fig_proton(save_dir: Path, fig_proton: Figure) -> None:
 # Data
 def data_proton(
     save_dir: Path,
-    time_scale: List[float],
-    FIDdecay: List[complex],
-    ppm_scale: List[float],
-    spectrum: List[complex],
+    time_scale: np.ndarray,
+    FIDdecay: np.ndarray,
+    ppm_scale: np.ndarray,
+    spectrum: np.ndarray,
 ) -> None:
     """
     Save Proton experiment data and related figures to the specified directory.
 
     Args:
         save_dir (Path): The directory where the data and figures will be saved.
-        time_scale (List[float]): Time scale data for the FID decay.
-        FIDdecay (List[complex]): FID decay data.
-        ppm_scale (List[float]): PPM scale data for the proton spectrum.
-        spectrum (List[complex]): Proton spectrum data.
+        time_scale (np.ndarray): Time scale data for the FID decay.
+        FIDdecay (np.ndarray): FID decay data.
+        ppm_scale (np.ndarray): PPM scale data for the proton spectrum.
+        spectrum (np.ndarray): Proton spectrum data.
     """
     filename_proton_decay = "Proton_decay"
     filename_proton_spectrum = "Proton_spectrum"
@@ -50,15 +49,15 @@ def data_proton(
 
 
 def save_1d_decay_data(
-    save_dir: Path, time_scale: List[float], decay: List[complex], filename: str
+    save_dir: Path, time_scale: np.ndarray, decay: np.ndarray, filename: str
 ) -> None:
     """
     Save 1D decay data to a text file in the specified directory.
 
     Args:
         save_dir (Path): The directory where the data file will be saved.
-        time_scale (List[float]): Time scale data.
-        decay (List[complex]): Decay data.
+        time_scale (np.ndarray): Time scale data.
+        decay (np.ndarray): Decay data.
         filename (str): The name of the data file.
     """
     save_decay = {
@@ -72,15 +71,15 @@ def save_1d_decay_data(
 
 
 def save_1d_spectrum_data(
-    save_dir: Path, ppm_scale: List[float], spectrum: List[complex], filename: str
+    save_dir: Path, ppm_scale: np.ndarray, spectrum: np.ndarray, filename: str
 ) -> None:
     """
     Save 1D spectrum data to a text file in the specified directory.
 
     Args:
         save_dir (Path): The directory where the data file will be saved.
-        ppm_scale (List[float]): PPM scale data.
-        spectrum (List[complex]): Spectrum data.
+        ppm_scale (np.ndarray): PPM scale data.
+        spectrum (np.ndarray): Spectrum data.
         filename (str): The name of the data file.
     """
     save_spectrum = {
@@ -235,12 +234,12 @@ def save_T_decay_fit_parameters(
     df.to_csv(save_dir / fitTdecay_filename, sep="\t", index=False)
 
 
-def data_T2Bulk(save_dir: str, T2_scale: np.ndarray, T2decay: np.ndarray) -> None:
+def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> None:
     """
     Save T2Bulk decay data and perform exponential fitting.
 
     Args:
-        save_dir (str): Directory to save the data and fitting results.
+        save_dir (Path): Directory to save the data and fitting results.
         T2_scale (np.ndarray): Array containing the time scale for T2Bulk decay.
         T2decay (np.ndarray): Array containing the T2Bulk decay data.
     """

@@ -1,7 +1,7 @@
 """This is a wrapper to mofify nmrglue read function to read .2d files."""
 
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple, Union
 
 import numpy as np
 from nmrglue import jcampdx
@@ -9,7 +9,7 @@ from nmrglue.fileio.spinsolve import parse_spinsolve_par_line
 
 
 def read(
-    directory: str = ".",
+    directory: Path = ("."),
     specfile: Optional[str] = None,
     acqupar: str = "acqu.par",
     procpar: str = "proc.par",
@@ -32,7 +32,7 @@ def read(
     dic["spectrum"]["xaxis"] to plot the x-axis.
 
     Args:
-        directory (str): Directory to read from.
+        directory (Path): Directory to read from.
         specfile (str, optional): Filename to import spectral data from. None uses standard
             filename from ["nmr_fid.dx", "data.1d", "fid.1d", "spectrum.1d",
             "spectrum_processed.1d"].
@@ -58,12 +58,12 @@ def read(
         raise IOError(f"Directory {directory} does not exist")
 
     # Create empty dic
-    dic = {"spectrum": {}, "acqu": {}, "proc": {}, "dx": {}}
+    dic: Dict[str, Union[dict, np.ndarray]] = {"spectrum": {}, "acqu": {}, "proc": {}, "dx": {}}
 
     # Read in acqu.par and write to dic
-    acqupar = directory / acqupar
-    if acqupar.is_file():
-        with open(acqupar, "r") as f:
+    acqupar_path = directory / acqupar
+    if acqupar_path.is_file():
+        with open(acqupar_path, "r") as f:
             info = f.readlines()
         for line in info:
             par_name, par_value = parse_spinsolve_par_line(line)
@@ -72,9 +72,9 @@ def read(
                 dic["acqu"][par_name] = par_value
 
     # Read in proc.par and write to dic
-    procpar = directory / procpar
-    if procpar.is_file():
-        with open(procpar, "r") as f:
+    procpar_path = directory / procpar
+    if procpar_path.is_file():
+        with open(procpar_path, "r") as f:
             info = f.readlines()
         for line in info:
             line = line.replace("\n", "")

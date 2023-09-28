@@ -3,7 +3,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
@@ -68,12 +68,12 @@ def parse_spinsolve_script_line(
         return None, None
 
 
-def get_initial_phase(file_path: str) -> float:
+def get_initial_phase(file_path: Path) -> float:
     """
     Read processing.script to get the initial phase.
 
     Args:
-        file_path (str): The path to the directory containing the processing script.
+        file_path (Path): The path to the directory containing the processing script.
 
     Returns:
         float: The initial phase value.
@@ -90,16 +90,30 @@ def get_initial_phase(file_path: str) -> float:
         par_name, par_value = parse_spinsolve_script_line(line)
         if par_name:
             parameters_script[par_name] = par_value
-    phase = parameters_script.get("Phase", [0])[0]
+    # Retrieve the "Phase" value from parameters_script, and ensure it's a float
+    phase_value = parameters_script.get("Phase")
+    if isinstance(phase_value, (float, int)):
+        phase = float(phase_value)
+    elif isinstance(phase_value, str):
+        # If "Phase" is a string, attempt to convert it to a float
+        try:
+            phase = float(phase_value)
+        except ValueError:
+            # Handle the case where the conversion to float fails
+            phase = 0.0
+    else:
+        # Handle other cases like None or a list
+        phase = 0.0  # You can choose a default value here
+
     return phase
 
 
-def read_autophase_data1d(file_path: str) -> Tuple[dict, list]:
+def read_autophase_data1d(file_path: Path) -> Tuple[dict, list]:
     """
     Read data.1d file and perform autophasing on FIDdecay.
 
     Args:
-        file_path (str): The path to the data directory.
+        file_path (Path): The path to the data directory.
 
     Returns:
         Tuple: A tuple containing the dictionary (dic) and the autophased FIDdecay.
@@ -111,12 +125,12 @@ def read_autophase_data1d(file_path: str) -> Tuple[dict, list]:
     return dic, FIDdecay
 
 
-def fft_autophase(file_path: str, FIDdecay: np.ndarray) -> np.ndarray:
+def fft_autophase(file_path: Path, FIDdecay: np.ndarray) -> np.ndarray:
     """
     Perform Fourier transformation and autophase on the spectrum.
 
     Args:
-        file_path (str): The path to the data directory.
+        file_path (Path): The path to the data directory.
         FIDdecay (np.ndarray): The FIDdecay data.
 
     Returns:
@@ -140,18 +154,20 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
         np.ndarray: An array containing the PPM scale of the acquired spectra.
     """
     udic = ng.fileiobase.create_blank_udic(1)
-    udic[0]["sw"] = (
-        float(dic["acqu"]["bandwidth"]) * 1000
-    )  # Spectral width in Hz - or width of the whole spectrum
 
-    b1Freq = str(dic["acqu"]["b1Freq"])
-    if "d" in b1Freq:
-        b1Freq = b1Freq.rstrip("d")
-    udic[0]["obs"] = float(b1Freq)
+    # Ensure that "acqu" key is in the dictionary and that its values are of the expected types
+    if "acqu" in dic and isinstance(dic["acqu"], dict):
+        acqu = dic["acqu"]
 
-    udic[0]["size"] = float(
-        dic["acqu"]["nrPnts"]
-    )  # Number of points - from acqu (float(dic["acqu"]["nrPnts"])
+        if "bandwidth" in acqu and isinstance(acqu["bandwidth"], (int, float)):
+            udic[0]["sw"] = float(acqu["bandwidth"]) * 1000  # Spectral width in Hz
+
+        if "b1Freq" in acqu and isinstance(acqu["b1Freq"], (str, int, float)):
+            b1Freq = str(acqu["b1Freq"]).rstrip("d")
+            udic[0]["obs"] = float(b1Freq)
+
+        if "nrPnts" in acqu and isinstance(acqu["nrPnts"], (int, float)):
+            udic[0]["size"] = float(acqu["nrPnts"])  # Number of points
 
     uc = ng.fileiobase.uc_from_udic(udic)
     ppm_scale = uc.ppm_scale()
@@ -293,7 +309,7 @@ def create_time_scale_T2Bulk(dic: dict, spinsolve_type: str) -> Union[np.ndarray
     return T2_scale
 
 
-def get_fitting_kernel(kernel_name: str, num_exponentials: int) -> Tuple[callable, int]:
+def get_fitting_kernel(kernel_name: str, num_exponentials: int) -> Tuple[Callable, int]:
     """
     Get the fitting kernel function and the number of parameters.
 
@@ -336,7 +352,7 @@ def fit_multiexponential(
     signal_values: np.ndarray,
     kernel_name: str,
     num_exponentials: int,
-    initial_guesses: list = None,
+    initial_guesses: List[float] = None,
 ) -> Tuple[np.ndarray, float]:
     """
     Fit multiexponential data using the specified kernel.
@@ -346,7 +362,7 @@ def fit_multiexponential(
         signal_values (np.ndarray): An array of signal values.
         kernel_name (str): The name of the kernel.
         num_exponentials (int): The number of exponentials.
-        initial_guesses (list): Initial parameter guesses.
+        initial_guesses (List[float]): Initial parameter guesses.
 
     Returns:
         Tuple[np.ndarray, float]: A tuple containing the fitted parameters and the R-squared value.
@@ -355,7 +371,7 @@ def fit_multiexponential(
 
     # Create initial parameter guesses based on the number of exponentials
     inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
-    if initial_guesses is None:
+    if initial_guesses:
         p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
         p0.extend([inverse_decay_time_0 / (i + 1) for i in range(num_exponentials)])
         p0.append(np.min(signal_values))

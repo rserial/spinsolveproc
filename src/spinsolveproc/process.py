@@ -2,7 +2,7 @@
 
 import warnings
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Any, Optional, Tuple
 
 import numpy as np
 
@@ -29,7 +29,7 @@ def proton(file_path: Path, spinsolve_type: str) -> Tuple:
     dic, FIDdecay = utils.read_autophase_data1d(file_path)
     time_scale = dic["spectrum"]["xaxis"]
     ppm_scale = utils.create_ppm_scale(dic)
-    spectrum = utils.fft_autophase(file_path, FIDdecay)
+    spectrum = utils.fft_autophase(file_path, np.array(FIDdecay))
 
     print("... Done!", "\n")
 
@@ -56,7 +56,6 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     """
     if not (file_path / "data.2d").exists():
         print("Error: Data file not found", "\n")
-        return None
 
     dic, data = ngread_modified.read(file_path, "data.2d", acqupar="acqu.par", procpar="proc.par")
 
@@ -69,7 +68,9 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     return ppm_scale, T2_scale, T2spec_2Dmap, peak_ppm_positions, peak_T2decay
 
 
-def T2Bulk(file_path: Path, spinsolve_type: str) -> Union[Tuple[np.ndarray, np.ndarray], None]:
+def T2Bulk(
+    file_path: Path, spinsolve_type: str
+) -> Tuple[Optional[np.ndarray[Any, Any]], np.ndarray[Any, Any]]:
     """
     Process Spinsolve T2Bulk data and return results.
 

@@ -108,7 +108,7 @@ def get_initial_phase(file_path: Path) -> float:
     return phase
 
 
-def read_autophase_data1d(file_path: Path) -> Tuple[dict, list]:
+def read_autophase_data1d(file_path: Path) -> Tuple[dict, List]:
     """
     Read data.1d file and perform autophasing on FIDdecay.
 

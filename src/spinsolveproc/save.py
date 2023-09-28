@@ -1,5 +1,6 @@
 """Plotting save for spinsolveproc."""
 from pathlib import Path
+from typing import Any, List
 
 import h5py
 import numpy as np
@@ -217,9 +218,9 @@ def save_2d_Tspectrum_and_axes_to_hdf5(
 def save_T_decay_fit_parameters(
     save_dir: Path,
     fitTdecay_filename: str,
-    amplitude: np.ndarray,
-    decay: np.ndarray,
-    intercept: np.ndarray,
+    amplitude: List[Any],
+    decay: List[Any],
+    intercept: List[Any],
 ) -> None:
     """
     Save T decay fit parameters to a CSV file.
@@ -227,9 +228,9 @@ def save_T_decay_fit_parameters(
     Args:
         save_dir (Path): The directory where the CSV file will be saved.
         fitTdecay_filename (str): The name of the CSV file.
-        amplitude (np.ndarray): The amplitude of the fit.
-        decay (np.ndarray): The decay time in seconds.
-        intercept (np.ndarray): The fit intercept.
+        amplitude (List[Any]): The amplitude of the fit.
+        decay (List[Any]): The decay time in seconds.
+        intercept (List[Any]): The fit intercept.
     """
     list_fitTdecay = {
         "Amplitude": [amplitude],
@@ -260,9 +261,9 @@ def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> No
         T2_scale, np.real(T2decay), kernel_name="T2", num_exponentials=exponentials
     )
 
-    amplitude = np.array([])
-    time_decay = np.array([])
-    intercept = np.array([])
+    amplitude = []
+    time_decay = []
+    intercept = []
 
     for i in range(exponentials):
         amplitude.append(fitted_parameters[i * 2])

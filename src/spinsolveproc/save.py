@@ -260,9 +260,9 @@ def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> No
         T2_scale, np.real(T2decay), kernel_name="T2", num_exponentials=exponentials
     )
 
-    amplitude = []
-    time_decay = []
-    intercept = []
+    amplitude = np.array([])
+    time_decay = np.array([])
+    intercept = np.array([])
 
     for i in range(exponentials):
         amplitude.append(fitted_parameters[i * 2])

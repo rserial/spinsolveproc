@@ -84,7 +84,6 @@ def T2Bulk(
     """
     if not (file_path / "data.1d").exists():
         print("Error: Data file not found", "\n")
-        return None
 
     dic, data = ngread_modified.read(file_path, "data.1d", acqupar="acqu.par", procpar="proc.par")
 

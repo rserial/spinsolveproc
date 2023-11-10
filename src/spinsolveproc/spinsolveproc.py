@@ -1,6 +1,7 @@
 """Main functions for spinsolveproc."""
 import logging
 from pathlib import Path
+from typing import Any, Dict
 
 import plotly.graph_objects as go
 
@@ -63,7 +64,7 @@ class SpinsolveExperiment:
             experiment_path (Path): The path to the experiment directory.
         """
         self.experiment_path = experiment_path
-        self.parameters = {}
+        self.parameters: Dict[str, Any] = {}
 
     def load(self) -> None:
         """Load experiment parameters from the acqu.par file."""
@@ -85,6 +86,7 @@ class SpinsolveExperiment:
 
         Returns:
             dict: A dictionary containing the processed data.
+
         """
         print("Processing directory...", self.experiment_path.name, end="")
 

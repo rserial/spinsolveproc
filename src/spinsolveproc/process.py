@@ -22,9 +22,12 @@ def proton(file_path: Path, spinsolve_type: str) -> Tuple:
 
     Returns:
         Tuple: A tuple containing time scale, FID decay, ppm scale, and spectrum.
+
+    Raises:
+        FileNotFoundError: If the data file is not found.
     """
     if not (file_path / "data.1d").exists():
-        print("... Error! Data file not found", "\n")
+        raise FileNotFoundError("Data file not found")
 
     dic, FIDdecay = utils.read_autophase_data1d(file_path)
     time_scale = dic["spectrum"]["xaxis"]
@@ -53,9 +56,12 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
             T2spec_2Dmap (np.ndarray): The processed 2D spectrum.
             peak_ppm_positions (np.ndarray): The chemical shift positions of the T2 peaks.
             peak_T2decay (np.ndarray): The T2 decay associated with each peak.
+
+    Raises:
+        FileNotFoundError: If the data file is not found.
     """
     if not (file_path / "data.2d").exists():
-        print("Error: Data file not found", "\n")
+        raise FileNotFoundError("Data file not found")
 
     dic, data = ngread_modified.read(file_path, "data.2d", acqupar="acqu.par", procpar="proc.par")
 
@@ -81,9 +87,12 @@ def T2Bulk(
     Returns:
         Union[Tuple[np.ndarray, np.ndarray], None]: T2 time scale and decay data,
         or None if data file is not found.
+
+    Raises:
+        FileNotFoundError: If the data file is not found.
     """
     if not (file_path / "data.1d").exists():
-        print("Error: Data file not found", "\n")
+        raise FileNotFoundError("Data file not found")
 
     dic, data = ngread_modified.read(file_path, "data.1d", acqupar="acqu.par", procpar="proc.par")
 

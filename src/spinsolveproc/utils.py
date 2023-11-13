@@ -3,7 +3,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, SupportsIndex, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
@@ -126,16 +126,16 @@ def read_autophase_data1d(file_path: Path) -> Tuple[dict, List]:
     return dic, FIDdecay
 
 
-def fft_autophase(file_path: Path, FIDdecay: np.array) -> np.array:
+def fft_autophase(file_path: Path, FIDdecay: ndarray) -> ndarray:
     """
     Perform Fourier transformation and autophase on the spectrum.
 
     Args:
         file_path (Path): The path to the data directory.
-        FIDdecay (np.array): The FIDdecay data.
+        FIDdecay (ndarray): The FIDdecay data.
 
     Returns:
-        Spectrum (np.array): The autophased spectrum.
+        Spectrum (ndarray): The autophased spectrum.
     """
     spectrum = ng.proc_base.fft(FIDdecay)  # Fourier transformation
     # Autophase spectrum
@@ -176,7 +176,7 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
 
 
 def create_time_scale_T1(
-    dic: Dict[str, Union[str, int, float]], log_scale: bool = True
+    dic: Dict[str, Union[SupportsIndex, slice]], log_scale: bool = True
 ) -> np.ndarray:
     """
     Creates a time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.

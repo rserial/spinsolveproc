@@ -127,7 +127,7 @@ class SpinsolveExperiment:
         if self.name not in output_dict:
             raise NameError(f"{self.name} data missing from output dictionary")
 
-        plotting_functions: Dict[str, Callable[..., Tuple]] = {
+        plotting_functions = {
             "Proton": plot.setup_fig_proton,
             "1D EXTENDED+": plot.setup_fig_proton,
             "T2": plot.setup_fig_T2,

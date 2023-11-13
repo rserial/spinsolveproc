@@ -120,14 +120,15 @@ def process_T1(
 
     Returns:
         Tuple:
-        - ppm_scale (ndarray): Ppm scale of acquired spectra.
-        - T1_scale (ndarray): T1 time scale of acquired spectra.
-        - T1spec_2Dmap (ndarray): Processed 2D T1 spectrum.
-        - peak_ppm_positions (ndarray): Ppm positions of detected peaks.
-        - peak_T1decay (ndarray): T1 decay values associated with detected peaks.
+            ppm_scale (ndarray): Ppm scale of acquired spectra.
+            T1_scale (ndarray): T1 time scale of acquired spectra.
+            T1spec_2Dmap (ndarray): Processed 2D T1 spectrum.
+            peak_ppm_positions (ndarray): Ppm positions of detected peaks.
+            peak_T1decay (ndarray): T1 decay values associated with detected peaks.
 
     Raises:
         FileNotFoundError: If the data file is not found.
+        ValueError: If the integration width is incorrect.
     """
     if not (file_path / "data.2d").exists():
         raise FileNotFoundError("Data file not found")
@@ -150,8 +151,7 @@ def process_T1(
         integration_width = (ppm_scale[-1] - ppm_scale[0]) / 10
         print("Integration width: ", integration_width, "ppm")
     elif integration_width > np.abs(ppm_scale[-1] - ppm_scale[0]):
-        print("Error: incorrect integration width", "\n")
-        return None
+        raise ValueError("Incorrect integration width")
 
     if integration_center is None:
         ppm_start = peak_ppm_positions + np.abs(np.round(integration_width / 2))

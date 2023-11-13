@@ -1,7 +1,7 @@
 """Main functions for spinsolveproc."""
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Callable, Dict, Tuple
 
 import plotly.graph_objects as go
 
@@ -79,6 +79,7 @@ class SpinsolveExperiment:
             raise e
         except IOError:
             logger.error("IO Error while loading parameters")
+        return
 
     def process(self) -> dict:
         """
@@ -86,7 +87,6 @@ class SpinsolveExperiment:
 
         Returns:
             dict: A dictionary containing the processed data.
-
         """
         print("Processing directory...", self.experiment_path.name, end="")
 
@@ -117,12 +117,14 @@ class SpinsolveExperiment:
 
         Returns:
             tuple: A tuple containing figures and the experiment name.
+
+        Raises:
+            NameError: If the experiment name is not found in the output dictionary.
         """
         if self.name not in output_dict:
-            print(f'Error: "{self.name}" data missing from output dictionary')
-            return None
+            raise NameError(f"{self.name} data missing from output dictionary")
 
-        plotting_functions = {
+        plotting_functions: dict[str, Callable[..., Tuple]] = {
             "Proton": plot.setup_fig_proton,
             "1D EXTENDED+": plot.setup_fig_proton,
             "T2": plot.setup_fig_T2,
@@ -130,8 +132,7 @@ class SpinsolveExperiment:
         }
 
         if self.name not in plotting_functions:
-            print(f'Plotting function not found for experiment type "{self.name}".')
-            return None
+            raise NameError(f"Plotting function not found for experiment type {self.name}")
 
         figures = plotting_functions[self.name](self.experiment_path.name, *output_dict[self.name])
         if not isinstance(figures, tuple):
@@ -150,7 +151,7 @@ class SpinsolveExperiment:
         if not save_dir.exists():
             save_dir.mkdir()
 
-        saving_functions = {
+        saving_functions: dict[str, Callable[..., Tuple]] = {
             "Proton": save.fig_proton,
             "1D EXTENDED+": save.fig_proton,
             "T2": save.fig_T2,

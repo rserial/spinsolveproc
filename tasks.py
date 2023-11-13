@@ -8,9 +8,9 @@ import webbrowser
 from pathlib import Path
 from typing import Optional
 
-from invoke import call, task
 from invoke.context import Context
 from invoke.runners import Result
+from invoke.tasks import call, task
 
 ROOT_DIR = Path(__file__).parent
 DOCS_DIR = ROOT_DIR.joinpath("docs")

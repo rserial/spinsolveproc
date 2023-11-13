@@ -37,18 +37,16 @@ def setup_fig_proton(
             A Plotly figure configured to display proton experiment data with interactive controls.
     """
     # Create a figure with subplots
-    fig = make_subplots(
-        rows=1, cols=2, subplot_titles=("Proton decay: " + file_path_name, "Proton Spectrum")
-    )
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Proton decay", "Proton Spectrum"))
 
     # Add FID decay traces
     fig.add_trace(
-        go.Scatter(x=time_scale, y=np.real(FIDdecay), name="Real FID", line=dict(color="blue")),
+        go.Scatter(x=time_scale, y=np.real(FIDdecay), name="Real FID", line=dict(color="#2C7FB8")),
         row=1,
         col=1,
     )
     fig.add_trace(
-        go.Scatter(x=time_scale, y=np.imag(FIDdecay), name="Imag FID", line=dict(color="red")),
+        go.Scatter(x=time_scale, y=np.imag(FIDdecay), name="Imag FID", line=dict(color="#7FCDBB")),
         row=1,
         col=1,
     )
@@ -57,7 +55,7 @@ def setup_fig_proton(
             x=time_scale,
             y=np.abs(FIDdecay),
             name="Absolute FID",
-            line=dict(color="black", dash="dash"),
+            line=dict(color="#636363", dash="dash"),
         ),
         row=1,
         col=1,
@@ -66,13 +64,15 @@ def setup_fig_proton(
     # Add Spectrum traces
     fig.add_trace(
         go.Scatter(
-            x=ppm_scale, y=np.real(spectrum), name="Real Spectrum", line=dict(color="blue")
+            x=ppm_scale, y=np.real(spectrum), name="Real Spectrum", line=dict(color="#2C7FB8")
         ),
         row=1,
         col=2,
     )
     fig.add_trace(
-        go.Scatter(x=ppm_scale, y=np.imag(spectrum), name="Imag Spectrum", line=dict(color="red")),
+        go.Scatter(
+            x=ppm_scale, y=np.imag(spectrum), name="Imag Spectrum", line=dict(color="#7FCDBB")
+        ),
         row=1,
         col=2,
     )
@@ -81,7 +81,7 @@ def setup_fig_proton(
             x=ppm_scale,
             y=np.abs(spectrum),
             name="Absolute Spectrum",
-            line=dict(color="black", dash="dash"),
+            line=dict(color="#636363", dash="dash"),
         ),
         row=1,
         col=2,
@@ -95,51 +95,11 @@ def setup_fig_proton(
 
     # Configure layout with a white template
     fig.update_layout(
-        title="Proton Spectrum and Decay",
-        width=1000,
+        title="Proton Spectrum and Decay" + file_path_name,
+        width=1200,
         height=500,
-        template="plotly_white",  # Use the white template
+        template="plotly_white",
     )
-
-    # Add interactive capability to remove real, imag, or absolute parts
-    fig.update_layout(
-        updatemenus=[
-            dict(
-                type="buttons",
-                direction="right",
-                active=0,
-                buttons=list(
-                    [
-                        dict(
-                            label="Real",
-                            method="update",
-                            args=[
-                                {"visible": [True, False, False, True, False, False]},
-                                {"title": "Proton Spectrum and Decay - Real"},
-                            ],
-                        ),
-                        dict(
-                            label="Imag",
-                            method="update",
-                            args=[
-                                {"visible": [False, True, False, False, True, False]},
-                                {"title": "Proton Spectrum and Decay - Imag"},
-                            ],
-                        ),
-                        dict(
-                            label="Absolute",
-                            method="update",
-                            args=[
-                                {"visible": [False, False, True, False, False, True]},
-                                {"title": "Proton Spectrum and Decay - Absolute"},
-                            ],
-                        ),
-                    ]
-                ),
-            )
-        ]
-    )
-
     return fig
 
 
@@ -300,6 +260,7 @@ def setup_fig_Tdecay_fit(
         y=np.imag(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
         name="T2 Decay - imag",
+        marker=dict(color="#2C7FB8"),
     )
     trace2 = go.Scatter(
         x=T_scale,
@@ -310,6 +271,7 @@ def setup_fig_Tdecay_fit(
             f"{num_exponentials}exp. fit, Long component T2decay = "
             f"{np.max(np.round(time_decay,3))} s, R² = {np.round(R2, 6)}"
         ),
+        marker=dict(color="#7FCDBB"),
     )
 
     layout = go.Layout(

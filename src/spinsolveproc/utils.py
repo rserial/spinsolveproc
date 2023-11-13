@@ -430,6 +430,34 @@ def get_fitting_kernel(kernel_name: str, num_exponentials: int) -> Tuple[Callabl
     return fitting_kernel, num_params
 
 
+def load_T1IRT2_timedat_files(file_path: Path) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Load time data from T1IR and T2 experiments.
+
+    Args:
+        file_path (Path): The path to the data directory.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: Time data for T1 and T2 experiments,
+        in seconds.
+
+    Raises:
+        FileNotFoundError: If the required time data files are not found.
+    """
+    data1d_path = file_path / "1D_T1IRT2"
+
+    timeT1_path = data1d_path / "timeT1_s.dat"
+    timeT2_path = data1d_path / "timeT2_s.dat"
+
+    if not timeT1_path.exists() or not timeT2_path.exists():
+        raise FileNotFoundError("Time data files not found in the specified directory.")
+
+    timeT1 = np.loadtxt(timeT1_path) * 1e-6  # in seconds
+    timeT2 = np.loadtxt(timeT2_path)  # in seconds
+
+    return timeT1, timeT2
+
+
 def fit_multiexponential(
     time_values: np.ndarray,
     signal_values: np.ndarray,

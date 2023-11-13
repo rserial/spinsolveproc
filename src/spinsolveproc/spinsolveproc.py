@@ -98,6 +98,7 @@ class SpinsolveExperiment:
             "T2": process.T2,
             "T2Bulk": process.T2Bulk,
             "T1": process.T1,
+            "T1IRT2": process.T1IRT2,
         }
 
         if self.name in processing_functions:

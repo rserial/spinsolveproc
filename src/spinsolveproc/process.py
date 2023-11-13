@@ -168,3 +168,36 @@ def T1(
     print("Peaks ppm positions: ", peak_ppm_positions)
     print("Integration width around peak for calculating signal decay:", ppm_start, ppm_end)
     return ppm_scale, T1_scale, T1spec_2Dmap, peak_ppm_positions, peak_T1decay
+
+
+def T1IRT2(file_path: Path, spinsolve_type: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Process Spinsolve T1IRT2 data and return results.
+
+    Args:
+        file_path (Path): Path to the data directory.
+        spinsolve_type (str): Type of Spinsolve data.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray]: Time scales and T1IRT2 data.
+
+    Raises:
+        FileNotFoundError: If the data file is not found.
+    """
+    timeT1, timeT2 = utils.load_T1IRT2_timedat_files(file_path)
+    data1d_path_list = [
+        path for path in sorted((file_path / "1D_T1IRT2").iterdir()) if path.is_dir()
+    ]
+
+    T1IRT2 = []
+    for path in data1d_path_list:
+        if not (file_path / "data.1d").exists():
+            raise FileNotFoundError("Data file not found")
+        dic, T2decay = ngread_modified.read(
+            path, "data.1d", acqupar="acqu.par", procpar="proc.par", split_opt="no"
+        )
+        T1IRT2.append(T2decay)
+
+    T1IRT2array = np.array(np.real(T1IRT2), dtype=np.float64)
+    print("... Done!!", "\n")
+    return timeT1, timeT2, T1IRT2array

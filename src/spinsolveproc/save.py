@@ -5,14 +5,14 @@ from typing import Any, List
 import h5py
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
 import plotly.io as pio
-from plotly.graph_objs._figure import Figure
 
 import spinsolveproc.utils as utils
 
 
 # Figures
-def fig_proton(save_dir: Path, fig_proton: Figure) -> None:
+def fig_proton(save_dir: Path, fig_proton: go.Figure) -> None:
     """
     Save a Proton experiment figure to the specified directory.
 
@@ -97,43 +97,18 @@ def save_1d_spectrum_data(
     print(f"Saved datafile: {filename}\n")
 
 
-def fig_T2(save_dir: Path, fig_T2spec_2Dmap: Figure, fig_T2specdecays_fit: Figure) -> None:
+def fig_T2(save_dir: Path, *figures: go.Figure) -> None:
     """
-    Save both T2 figures to a specified directory.
+    Save T2 figures to the specified directory.
 
     Args:
         save_dir (Path): The directory where the figures will be saved.
-        fig_T2spec_2Dmap (Figure): The Plotly figure for T2 spec 2D map.
-        fig_T2specdecays_fit (Figure): The Plotly figure for T2 spec decays fit.
+        *figures (go.Figure): Variable number of figures to save.
     """
-    save_fig_T2spec_2Dmap(save_dir, fig_T2spec_2Dmap)
-    save_fig_T2specdecays_fit(save_dir, fig_T2specdecays_fit)
-
-
-def save_fig_T2spec_2Dmap(save_dir: Path, fig_T2spec_2Dmap: Figure) -> None:
-    """
-    Save the T2 spec 2D map figure to a specified directory.
-
-    Args:
-        save_dir (Path): The directory where the figure will be saved.
-        fig_T2spec_2Dmap (Figure): The Plotly figure to be saved.
-    """
-    filename_save = "T2spec_2Dmap.html"
-    pio.write_html(fig_T2spec_2Dmap, save_dir / filename_save)
-    print(f"Saved figure: {filename_save} \n")
-
-
-def save_fig_T2specdecays_fit(save_dir: Path, fig_T2specdecays_fit: Figure) -> None:
-    """
-    Save the T2 spec decays fit figure to a specified directory.
-
-    Args:
-        save_dir (Path): The directory where the figure will be saved.
-        fig_T2specdecays_fit (Figure): The Plotly figure to be saved.
-    """
-    filename_save = "T2decay.html"
-    pio.write_html(fig_T2specdecays_fit, save_dir / filename_save)
-    print(f"Saved figure: {filename_save} \n")
+    filename_save = ["T2spec_2Dmap.html", "T2decay.html"]
+    for i, figure in enumerate(figures):
+        pio.write_html(figure, save_dir / filename_save[i])
+        print(f"Saved figure: {filename_save[i]}\n")
 
 
 def data_T2(
@@ -275,7 +250,7 @@ def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> No
     )
 
 
-def fig_T2Bulk(save_dir: Path, fig_T2Bulkdecays_fit: Figure) -> None:
+def fig_T2Bulk(save_dir: Path, fig_T2Bulkdecays_fit: go.Figure) -> None:
     """
     Save the T2Bulk decay figure to a specified directory.
 

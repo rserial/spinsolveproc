@@ -133,7 +133,7 @@ class SpinsolveExperiment:
             "1D EXTENDED+": plot.setup_fig_proton,
             "T2": plot.setup_fig_T2,
             "T2Bulk": plot.setup_fig_T2Bulk,
-            "T1": plot.T1,
+            "T1": plot.setup_fig_T1,
         }
 
         if self.name not in plotting_functions:

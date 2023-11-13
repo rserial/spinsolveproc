@@ -112,7 +112,7 @@ def setup_fig_T2(
     peak_T2decay: np.ndarray,
 ) -> Tuple[go.Figure, go.Figure]:
     """
-    Set up figures for T2 processing.
+    Set up figures for T2 experiment.
 
     Args:
         file_path_name (str): File path name.
@@ -144,6 +144,44 @@ def setup_fig_T2(
         plot_title_name="T2 decay",
     )
     return fig_T2spec_2Dmap, fig_T2specdecays_fit
+
+
+def setup_fig_T1(
+    file_path_name: str,
+    ppm_scale: np.ndarray,
+    T1_scale: np.ndarray,
+    T1spec_2Dmap: np.ndarray,
+    peak_ppm_positions: np.ndarray,
+    peak_T1decay: np.ndarray,
+) -> Tuple[go.Figure, go.Figure]:
+    """
+    Set up figures for T1 experiment.
+
+    Args:
+        file_path_name (str): The name of the file path.
+        ppm_scale (np.ndarray): The scale of ppm values.
+        T1_scale (np.ndarray): The T1 scale.
+        T1spec_2Dmap (np.ndarray): The T1 spectroscopically resolved 2D map.
+        peak_ppm_positions (np.ndarray): The peak positions in ppm.
+        peak_T1decay (np.ndarray): The peak T1 decay data.
+
+    Returns:
+        Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
+    """
+    fig_T1spec_2Dmap = setup_fig_Tspec_2Dmap(
+        file_path_name,
+        ppm_scale,
+        T1_scale,
+        T1spec_2Dmap,
+        peak_ppm_positions,
+        peak_T1decay,
+        "Spectroscopically resolved T1",
+    )
+
+    fig_T1specdecays_fit = setup_fig_Tdecay_fit(
+        file_path_name, T1_scale, peak_T1decay[0], "IR", "T1 decay"
+    )
+    return fig_T1spec_2Dmap, fig_T1specdecays_fit
 
 
 def setup_fig_Tspec_2Dmap(

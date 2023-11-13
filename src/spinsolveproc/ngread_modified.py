@@ -9,7 +9,7 @@ from nmrglue.fileio.spinsolve import parse_spinsolve_par_line
 
 
 def read(
-    directory: str = ".",
+    directory: Path,
     specfile: Optional[str] = None,
     acqupar: str = "acqu.par",
     procpar: str = "proc.par",
@@ -32,7 +32,7 @@ def read(
     dic["spectrum"]["xaxis"] to plot the x-axis.
 
     Args:
-        directory (str): Directory to read from.
+        directory (Path): Directory to read from.
         specfile (str, optional): Filename to import spectral data from. None uses standard
             filename from ["nmr_fid.dx", "data.1d", "fid.1d", "spectrum.1d",
             "spectrum_processed.1d"].

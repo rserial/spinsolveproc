@@ -134,6 +134,7 @@ class SpinsolveExperiment:
             "T2": plot.setup_fig_T2,
             "T2Bulk": plot.setup_fig_T2Bulk,
             "T1": plot.setup_fig_T1,
+            "T1IRT2": plot.setup_fig_T1IRT2,
         }
 
         if self.name not in plotting_functions:

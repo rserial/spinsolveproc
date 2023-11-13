@@ -6,10 +6,11 @@ Execute 'invoke --list' for guidance on using Invoke
 import platform
 import webbrowser
 from pathlib import Path
+from typing import Optional
 
-from invoke import call, task
 from invoke.context import Context
 from invoke.runners import Result
+from invoke.tasks import call, task
 
 ROOT_DIR = Path(__file__).parent
 DOCS_DIR = ROOT_DIR.joinpath("docs")
@@ -29,7 +30,7 @@ PYTHON_TARGETS = [
 PYTHON_TARGETS_STR = " ".join([str(p) for p in PYTHON_TARGETS])
 
 
-def _run(c: Context, command: str) -> Result:
+def _run(c: Context, command: str) -> Optional[Result]:
     return c.run(command, pty=platform.system() != "Windows")
 
 

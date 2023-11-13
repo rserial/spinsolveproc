@@ -1,17 +1,67 @@
 """Console script for spinsolveproc."""
+from pathlib import Path
+
 import click
 
 from spinsolveproc import __version__
+from spinsolveproc.spinsolveproc import SpinsolveExperiment
 
 
-@click.command()
+@click.group()
 @click.version_option(version=__version__)
-def main() -> int:
+def main() -> None:
     """Console script for spinsolveproc."""
-    click.echo("Replace this message by putting your code into spinsolveproc.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
-    return 0
+
+
+@main.command(name="process_exp")
+@click.argument("directory", type=click.Path(exists=True, file_okay=False, dir_okay=True))
+@click.argument("experiment", required=False)
+@click.option(
+    "--all", "process_all", is_flag=True, help="Process all experiments in the directory"
+)
+def process_exp(directory: str, experiment: str, process_all: bool) -> None:
+    """Process Spinsolve data in a directory."""
+    path_entry = Path(directory)
+
+    if path_entry.exists():
+        if path_entry.joinpath("acqu.par").is_file():
+            sample_dir_list = [path_entry]
+            click.echo("Processing current file directory\n")
+        elif experiment:
+            experiment_names = [f"-{experiment}-", f" {experiment} "]
+            sample_dir_list = []
+            for experiment_name in experiment_names:
+                sample_dir_list += [
+                    diracqu.parent for diracqu in path_entry.glob(f"*{experiment_name}*/acqu.par")
+                ]
+            if not sample_dir_list:
+                click.echo(f"Error: No directories found for experiment {experiment}")
+            else:
+                click.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
+        elif process_all:
+            sample_dir_list = [diracqu.parent for diracqu in path_entry.glob("*/acqu.par")]
+
+            if not sample_dir_list:
+                click.echo("Error: No directories found in the specified directory.")
+            else:
+                click.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
+        else:
+            click.echo(
+                "Error: Please provide an experiment name or use --all to process all experiments."
+            )
+            return
+
+        for sample_dir in sample_dir_list:
+            experiment_instance = SpinsolveExperiment(sample_dir)
+            experiment_instance.load()
+            output_dict = experiment_instance.process()
+            figure, experiment_name = experiment_instance.plot(output_dict)
+            experiment_instance.save_fig(figure, experiment_name)
+            experiment_instance.save_data(output_dict, experiment_name)
+
+    else:
+        click.echo("Error! Directory does not exist")
 
 
 if __name__ == "__main__":
-    main()  # pragma: no cover
+    process_exp()

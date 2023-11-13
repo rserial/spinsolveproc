@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# spinsolveproc
-=======
 
 # Spinsolveproc
 
@@ -43,4 +40,3 @@ This package was created with [Cookiecutter][cookiecutter] and the [fedejaure/co
 
 [cookiecutter]: https://github.com/cookiecutter/cookiecutter
 [cookiecutter-modern-pypackage]: https://github.com/fedejaure/cookiecutter-modern-pypackage
->>>>>>> Initial skeleton

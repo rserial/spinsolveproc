@@ -38,11 +38,19 @@ spinsolveproc = 'spinsolveproc.cli:main'
 python = "<3.12,>=3.8"
 
 click = "^8.1.3"
+plotly = "^5.17.0"
+numpy = "1.22"
+nmrglue = "^0.9"
+pandas = "1.5.0"
+h5py = "^3.9.0"
+invoke = "^2.2.0"
+nox = "^2023.4.22"
+nox-poetry = "^1.0.3"
 
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^3.1.1"
-invoke = "^2.0.0"
+invoke = "^2.2.0"
 flake8 = ">=4.0.1,<5.0.0"
 flakeheaven = "^3.2.1"
 flake8-builtins = "^2.1.0"
@@ -100,7 +108,7 @@ extended_default_ignore = []
 
 [tool.flakeheaven.plugins]
 pyflakes = ["+*"]
-pycodestyle = ["+*"]
+pycodestyle = ["+*", "-W503", "-E203"]
 mccabe = ["+*"]
 flake8-annotations = ["+*", "-ANN1??", "-ANN401"]
 flake8-docstrings = ["+*", "-D212"]
@@ -109,6 +117,25 @@ pylint = ["-C????", "-E????", "+F????", "+I????", "-R????", "-W????"]
 
 [tool.flakeheaven.exceptions."tests/"]
 flake8-bandit = ["-S101"]
+
+[tool.mypy]
+warn_return_any = false
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["pytest","click.*","invoke.*","nox.*","nox_poetry.*","nmrglue.*","scipy.*","pandas.*","plotly.*","h5py.*"]
+allow_redefinition = false
+check_untyped_defs = true
+ignore_errors = false
+ignore_missing_imports = true
+implicit_reexport = false
+local_partial_types = true
+strict_optional = true
+strict_equality = true
+no_implicit_optional = true
+warn_unused_ignores = true
+warn_unreachable = true
+warn_no_return = true
 
 [tool.isort]
 multi_line_output = 3

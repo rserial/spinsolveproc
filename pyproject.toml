@@ -4,9 +4,6 @@ name = "spinsolveproc"
 version = "0.1.0"
 description = "Python library to process Spinsolve NMR experiments"
 authors = ["Raquel Serial <raquel.serial@tuhh.de>"]
-packages = [
-    {include = "ordered_set-stubs"}
-]
 
 readme = "README.md"
 homepage = "https://github.com/rserial/spinsolveproc"
@@ -126,7 +123,7 @@ warn_return_any = false
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = ["pytest","invoke.*","nox.*","nox_poetry.*","nmrglue.*","scipy.*","pandas.*","plotly.*","h5py.*"]
+module = ["pytest","click.*","invoke.*","nox.*","nox_poetry.*","nmrglue.*","scipy.*","pandas.*","plotly.*","h5py.*"]
 allow_redefinition = false
 check_untyped_defs = true
 ignore_errors = false

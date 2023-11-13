@@ -297,13 +297,14 @@ def setup_fig_Tdecay_fit(
         y=np.real(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
         name="T Decay - real",
+        marker=dict(color="#2C7FB8"),
     )
     trace1_imag = go.Scatter(
         x=T_scale,
         y=np.imag(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
         name="T Decay - imag",
-        marker=dict(color="#2C7FB8"),
+        marker=dict(color="#7FCDBB"),
     )
     trace2 = go.Scatter(
         x=T_scale,
@@ -314,7 +315,7 @@ def setup_fig_Tdecay_fit(
             f"{num_exponentials}exp. fit, Long component T2decay = "
             f"{np.max(np.round(time_decay,3))} s, R² = {np.round(R2, 6)}"
         ),
-        marker=dict(color="#7FCDBB"),
+        marker=dict(color="#636363"),
     )
 
     layout = go.Layout(

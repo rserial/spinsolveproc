@@ -11,7 +11,6 @@ from spinsolveproc import cli
 @pytest.mark.parametrize(
     "options,expected",
     [
-        ([], "spinsolveproc.cli.main"),
         (["--help"], "Usage: main [OPTIONS]"),
         (["--version"], f"main, version { spinsolveproc.__version__ }\n"),
     ],

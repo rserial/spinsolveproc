@@ -10,7 +10,6 @@ import spinsolveproc.process as process
 import spinsolveproc.save as save
 import spinsolveproc.utils as utils
 
-__version__ = "1.0.0"
 logger = logging.getLogger(__name__)
 
 

@@ -191,7 +191,7 @@ def T1IRT2(file_path: Path, spinsolve_type: str) -> Tuple[np.ndarray, np.ndarray
 
     T1IRT2 = []
     for path in data1d_path_list:
-        if not (file_path / "data.1d").exists():
+        if not (path / "data.1d").exists():
             raise FileNotFoundError("Data file not found")
         dic, T2decay = ngread_modified.read(
             path, "data.1d", acqupar="acqu.par", procpar="proc.par", split_opt="no"

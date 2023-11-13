@@ -71,6 +71,7 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     data2D = np.reshape(data, (T2_scale.shape[0], ppm_scale.shape[0]))
     T2spec_2Dmap = utils.fft_autophase(file_path, data2D)
     peak_ppm_positions, peak_T2decay = utils.find_Tpeaks(T2spec_2Dmap, ppm_scale)
+    peak_T2decay = peak_T2decay[0]
     print("... Done!!", "\n")
     return ppm_scale, T2_scale, T2spec_2Dmap, peak_ppm_positions, peak_T2decay
 

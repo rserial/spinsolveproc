@@ -111,6 +111,20 @@ def fig_T2(save_dir: Path, *figures: go.Figure) -> None:
         print(f"Saved figure: {filename_save[i]}\n")
 
 
+def fig_T1(save_dir: Path, *figures: go.Figure) -> None:
+    """
+    Save T1 figures to the specified directory.
+
+    Args:
+        save_dir (Path): The directory where the figures will be saved.
+        *figures (go.Figure): Variable number of figures to save.
+    """
+    filename_save = ["T1spec_2Dmap.html", "T1decay.html"]
+    for i, figure in enumerate(figures):
+        pio.write_html(figure, save_dir / filename_save[i])
+        print(f"Saved figure: {filename_save[i]}\n")
+
+
 def data_T2(
     save_dir: Path,
     ppm_scale: np.ndarray,
@@ -143,6 +157,46 @@ def data_T2(
         T2spec_2Dmap,
         ppm_scale,
         T2_scale,
+        h5_filename,
+        data_filename,
+        frequency_axis,
+        time_axis,
+    )
+    print(f"Saved h5py file: {h5_filename} \n")
+
+
+def data_T1(
+    save_dir: Path,
+    ppm_scale: np.ndarray,
+    T1_scale: np.ndarray,
+    T1spec_2Dmap: np.ndarray,
+    peak_ppm_positions: np.ndarray,
+    peak_T1decay: np.ndarray,
+) -> None:
+    """
+    Save T1 data to specified directory.
+
+    Args:
+        save_dir (Path): The directory where data will be saved.
+        ppm_scale (np.ndarray): An array of ppm scale values.
+        T1_scale (np.ndarray): An array of T2 scale values in seconds.
+        T1spec_2Dmap (np.ndarray): A 2D map of T2 data.
+        peak_ppm_positions (np.ndarray): An array of peak ppm positions.
+        peak_T1decay (np.ndarray): A 2D array of peak T2 decay data.
+    """
+    data_T2Bulk(save_dir, T1_scale, peak_T1decay.reshape(-1))
+
+    h5_filename = "T1spec_2Ddata.h5"
+    data_filename = "2Dmap"
+    frequency_axis = "ppm_axis"
+    time_axis = "T1_axis"
+
+    # Save processed T2spec 2D map
+    save_2d_Tspectrum_and_axes_to_hdf5(
+        save_dir,
+        T1spec_2Dmap,
+        ppm_scale,
+        T1_scale,
         h5_filename,
         data_filename,
         frequency_axis,

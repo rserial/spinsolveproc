@@ -138,7 +138,7 @@ def setup_fig_T2(
     fig_T2specdecays_fit = setup_fig_Tdecay_fit(
         file_path_name,
         T2_scale,
-        peak_T2decay[0],
+        peak_T2decay,
         "T2",
         num_exponentials=1,
         plot_title_name="T2 decay",
@@ -181,7 +181,7 @@ def setup_fig_T1(
     fig_T1specdecays_fit = setup_fig_Tdecay_fit(
         file_path_name,
         T1_scale,
-        peak_T1decay[0],
+        peak_T1decay,
         "T1IR",
         num_exponentials=1,
         plot_title_name="T1 decay",
@@ -296,13 +296,13 @@ def setup_fig_Tdecay_fit(
         x=T_scale,
         y=np.real(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
-        name="T2 Decay - real",
+        name="T Decay - real",
     )
     trace1_imag = go.Scatter(
         x=T_scale,
         y=np.imag(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
-        name="T2 Decay - imag",
+        name="T Decay - imag",
         marker=dict(color="#2C7FB8"),
     )
     trace2 = go.Scatter(

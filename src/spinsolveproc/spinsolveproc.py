@@ -164,6 +164,7 @@ class SpinsolveExperiment:
             "1D EXTENDED+": save.fig_proton,
             "T2": save.fig_T2,
             "T2Bulk": save.fig_T2Bulk,
+            "T1": save.fig_T1,
         }
         if experiment_name in saving_functions:
             saving_function = saving_functions[experiment_name]
@@ -195,6 +196,7 @@ class SpinsolveExperiment:
                 "1D EXTENDED+": save.data_proton,
                 "T2": save.data_T2,
                 "T2Bulk": save.data_T2Bulk,
+                "T1": save.data_T1,
             }
 
             if experiment_name in saving_functions:

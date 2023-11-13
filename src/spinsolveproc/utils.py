@@ -528,3 +528,82 @@ def tri_exponential(
         np.ndarray: The calculated tri-exponential function values.
     """
     return m1 * np.exp(-t1 * x) + m2 * np.exp(-t2 * x) + m3 * np.exp(-t3 * x) + b
+
+
+def IR(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
+    """
+    Inversion recovery (IR) function with a mono-exponential decay.
+
+    Args:
+        x (np.ndarray): Time values.
+        m (float): Amplitude.
+        t (float): Time constant.
+        b (float): Offset.
+
+    Returns:
+        np.ndarray: IR function values.
+    """
+    return m * (1 - 2 * np.exp(-t * x)) + b
+
+
+def IR_mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
+    """
+    Mono-exponential inversion recovery (IR) function.
+
+    Args:
+        x (np.ndarray): Time values.
+        m (float): Amplitude.
+        t (float): Time constant.
+        b (float): Offset.
+
+    Returns:
+        np.ndarray: IR function values.
+    """
+    return m * (1 - 2 * np.exp(-t * x)) + b
+
+
+def IR_bi_exponential(
+    x: np.ndarray, m1: float, t1: float, m2: float, t2: float, b: float
+) -> np.ndarray:
+    """
+    Bi-exponential inversion recovery (IR) function.
+
+    Args:
+        x (np.ndarray): Time values.
+        m1 (float): Amplitude for the first component.
+        t1 (float): Time constant for the first component.
+        m2 (float): Amplitude for the second component.
+        t2 (float): Time constant for the second component.
+        b (float): Offset.
+
+    Returns:
+        np.ndarray: IR function values.
+    """
+    return m1 * (1 - 2 * np.exp(-t1 * x)) + m2 * (1 - 2 * np.exp(-t2 * x)) + b
+
+
+def IR_tri_exponential(
+    x: np.ndarray, m1: float, t1: float, m2: float, t2: float, m3: float, t3: float, b: float
+) -> np.ndarray:
+    """
+    Tri-exponential inversion recovery (IR) function.
+
+    Args:
+        x (np.ndarray): Time values.
+        m1 (float): Amplitude for the first component.
+        t1 (float): Time constant for the first component.
+        m2 (float): Amplitude for the second component.
+        t2 (float): Time constant for the second component.
+        m3 (float): Amplitude for the third component.
+        t3 (float): Time constant for the third component.
+        b (float): Offset.
+
+    Returns:
+        np.ndarray: IR function values.
+    """
+    return (
+        m1 * (1 - 2 * np.exp(-t1 * x))
+        + m2 * (1 - 2 * np.exp(-t2 * x))
+        + m3 * (1 - 2 * np.exp(-t3 * x))
+        + b
+    )

@@ -3,7 +3,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, SupportsIndex, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
@@ -176,7 +176,7 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
 
 
 def create_time_scale_T1(
-    dic: Dict[str, Union[SupportsIndex, slice]], log_scale: bool = True
+    dic: Dict[str, Union[str, int, float]], log_scale: bool = True
 ) -> np.ndarray:
     """
     Creates a time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.
@@ -188,9 +188,15 @@ def create_time_scale_T1(
     Returns:
         An array containing the time scale for T1 decay of the acquired spectra.
     """
-    min_delay = float(dic["acqu"]["minDelay"])
-    max_delay = float(dic["acqu"]["maxDelay"])
-    nr_steps = int(dic["acqu"]["nrSteps"])
+    if "acqu" in dic and isinstance(dic["acqu"], dict):
+        acqu = dic["acqu"]
+
+        if "minDelay" in acqu and isinstance(acqu["minDelay"], (float, int)):
+            min_delay = float(acqu["minDelay"])
+        if "maxDelay" in acqu and isinstance(acqu["maxDelay"], (float, int)):
+            max_delay = float(acqu["maxDelay"])
+        if "nrSteps" in acqu and isinstance(acqu["nrSteps"], (int, float)):
+            nr_steps = int(acqu["nrSteps"])
 
     if log_scale:
         t1_scale = np.logspace(np.log10(min_delay * 1e-3), np.log10(max_delay * 1e-3), nr_steps)
@@ -429,7 +435,7 @@ def fit_multiexponential(
     signal_values: np.ndarray,
     kernel_name: str,
     num_exponentials: int,
-    initial_guesses: List[float] = None,
+    initial_guesses: Optional[List[float]] = None,
 ) -> Tuple[np.ndarray, float]:
     """
     Fit multiexponential data using the specified kernel.
@@ -448,7 +454,7 @@ def fit_multiexponential(
 
     # Create initial parameter guesses based on the number of exponentials
     inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
-    if initial_guesses:
+    if not initial_guesses:
         p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
         p0.extend([inverse_decay_time_0 / (i + 1) for i in range(num_exponentials)])
         p0.append(np.min(signal_values))

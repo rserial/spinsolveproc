@@ -1,7 +1,7 @@
 """Main functions for spinsolveproc."""
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Callable, Dict, Tuple
 
 import plotly.graph_objects as go
 
@@ -157,7 +157,7 @@ class SpinsolveExperiment:
         if not save_dir.exists():
             save_dir.mkdir()
 
-        saving_functions = {
+        saving_functions: Dict[str, Callable[..., Tuple]] = {
             "Proton": save.fig_proton,
             "1D EXTENDED+": save.fig_proton,
             "T2": save.fig_T2,

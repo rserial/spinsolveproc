@@ -51,12 +51,12 @@ def process_exp(directory: str, experiment: str, process_all: bool) -> None:
             return
 
         for sample_dir in sample_dir_list:
-            experiment = SpinsolveExperiment(sample_dir)
-            experiment.load()
-            output_dict = experiment.process()
-            figure, experiment_name = experiment.plot(output_dict)
-            experiment.save_fig(figure, experiment_name)
-            experiment.save_data(output_dict, experiment_name)
+            experiment_instance = SpinsolveExperiment(sample_dir)
+            experiment_instance.load()
+            output_dict = experiment_instance.process()
+            figure, experiment_name = experiment_instance.plot(output_dict)
+            experiment_instance.save_fig(figure, experiment_name)
+            experiment_instance.save_data(output_dict, experiment_name)
 
     else:
         click.echo("Error! Directory does not exist")

@@ -9,7 +9,7 @@ from nmrglue.fileio.spinsolve import parse_spinsolve_par_line
 
 
 def read(
-    directory: Path = ("."),
+    directory: Path,
     specfile: Optional[str] = None,
     acqupar: str = "acqu.par",
     procpar: str = "proc.par",

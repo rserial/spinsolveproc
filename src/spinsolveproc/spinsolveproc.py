@@ -87,6 +87,9 @@ class SpinsolveExperiment:
 
         Returns:
             dict: A dictionary containing the processed data.
+
+        Raises:
+            FileNotFoundError: If the data file is not found.
         """
         print("Processing directory...", self.experiment_path.name, end="")
 
@@ -106,14 +109,14 @@ class SpinsolveExperiment:
             output_dict[self.name] = output
             return output_dict
         else:
-            print(f' Data not found for experiment type "{self.name}".')
+            raise FileNotFoundError(f"{self.name} data missing from output dictionary")
 
-    def plot(self, output_dict: dict) -> tuple:
+    def plot(self, output_dict: Dict[str, Any]) -> tuple:
         """
         Generate and return plots for the processed data.
 
         Args:
-            output_dict (dict): A dictionary containing the processed data.
+            output_dict (Dict[str, Any]): A dictionary containing the processed data.
 
         Returns:
             tuple: A tuple containing figures and the experiment name.
@@ -124,7 +127,7 @@ class SpinsolveExperiment:
         if self.name not in output_dict:
             raise NameError(f"{self.name} data missing from output dictionary")
 
-        plotting_functions: dict[str, Callable[..., Tuple]] = {
+        plotting_functions: Dict[str, Callable[..., Tuple]] = {
             "Proton": plot.setup_fig_proton,
             "1D EXTENDED+": plot.setup_fig_proton,
             "T2": plot.setup_fig_T2,
@@ -139,19 +142,22 @@ class SpinsolveExperiment:
             figures = (figures,)
         return figures, self.name
 
-    def save_fig(self, figure: go.Figure(), experiment_name: str) -> None:
+    def save_fig(self, figure: go.Figure, experiment_name: str) -> None:
         """
         Save a figure to the processed_data directory.
 
         Args:
             figure: The figure to be saved.
             experiment_name (str): The name of the experiment.
+
+        Raises:
+            NameError: If the saving function for the experiment type.
         """
         save_dir = self.experiment_path / "processed_data"
         if not save_dir.exists():
             save_dir.mkdir()
 
-        saving_functions: dict[str, Callable[..., Tuple]] = {
+        saving_functions: Dict[str, Callable[..., Tuple]] = {
             "Proton": save.fig_proton,
             "1D EXTENDED+": save.fig_proton,
             "T2": save.fig_T2,
@@ -164,7 +170,7 @@ class SpinsolveExperiment:
             else:
                 saving_function(save_dir, figure)
         else:
-            print(f'Saving function not found for experiment type "{experiment_name}".')
+            raise NameError(f"Saving function not found for experiment type {self.name}")
 
     def save_data(self, output_dict: dict, experiment_name: str) -> None:
         """
@@ -173,6 +179,9 @@ class SpinsolveExperiment:
         Args:
             output_dict (dict): A dictionary containing the processed data.
             experiment_name (str): The name of the experiment.
+
+        Raises:
+            NameError: If the saving function for the experiment type.
         """
         save_dir = self.experiment_path / "processed_data"
         if not save_dir.exists():
@@ -189,8 +198,7 @@ class SpinsolveExperiment:
             if experiment_name in saving_functions:
                 saving_functions[experiment_name](save_dir, *output_dict[experiment_name])
             else:
-                print(f'Saving function not found for experiment type "{experiment_name}".')
-
+                raise NameError(f"Saving function not found for experiment type {self.name}")
         else:
             print(f'Error: "{self.name}" data missing from output dictionary')
 

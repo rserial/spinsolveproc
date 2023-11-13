@@ -81,12 +81,12 @@ class SpinsolveExperiment:
             logger.error("IO Error while loading parameters")
         return
 
-    def process(self) -> dict:
+    def process(self) -> Dict:
         """
         Process the experiment data.
 
         Returns:
-            dict: A dictionary containing the processed data.
+            Dict: A dictionary containing the processed data.
 
         Raises:
             FileNotFoundError: If the data file is not found.

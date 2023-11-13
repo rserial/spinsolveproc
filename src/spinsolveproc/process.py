@@ -2,7 +2,7 @@
 
 import warnings
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 
@@ -74,9 +74,7 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     return ppm_scale, T2_scale, T2spec_2Dmap, peak_ppm_positions, peak_T2decay
 
 
-def T2Bulk(
-    file_path: Path, spinsolve_type: str
-) -> Tuple[Optional[np.ndarray[Any, Any]], np.ndarray[Any, Any]]:
+def T2Bulk(file_path: Path, spinsolve_type: str) -> Tuple[Optional[List[np.ndarray]], np.ndarray]:
     """
     Process Spinsolve T2Bulk data and return results.
 

@@ -12,13 +12,13 @@ def main() -> None:
     """Console script for spinsolveproc."""
 
 
-@main.command()
+@main.command(name="process_exp")
 @click.argument("directory", type=click.Path(exists=True, file_okay=False, dir_okay=True))
 @click.argument("experiment", required=False)
 @click.option(
     "--all", "process_all", is_flag=True, help="Process all experiments in the directory"
 )
-def main(directory: str, experiment: str, process_all: bool) -> None:
+def process_exp(directory: str, experiment: str, process_all: bool) -> None:
     """Process Spinsolve data in a directory."""
     path_entry = Path(directory)
 
@@ -63,4 +63,4 @@ def main(directory: str, experiment: str, process_all: bool) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    process_exp()

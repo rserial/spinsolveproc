@@ -2,9 +2,10 @@
 
 import warnings
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
+from numpy import ndarray
 
 import spinsolveproc.ngread_modified as ngread_modified
 import spinsolveproc.utils as utils
@@ -51,11 +52,11 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
 
     Returns:
         tuple: A tuple containing the following:
-            ppm_scale (np.ndarray): The chemical shift axis of the 2D spectrum.
-            T2_scale (np.ndarray): The time axis of the T2 decay.
-            T2spec_2Dmap (np.ndarray): The processed 2D spectrum.
-            peak_ppm_positions (np.ndarray): The chemical shift positions of the T2 peaks.
-            peak_T2decay (np.ndarray): The T2 decay associated with each peak.
+            ppm_scale (ndarray): The chemical shift axis of the 2D spectrum.
+            T2_scale (ndarray): The time axis of the T2 decay.
+            T2spec_2Dmap (ndarray): The processed 2D spectrum.
+            peak_ppm_positions (ndarray): The chemical shift positions of the T2 peaks.
+            peak_T2decay (ndarray): The T2 decay associated with each peak.
 
     Raises:
         FileNotFoundError: If the data file is not found.
@@ -74,7 +75,7 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     return ppm_scale, T2_scale, T2spec_2Dmap, peak_ppm_positions, peak_T2decay
 
 
-def T2Bulk(file_path: Path, spinsolve_type: str) -> Tuple[Optional[List[np.ndarray]], np.ndarray]:
+def T2Bulk(file_path: Path, spinsolve_type: str) -> Tuple[Optional[np.ndarray], np.ndarray]:
     """
     Process Spinsolve T2Bulk data and return results.
 
@@ -83,7 +84,7 @@ def T2Bulk(file_path: Path, spinsolve_type: str) -> Tuple[Optional[List[np.ndarr
         spinsolve_type (str): Type of Spinsolve data.
 
     Returns:
-        Union[Tuple[np.ndarray, np.ndarray], None]: T2 time scale and decay data,
+        Union[Tuple[ndarray, ndarray], None]: T2 time scale and decay data,
         or None if data file is not found.
 
     Raises:
@@ -106,7 +107,7 @@ def process_T1(
     spinsolve_type: str,
     integration_center: Optional[float] = None,
     integration_width: Optional[float] = None,
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> Tuple[ndarray, ndarray, ndarray, ndarray, ndarray]:
     """
     Read and process Spinsolve spectroscopically resolved T1 files.
 

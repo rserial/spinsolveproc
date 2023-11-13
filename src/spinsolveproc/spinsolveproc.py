@@ -93,7 +93,7 @@ class SpinsolveExperiment:
         """
         print("Processing directory...", self.experiment_path.name, end="")
 
-        processing_functions = {
+        processing_functions: Dict[str, Callable[..., Tuple[Any, ...]]] = {
             "Proton": process.proton,
             "1D EXTENDED+": process.proton,
             "T2": process.T2,

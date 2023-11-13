@@ -179,7 +179,12 @@ def setup_fig_T1(
     )
 
     fig_T1specdecays_fit = setup_fig_Tdecay_fit(
-        file_path_name, T1_scale, peak_T1decay[0], "IR", "T1 decay"
+        file_path_name,
+        T1_scale,
+        peak_T1decay[0],
+        "T1IR",
+        num_exponentials=1,
+        plot_title_name="T1 decay",
     )
     return fig_T1spec_2Dmap, fig_T1specdecays_fit
 

@@ -157,7 +157,7 @@ class SpinsolveExperiment:
         if not save_dir.exists():
             save_dir.mkdir()
 
-        saving_functions: Dict[str, Callable[[Path, Any], None]] = {
+        saving_functions: Dict[str, Callable[..., None]] = {
             "Proton": save.fig_proton,
             "1D EXTENDED+": save.fig_proton,
             "T2": save.fig_T2,

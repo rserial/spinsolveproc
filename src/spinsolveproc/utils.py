@@ -3,7 +3,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, SupportsIndex, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
@@ -176,8 +176,7 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
 
 
 def create_time_scale_T1(
-    dic: Dict[str, Union[Dict[str, Union[str, int, float]], str, int, float]],
-    log_scale: bool = True,
+    dic: Dict[str, Union[SupportsIndex, slice]], log_scale: bool = True
 ) -> np.ndarray:
     """
     Creates a time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.

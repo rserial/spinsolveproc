@@ -8,6 +8,7 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 import nmrglue as ng
 import numpy as np
 import scipy.optimize
+from numpy import ndarray
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
@@ -174,6 +175,31 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
     return ppm_scale
 
 
+def create_time_scale_T1(
+    dic: Dict[str, Union[str, int, float]], log_scale: bool = True
+) -> np.ndarray:
+    """
+    Creates a time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.
+
+    Args:
+        dic (dict): The dictionary file of the Spinsolve T1 data file.
+        log_scale (bool): If True, creates a logarithmic scale; otherwise, creates a linear scale.
+
+    Returns:
+        An array containing the time scale for T1 decay of the acquired spectra.
+    """
+    min_delay = float(dic["acqu"]["minDelay"])
+    max_delay = float(dic["acqu"]["maxDelay"])
+    nr_steps = int(dic["acqu"]["nrSteps"])
+
+    if log_scale:
+        t1_scale = np.logspace(np.log10(min_delay * 1e-3), np.log10(max_delay * 1e-3), nr_steps)
+    else:
+        t1_scale = np.linspace(min_delay * 1e-3, max_delay * 1e-3, nr_steps)  # Linear scale
+
+    return t1_scale
+
+
 def find_Tpeaks(
     Tspec_2Dmap: np.ndarray,
     ppm_scale: np.ndarray,
@@ -208,6 +234,57 @@ def find_Tpeaks(
     peak_T2decay = np.array([Tspec_2Dmap[:, int(peak["X_AXIS"])] for peak in peaks])
 
     return peak_ppm_positions, peak_T2decay
+
+
+def autophase_2D(v: ndarray, index_left: int, index_right: int) -> ndarray:
+    """
+    Autophases the input data along the chemical shift axis for each row.
+
+    Args:
+        v (ndarray): 2D array containing complex data.
+        index_left (int): Index of the left boundary for autophasing.
+        index_right (int): Index of the right boundary for autophasing.
+
+    Returns:
+        ndarray: Autophased data.
+    """
+    for x in range(v.shape[0]):
+        vsub = v[x, index_left : index_right + 1]
+        s = np.zeros(360, dtype=np.complex128)
+        for p in range(0, 359 + 1, 1):
+            vph = vsub * np.exp(-1j * p / 180 * np.pi)
+            s[p] = np.sum((vph))
+            # s[p] = np.trapz(np.imag(vph))
+        xm = np.argmax(s)
+        v[x, :] = v[x, :] * np.exp(-1j * xm * np.pi / 180)
+    return v
+
+
+def integrate_2D(data2D: ndarray, ppm_scale: ndarray, ppm_start: float, ppm_end: float) -> ndarray:
+    """
+    Integrates a 2D data array within a specified chemical shift range.
+
+    Args:
+        data2D (ndarray): 2D array of data.
+        ppm_scale (ndarray): Array containing chemical shift values.
+        ppm_start (float): Starting point for integration.
+        ppm_end (float): Ending point for integration.
+
+    Returns:
+        ndarray: Integrated data along the ppm_scale axis.
+    """
+    # Find the indices corresponding to the start and end positions
+    start_idx = np.abs(ppm_scale - ppm_start).argmin()
+    end_idx = np.abs(ppm_scale - ppm_end).argmin()
+
+    # Slice the data2D array within the specified range
+    data_slice = data2D[:, start_idx : end_idx + 1]
+
+    # Integrate along the ppm_scale axis
+    int_Tdecay = np.trapz(data_slice, x=ppm_scale[start_idx : end_idx + 1], axis=1)
+    int_Tdecay = int_Tdecay.reshape(1, -1)
+
+    return int_Tdecay
 
 
 def fit_monoexponential(

@@ -101,3 +101,70 @@ def T2Bulk(
 
     print("... Done!!", "\n")
     return T2_scale, T2decay
+
+
+def process_T1(
+    file_path: Path,
+    spinsolve_type: str,
+    integration_center: Optional[float] = None,
+    integration_width: Optional[float] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Read and process Spinsolve spectroscopically resolved T1 files.
+
+    Args:
+        file_path (Path): Path to Spinsolve T1 data file.
+        spinsolve_type (str): Type of Spinsolve data file.
+        integration_center (float, optional): Integration center. Defaults to None.
+        integration_width (float, optional): Integration width. Defaults to None.
+
+    Returns:
+        Tuple:
+        - ppm_scale (ndarray): Ppm scale of acquired spectra.
+        - T1_scale (ndarray): T1 time scale of acquired spectra.
+        - T1spec_2Dmap (ndarray): Processed 2D T1 spectrum.
+        - peak_ppm_positions (ndarray): Ppm positions of detected peaks.
+        - peak_T1decay (ndarray): T1 decay values associated with detected peaks.
+
+    Raises:
+        FileNotFoundError: If the data file is not found.
+    """
+    if not (file_path / "data.2d").exists():
+        raise FileNotFoundError("Data file not found")
+
+    dic, data = ngread_modified.read(file_path, "data.2d", acqupar="acqu.par", procpar="proc.par")
+    ppm_scale = utils.create_ppm_scale(dic)
+
+    if spinsolve_type == "expert" and dic["acqu"]["delaySpacing"] == "log":
+        T1_scale = utils.create_time_scale_T1(dic, log_scale=True)
+    else:
+        T1_scale = utils.create_time_scale_T1(dic, log_scale=False)
+
+    data2D = np.reshape(data, (T1_scale.shape[0], ppm_scale.shape[0]))
+    T1spec_2Dmap = utils.fft_autophase(file_path, data2D)
+    peak_ppm_positions, peak_T1decay = utils.find_Tpeaks(
+        T1spec_2Dmap, ppm_scale, threshold=0.1, msep_factor=0.2
+    )
+
+    if integration_width is None:
+        integration_width = (ppm_scale[-1] - ppm_scale[0]) / 10
+        print("Integration width: ", integration_width, "ppm")
+    elif integration_width > np.abs(ppm_scale[-1] - ppm_scale[0]):
+        print("Error: incorrect integration width", "\n")
+        return None
+
+    if integration_center is None:
+        ppm_start = peak_ppm_positions + np.abs(np.round(integration_width / 2))
+        ppm_end = peak_ppm_positions - np.abs(np.round(integration_width / 2))
+    elif integration_center is not None:
+        ppm_start = integration_center + np.abs(np.round(integration_width / 2))
+        ppm_end = integration_center - np.abs(np.round(integration_width / 2))
+
+    T1spec_2Dmap_autophased = utils.autophase_2D(T1spec_2Dmap, 0, -1)
+    peak_T1decay = utils.integrate_2D(T1spec_2Dmap_autophased, ppm_scale, ppm_start, ppm_end)
+    peak_T1decay = peak_T1decay[0]
+
+    print("... Done!!", "\n")
+    print("Peaks ppm positions: ", peak_ppm_positions)
+    print("Integration width around peak for calculating signal decay:", ppm_start, ppm_end)
+    return ppm_scale, T1_scale, T1spec_2Dmap, peak_ppm_positions, peak_T1decay

@@ -102,7 +102,7 @@ def T2Bulk(file_path: Path, spinsolve_type: str) -> Tuple[Optional[np.ndarray], 
     return T2_scale, T2decay
 
 
-def process_T1(
+def T1(
     file_path: Path,
     spinsolve_type: str,
     integration_center: Optional[float] = None,

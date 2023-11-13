@@ -98,6 +98,7 @@ class SpinsolveExperiment:
             "1D EXTENDED+": process.proton,
             "T2": process.T2,
             "T2Bulk": process.T2Bulk,
+            "T1": process.T1,
         }
 
         if self.name in processing_functions:
@@ -132,6 +133,7 @@ class SpinsolveExperiment:
             "1D EXTENDED+": plot.setup_fig_proton,
             "T2": plot.setup_fig_T2,
             "T2Bulk": plot.setup_fig_T2Bulk,
+            "T1": plot.T1,
         }
 
         if self.name not in plotting_functions:

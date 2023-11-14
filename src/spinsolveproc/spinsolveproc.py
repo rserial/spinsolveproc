@@ -98,6 +98,7 @@ class SpinsolveExperiment:
             "T2": process.T2,
             "T2Bulk": process.T2Bulk,
             "T1": process.T1,
+            "T1IRT2": process.T1IRT2,
         }
 
         if self.name in processing_functions:
@@ -133,6 +134,7 @@ class SpinsolveExperiment:
             "T2": plot.setup_fig_T2,
             "T2Bulk": plot.setup_fig_T2Bulk,
             "T1": plot.setup_fig_T1,
+            "T1IRT2": plot.setup_fig_T1IRT2,
         }
 
         if self.name not in plotting_functions:
@@ -164,6 +166,7 @@ class SpinsolveExperiment:
             "T2": save.fig_T2,
             "T2Bulk": save.fig_T2Bulk,
             "T1": save.fig_T1,
+            "T1IRT2": save.fig_T1IRT2,
         }
         if experiment_name in saving_functions:
             saving_function = saving_functions[experiment_name]
@@ -172,7 +175,7 @@ class SpinsolveExperiment:
             else:
                 saving_function(save_dir, figure)
         else:
-            raise NameError(f"Saving function not found for experiment type {self.name}")
+            raise NameError(f"Saving figure function not found for experiment type {self.name}")
 
     def save_data(self, output_dict: dict, experiment_name: str) -> None:
         """
@@ -196,12 +199,13 @@ class SpinsolveExperiment:
                 "T2": save.data_T2,
                 "T2Bulk": save.data_T2Bulk,
                 "T1": save.data_T1,
+                "T1IRT2": save.data_T1IRT2,
             }
 
             if experiment_name in saving_functions:
                 saving_functions[experiment_name](save_dir, *output_dict[experiment_name])
             else:
-                raise NameError(f"Saving function not found for experiment type {self.name}")
+                raise NameError(f"Saving data function not found for experiment type {self.name}")
         else:
             print(f'Error: "{self.name}" data missing from output dictionary')
 

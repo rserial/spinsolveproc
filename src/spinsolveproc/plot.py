@@ -297,13 +297,14 @@ def setup_fig_Tdecay_fit(
         y=np.real(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
         name="T Decay - real",
+        marker=dict(color="#2C7FB8"),
     )
     trace1_imag = go.Scatter(
         x=T_scale,
         y=np.imag(Tdecay) / np.max(np.real(Tdecay)),
         mode="markers",
         name="T Decay - imag",
-        marker=dict(color="#2C7FB8"),
+        marker=dict(color="#7FCDBB"),
     )
     trace2 = go.Scatter(
         x=T_scale,
@@ -314,7 +315,7 @@ def setup_fig_Tdecay_fit(
             f"{num_exponentials}exp. fit, Long component T2decay = "
             f"{np.max(np.round(time_decay,3))} s, R² = {np.round(R2, 6)}"
         ),
-        marker=dict(color="#7FCDBB"),
+        marker=dict(color="#636363"),
     )
 
     layout = go.Layout(
@@ -332,3 +333,64 @@ def setup_fig_Tdecay_fit(
     print(f"Results {num_exponentials} exp. fit from plot\n{df}")
 
     return fig
+
+
+def setup_fig_T1IRT2(
+    file_path_name: str,
+    time_T1_axis: np.ndarray,
+    time_T2_axis: np.ndarray,
+    T1IRT2array: np.ndarray,
+) -> go.Figure:
+    """
+    Setup a Plotly figure for T1IRT2 data.
+
+    Args:
+        file_path_name (str): Name of the file path.
+        time_T1_axis (np.ndarray): Time axis for T1.
+        time_T2_axis (np.ndarray): Time axis for T2.
+        T1IRT2array (np.ndarray): T1IRT2 data.
+
+    Returns:
+        go.Figure: Plotly figure for T1IRT2 data.
+    """
+    fig_T1IRT2_2Dmap = setup_fig_T1IRT2_2Dmap(
+        file_path_name, time_T1_axis, time_T2_axis, T1IRT2array, "T1IRT2 intensity 2D map"
+    )
+    return fig_T1IRT2_2Dmap
+
+
+def setup_fig_T1IRT2_2Dmap(
+    file_path_name: str,
+    time_T1_axis: np.ndarray,
+    time_T2_axis: np.ndarray,
+    T1IRT2array: np.ndarray,
+    title_name: str,
+) -> go.Figure:
+    """
+    Setup a Plotly 2D heatmap for T1IRT2 data.
+
+    Args:
+        file_path_name (str): Name of the file path.
+        time_T1_axis (np.ndarray): Time axis for T1.
+        time_T2_axis (np.ndarray): Time axis for T2.
+        T1IRT2array (np.ndarray): T1IRT2 data.
+        title_name (str): Title for the plot.
+
+    Returns:
+        go.Figure: Plotly figure for the 2D heatmap.
+    """
+    fig_T1IRT2_2Dmap = go.Figure()
+
+    # Create heatmap
+    fig_T1IRT2_2Dmap.add_trace(
+        go.Heatmap(z=np.real(T1IRT2array), x=time_T2_axis, y=time_T1_axis, colorscale="Viridis")
+    )
+
+    # Update layout
+    fig_T1IRT2_2Dmap.update_layout(
+        title=title_name + ": " + str(file_path_name),
+        xaxis_title="Time T1 (s)",
+        yaxis_title="Time T2 (s)",
+    )
+
+    return fig_T1IRT2_2Dmap

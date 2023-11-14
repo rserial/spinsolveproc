@@ -125,6 +125,19 @@ def fig_T1(save_dir: Path, *figures: go.Figure) -> None:
         print(f"Saved figure: {filename_save[i]}\n")
 
 
+def fig_T1IRT2(save_dir: Path, figure: go.Figure) -> None:
+    """
+    Save T1 figures to the specified directory.
+
+    Args:
+        save_dir (Path): The directory where the figures will be saved.
+        figure (go.Figure): figure to save.
+    """
+    filename_save = "T1IRT2_2Dmap.html"
+    pio.write_html(figure, save_dir / filename_save)
+    print(f"Saved figure: {filename_save}\n")
+
+
 def data_T2(
     save_dir: Path,
     ppm_scale: np.ndarray,
@@ -203,6 +216,36 @@ def data_T1(
         time_axis,
     )
     print(f"Saved h5py file: {h5_filename} \n")
+
+
+def data_T1IRT2(
+    save_dir: Path, timeT1: np.ndarray, timeT2: np.ndarray, T1IRT2array: np.ndarray
+) -> None:
+    """
+    Save T1IRT2 data to an HDF5 file.
+
+    Args:
+        save_dir (Path): Directory to save the data.
+        timeT1 (np.ndarray): Time axis for T1.
+        timeT2 (np.ndarray): Time axis for T2.
+        T1IRT2array (np.ndarray): T1IRT2 data.
+    """
+    h5_filename = "T1IRT2_2Ddata.h5"
+    data_filename = "2Dmap"
+    frequency_axis = "T1_axis"
+    time_axis = "T2_axis"
+
+    save_2d_Tspectrum_and_axes_to_hdf5(
+        save_dir,
+        T1IRT2array,
+        timeT1,
+        timeT2,
+        h5_filename,
+        data_filename,
+        frequency_axis,
+        time_axis,
+    )
+    print(f"Saved h5py file: {h5_filename}\n")
 
 
 def save_2d_Tspectrum_and_axes_to_hdf5(

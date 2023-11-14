@@ -95,7 +95,7 @@ def setup_fig_proton(
 
     # Configure layout with a white template
     fig.update_layout(
-        title="Proton Spectrum and Decay" + file_path_name,
+        title="Proton Spectrum and Decay" + str(file_path_name),
         width=1200,
         height=500,
         template="plotly_white",

@@ -242,6 +242,26 @@ def find_Tpeaks(
     return peak_ppm_positions, peak_T2decay
 
 
+def autophase_time_decay(v: np.ndarray) -> np.ndarray:
+    """
+    Autophase a time decay signal.
+
+    Args:
+        v (np.ndarray): Input time decay signal.
+
+    Returns:
+        np.ndarray: Autophased time decay signal.
+    """
+    vsub = v
+    s = np.zeros(360, dtype=np.complex128)
+    for p in range(360):
+        vph = vsub * np.exp(-1j * p / 180 * np.pi)
+        s[p] = np.sum(np.real(vph))
+    xm = np.argmax(s)
+    v = v * np.exp(-1j * xm * np.pi / 180)
+    return v
+
+
 def autophase_2D(v: ndarray, index_left: int, index_right: int) -> ndarray:
     """
     Autophases the input data along the chemical shift axis for each row.

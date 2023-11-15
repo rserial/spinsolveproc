@@ -215,8 +215,8 @@ def setup_fig_Tspec_2Dmap(
     """
     fig_Tspec_2Dmap = go.Figure(
         data=go.Heatmap(
-            x=np.squeeze(time_axis),
-            y=np.squeeze(frequency_axis),
+            x=np.squeeze(frequency_axis),
+            y=np.squeeze(time_axis),
             z=np.real(data),
             colorscale="Blues",
             showscale=False,

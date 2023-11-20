@@ -28,9 +28,13 @@ Python library to process Spinsolve NMR experiments. The library can recognise b
 The library currently supports the following experiments:
 
 [x] Proton: Computes FID spectra and exports obtained data to `./processed data`.
+
 [x] T2: Finds the peaks in the spectra and calculates the T2 decay associated to each peak. It exports the obtained data to `./processed data`. 
+
 [x] T2Bulk: Constructs T2 decay array and performs a monoexponential fitting. It exports the obtained data to `./processed data`.
+
 [x] T1: Finds the peaks in the spectra and calculates the T1 decay associated to each peak. It exports the obtained data to `./processed data`.
+
 [x] T1IRT2
 
 

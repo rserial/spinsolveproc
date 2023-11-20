@@ -18,21 +18,38 @@
 </div>
 
 
-Python library to process Spinsolve NMR experiments
-
+Python library to process Spinsolve NMR experiments. The library can recognise both standard and expert softward files.
 
 * GitHub repo: <https://github.com/rserial/spinsolveproc.git>
-* Documentation: <https://spinsolveproc.readthedocs.io>
+<!-- * Documentation: <https://spinsolveproc.readthedocs.io> -->
 * Free software: GNU General Public License v3
 
-
 ## Features
+The library currently supports the following experiments:
 
-* TODO
+[x] Proton: Computes FID spectra and exports obtained data to `./processed data`.
+[x] T2: Finds the peaks in the spectra and calculates the T2 decay associated to each peak. It exports the obtained data to `./processed data`. 
+[x] T2Bulk: Constructs T2 decay array and performs a monoexponential fitting. It exports the obtained data to `./processed data`.
+[x] T1: Finds the peaks in the spectra and calculates the T1 decay associated to each peak. It exports the obtained data to `./processed data`.
+[x] T1IRT2
+
 
 ## Quickstart
 
-TODO
+```
+pip install git+https://github.com/rserial/spinsolveproc.git
+```
+
+## Usage from console
+
+```
+spinsolveproc process_exp [dir] [options]
+```
+- dir: The parent directory containing all experiment directories.
+
+- options:
+    - `all`: Process all experiments in the directory.
+    - `experiment_name`: Specify the experiment name (`Proton`, `T2`, `T2Bulk`,`T1`, `T1IRT2`).
 
 ## Credits
 

@@ -43,8 +43,8 @@ def data_proton(
         ppm_scale (np.ndarray): PPM scale data for the proton spectrum.
         spectrum (np.ndarray): Proton spectrum data.
     """
-    filename_proton_decay = "Proton_decay"
-    filename_proton_spectrum = "Proton_spectrum"
+    filename_proton_decay = "Proton_decay.dat"
+    filename_proton_spectrum = "Proton_spectrum.dat"
     save_1d_decay_data(save_dir, time_scale, FIDdecay, filename_proton_decay)
     save_1d_spectrum_data(save_dir, ppm_scale, spectrum, filename_proton_spectrum)
 

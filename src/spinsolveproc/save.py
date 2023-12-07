@@ -197,7 +197,16 @@ def data_T1(
         peak_ppm_positions (np.ndarray): An array of peak ppm positions.
         peak_T1decay (np.ndarray): A 2D array of peak T2 decay data.
     """
-    data_T2Bulk(save_dir, T1_scale, peak_T1decay.reshape(-1))
+    filename_T1decay = "T1decay.dat"
+    filename_T1fitting = "T1decay_exp_fitting.dat"
+    data_Tdecay(
+        save_dir,
+        T1_scale,
+        peak_T1decay.reshape(-1),
+        "T1IR",
+        filename_T1decay,
+        filename_T1fitting,
+    )
 
     h5_filename = "T1spec_2Ddata.h5"
     data_filename = "2Dmap"
@@ -312,15 +321,44 @@ def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> No
         T2_scale (np.ndarray): Array containing the time scale for T2Bulk decay.
         T2decay (np.ndarray): Array containing the T2Bulk decay data.
     """
-    filename_T2Bulk_decay = "T2Bulkdecay.dat"
-    filename_fitting_T2Bulk_decay = "T2Bulkdecay_exp_fitting.dat"
+    filename_T2Bulkdecay = "T2Bulkdecay.dat"
+    filename_T2Bulkfitting = "T2Bulkdecay_exp_fitting.dat"
 
-    save_1d_decay_data(save_dir, T2_scale, T2decay, filename_T2Bulk_decay)
+    data_Tdecay(
+        save_dir,
+        T2_scale,
+        T2decay,
+        "T2",
+        filename_T2Bulkdecay,
+        filename_T2Bulkfitting,
+    )
+
+
+def data_Tdecay(
+    save_dir: Path,
+    T_scale: np.ndarray,
+    Tdecay: np.ndarray,
+    kernel_name: str,
+    filename_decay: str,
+    filename_fitting: str,
+) -> None:
+    """
+    Save Time decay data and perform exponential fitting.
+
+    Args:
+        save_dir (Path): Directory to save the data and fitting results.
+        T_scale (np.ndarray): Array containing the time scale for T2Bulk decay.
+        Tdecay (np.ndarray): Array containing the T2Bulk decay data.
+        kernel_name (str): Kernel name (options are: T1IR, T1ST, T2).
+        filename_decay (str): filename of time decay.
+        filename_fitting (str): filename of exponential fitting parameters.
+    """
+    save_1d_decay_data(save_dir, T_scale, Tdecay, filename_decay)
 
     # Fitting
     exponentials = 1
     fitted_parameters, R2 = utils.fit_multiexponential(
-        T2_scale, np.real(T2decay), kernel_name="T2", num_exponentials=exponentials
+        T_scale, np.real(Tdecay), kernel_name=kernel_name, num_exponentials=exponentials
     )
 
     amplitude = []
@@ -332,9 +370,7 @@ def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> No
         time_decay.append(1 / fitted_parameters[i * 2 + 1])
     intercept.append(fitted_parameters[-1])
 
-    save_T_decay_fit_parameters(
-        save_dir, filename_fitting_T2Bulk_decay, amplitude, time_decay, intercept
-    )
+    save_T_decay_fit_parameters(save_dir, filename_fitting, amplitude, time_decay, intercept)
 
 
 def fig_T2Bulk(save_dir: Path, fig_T2Bulkdecays_fit: go.Figure) -> None:

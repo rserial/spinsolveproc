@@ -383,7 +383,12 @@ def setup_fig_T1IRT2_2Dmap(
 
     # Create heatmap
     fig_T1IRT2_2Dmap.add_trace(
-        go.Heatmap(z=np.real(T1IRT2array), x=time_T2_axis, y=time_T1_axis, colorscale="Viridis")
+        go.Heatmap(
+            z=np.transpose(np.real(T1IRT2array)),
+            x=time_T1_axis,
+            y=time_T2_axis,
+            colorscale="Viridis",
+        )
     )
 
     # Update layout

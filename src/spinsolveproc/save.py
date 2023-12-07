@@ -310,6 +310,7 @@ def save_T_decay_fit_parameters(
     }
     df = pd.DataFrame(list_fitTdecay, columns=["Amplitude", "Time decay [s]", "fit intercept"])
     df.to_csv(save_dir / fitTdecay_filename, sep="\t", index=False)
+    print(f"Saved datafile: {fitTdecay_filename}\n")
 
 
 def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> None:

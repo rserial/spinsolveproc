@@ -52,7 +52,7 @@ spinsolveproc process_exp [dir] [options]
 - dir: The parent directory containing all experiment directories.
 
 - options:
-    - `all`: Process all experiments in the directory.
+    - `--all`: Process all experiments in the directory.
     - `experiment_name`: Specify the experiment name (`Proton`, `T2`, `T2Bulk`,`T1`, `T1IRT2`).
 
 ## Credits

@@ -80,9 +80,12 @@ class SpinsolveExperiment:
             logger.error("IO Error while loading parameters")
         return
 
-    def process(self) -> Dict:
+    def process(self, **kwargs: Any) -> Dict:
         """
         Process the experiment data.
+
+        Parameters:
+            **kwargs (Any): Additional optional input parameters.
 
         Returns:
             Dict: A dictionary containing the processed data.
@@ -105,7 +108,7 @@ class SpinsolveExperiment:
             output_dict = {}
 
             processing_function = processing_functions[self.name]
-            output = processing_function(self.experiment_path, self.spinsolve_type)
+            output = processing_function(self.experiment_path, self.spinsolve_type, **kwargs)
 
             output_dict[self.name] = output
             return output_dict

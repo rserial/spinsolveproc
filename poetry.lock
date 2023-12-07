@@ -2341,7 +2341,7 @@ scipy = "^1.10.1"
 type = "git"
 url = "https://github.com/rserial/pyflint.git"
 reference = "HEAD"
-resolved_reference = "a407e4779c96a3b765a664087bba210d75822e8f"
+resolved_reference = "009250869c024789d92fc6768258e99a68530245"
 
 [[package]]
 name = "pygments"

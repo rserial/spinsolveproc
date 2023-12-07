@@ -104,7 +104,7 @@ directory = "htmlcov"
 
 [tool.flakeheaven]
 format = "grouped"
-exclude = ["demo_Proton.ipynb", "demo_T2Bulk.ipynb", "demo_T1.ipynb", "demo_T1IRT2.ipynb"]
+exclude = ["demo_Proton.ipynb", "demo_T2Bulk.ipynb", "demo_T1.ipynb", "demo_T1IRT2.ipynb", "demo_T2.ipynb"]
 max_line_length = 99
 show_source = true
 docstring-convention = "google"

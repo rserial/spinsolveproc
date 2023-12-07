@@ -55,6 +55,10 @@ spinsolveproc process_exp [dir] [options]
     - `--all`: Process all experiments in the directory.
     - `experiment_name`: Specify the experiment name (`Proton`, `T2`, `T2Bulk`,`T1`, `T1IRT2`).
 
+## Usage from Jupyter notebooks
+
+See [examples](./examples/) 
+
 ## Credits
 
 This package was created with [Cookiecutter][cookiecutter] and the [fedejaure/cookiecutter-modern-pypackage][cookiecutter-modern-pypackage] project template.

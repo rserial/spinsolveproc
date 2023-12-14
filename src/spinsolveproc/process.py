@@ -142,11 +142,14 @@ def T1(
         T1_scale = utils.create_time_scale_T1(dic, log_scale=False)
 
     data2D = np.reshape(data, (T1_scale.shape[0], ppm_scale.shape[0]))
+
     T1spec_2Dmap = utils.fft_autophase(file_path, data2D)
     peak_ppm_positions, peak_T1decay = utils.find_Tpeaks(
         T1spec_2Dmap, ppm_scale, threshold=0.1, msep_factor=0.2
     )
 
+    ppm_scale = ppm_scale[::-1]
+    print(ppm_scale)
     if integration_width is None:
         integration_width = (ppm_scale[-1] - ppm_scale[0]) / 10
         print("Integration width: ", integration_width, "ppm")
@@ -154,11 +157,11 @@ def T1(
         raise ValueError("Incorrect integration width")
 
     if integration_center is None:
-        ppm_start = peak_ppm_positions + np.abs(np.round(integration_width / 2))
-        ppm_end = peak_ppm_positions - np.abs(np.round(integration_width / 2))
+        ppm_start = peak_ppm_positions - np.abs(np.round(integration_width / 2))
+        ppm_end = peak_ppm_positions + np.abs(np.round(integration_width / 2))
     elif integration_center is not None:
-        ppm_start = integration_center + np.abs(np.round(integration_width / 2))
-        ppm_end = integration_center - np.abs(np.round(integration_width / 2))
+        ppm_start = integration_center - np.abs(np.round(integration_width / 2))
+        ppm_end = integration_center + np.abs(np.round(integration_width / 2))
 
     T1spec_2Dmap_autophased = utils.autophase_2D(T1spec_2Dmap, 0, -1)
     peak_T1decay = utils.integrate_2D(T1spec_2Dmap_autophased, ppm_scale, ppm_start, ppm_end)
@@ -167,7 +170,7 @@ def T1(
     print("... Done!!", "\n")
     print("Peaks ppm positions: ", peak_ppm_positions)
     print("Integration width around peak for calculating signal decay:", ppm_start, ppm_end)
-    return ppm_scale, T1_scale, T1spec_2Dmap, peak_ppm_positions, peak_T1decay
+    return ppm_scale, T1_scale, T1spec_2Dmap_autophased, peak_ppm_positions, peak_T1decay
 
 
 def T1IRT2(file_path: Path, spinsolve_type: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:

@@ -78,6 +78,9 @@ coverage = {version = "^7.2.1", extras = ["toml"]}
 pytest-cov = "^3.0.0"
 watchdog = {version = "^2.3.1", extras = ["watchmedo"]}
 
+[tool.poetry.group.dev.dependencies]
+notebook = "^7.0.6"
+
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
 

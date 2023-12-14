@@ -149,7 +149,7 @@ def T1(
     )
 
     ppm_scale = ppm_scale[::-1]
-    print(ppm_scale)
+
     if integration_width is None:
         integration_width = (ppm_scale[-1] - ppm_scale[0]) / 10
         print("Integration width: ", integration_width, "ppm")

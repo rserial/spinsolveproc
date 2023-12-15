@@ -231,7 +231,7 @@ def setup_fig_Tspec_2Dmap(
         showlegend=True,
     )
 
-    # fig_Tspec_2Dmap.show()
+    fig_Tspec_2Dmap.update_layout(height=500, width=800)
     return fig_Tspec_2Dmap
 
 
@@ -312,7 +312,7 @@ def setup_fig_Tdecay_fit(
         / np.max(fitting_kernel(T_scale, *fitted_parameters[:num_params])),
         mode="lines",
         name=(
-            f"{num_exponentials}exp. fit, Long component T2decay = "
+            f"{num_exponentials}exp. fit, Long component time decay = "
             f"{np.max(np.round(time_decay,3))} s, R² = {np.round(R2, 6)}"
         ),
         marker=dict(color="#636363"),

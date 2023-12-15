@@ -4,6 +4,7 @@ import warnings
 from pathlib import Path
 from typing import Optional, Tuple
 
+import nmrglue as ng
 import numpy as np
 from numpy import ndarray
 
@@ -40,7 +41,12 @@ def proton(file_path: Path, spinsolve_type: str) -> Tuple:
     return time_scale, FIDdecay, ppm_scale, spectrum
 
 
-def T2(file_path: Path, spinsolve_type: str) -> tuple:
+def T2(
+    file_path: Path,
+    spinsolve_type: str,
+    integration_center: Optional[float] = None,
+    integration_width: Optional[float] = None,
+) -> Tuple[ndarray, ndarray, ndarray, ndarray, ndarray]:
     """
     Reads and processes SpinSolve spectroscopically resolved T2 files from a file path.
 
@@ -49,6 +55,8 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     Args:
         file_path (Path): The path to the data file.
         spinsolve_type (str): The type of SpinSolve data.
+        integration_center (float, optional): Integration center. Defaults to None.
+        integration_width (float, optional): Integration width. Defaults to None.
 
     Returns:
         tuple: A tuple containing the following:
@@ -60,6 +68,7 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
 
     Raises:
         FileNotFoundError: If the data file is not found.
+        ValueError: If the integration width is incorrect.
     """
     if not (file_path / "data.2d").exists():
         raise FileNotFoundError("Data file not found")
@@ -70,9 +79,33 @@ def T2(file_path: Path, spinsolve_type: str) -> tuple:
     T2_scale = utils.create_time_scale_T2(file_path, dic, spinsolve_type)
     data2D = np.reshape(data, (T2_scale.shape[0], ppm_scale.shape[0]))
     T2spec_2Dmap = utils.fft_autophase(file_path, data2D)
-    peak_ppm_positions, peak_T2decay = utils.find_Tpeaks(T2spec_2Dmap, ppm_scale)
+
+    ppm_scale = ppm_scale[::-1]  # fix ordering of ppm scale
+
+    peak_ppm_positions, peak_T2decay = utils.find_Tpeaks(
+        T2spec_2Dmap, ppm_scale, threshold=0.1, msep_factor=0.2
+    )
+
+    if integration_width is None:
+        integration_width = np.abs((ppm_scale[-1] - ppm_scale[0]) / 10)
+        print("Integration width: ", integration_width, "ppm")
+    elif integration_width > np.abs(ppm_scale[-1] - ppm_scale[0]):
+        raise ValueError("Incorrect integration width")
+
+    if integration_center is None:
+        ppm_start = peak_ppm_positions - np.abs(np.round(integration_width / 2))
+        ppm_end = peak_ppm_positions + np.abs(np.round(integration_width / 2))
+    elif integration_center is not None:
+        ppm_start = integration_center - np.abs(np.round(integration_width / 2))
+        ppm_end = integration_center + np.abs(np.round(integration_width / 2))
+
+    T1spec_2Dmap_autophased = utils.autophase_2D(T2spec_2Dmap, 0, -1)
+    peak_T2decay = utils.integrate_2D(T1spec_2Dmap_autophased, ppm_scale, ppm_start, ppm_end)
     peak_T2decay = peak_T2decay[0]
+
     print("... Done!!", "\n")
+    print("Peaks ppm positions: ", peak_ppm_positions)
+    print("Integration width around peak for calculating signal decay:", ppm_start, ppm_end)
     return ppm_scale, T2_scale, T2spec_2Dmap, peak_ppm_positions, peak_T2decay
 
 
@@ -144,14 +177,18 @@ def T1(
     data2D = np.reshape(data, (T1_scale.shape[0], ppm_scale.shape[0]))
 
     T1spec_2Dmap = utils.fft_autophase(file_path, data2D)
+
+    # fix inverted phase in spinsolve T1spec_2Dmap
+    T1spec_2Dmap = ng.proc_autophase.autops(T1spec_2Dmap, fn="acme", p0=180, disp=False)
+
+    ppm_scale = ppm_scale[::-1]  # fix ordering of ppm scale
+
     peak_ppm_positions, peak_T1decay = utils.find_Tpeaks(
         T1spec_2Dmap, ppm_scale, threshold=0.1, msep_factor=0.2
     )
 
-    ppm_scale = ppm_scale[::-1]
-
     if integration_width is None:
-        integration_width = (ppm_scale[-1] - ppm_scale[0]) / 10
+        integration_width = np.abs((ppm_scale[-1] - ppm_scale[0]) / 10)
         print("Integration width: ", integration_width, "ppm")
     elif integration_width > np.abs(ppm_scale[-1] - ppm_scale[0]):
         raise ValueError("Incorrect integration width")

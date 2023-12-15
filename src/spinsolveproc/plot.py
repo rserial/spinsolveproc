@@ -110,6 +110,7 @@ def setup_fig_T2(
     T2spec_2Dmap: np.ndarray,
     peak_ppm_positions: np.ndarray,
     peak_T2decay: np.ndarray,
+    num_exponentials: Optional[int] = None,
 ) -> Tuple[go.Figure, go.Figure]:
     """
     Set up figures for T2 experiment.
@@ -121,6 +122,10 @@ def setup_fig_T2(
         T2spec_2Dmap (np.ndarray): Processed 2D spectrum.
         peak_ppm_positions (np.ndarray): Chemical shift positions of the T2 peaks.
         peak_T2decay (np.ndarray): T2 decay associated with each peak.
+        num_exponentials (Optional[int]): number of fitting exponentials (<=3)
+
+    Raises:
+        ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
         Tuple[plt.Figure, plt.Figure]: Tuple containing two figures.
@@ -135,12 +140,17 @@ def setup_fig_T2(
         "Spectroscopically resolved T2",
     )
 
+    if num_exponentials is None:
+        num_exponentials = 1
+    elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
+        raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
+
     fig_T2specdecays_fit = setup_fig_Tdecay_fit(
         file_path_name,
         T2_scale,
         peak_T2decay,
         "T2",
-        num_exponentials=1,
+        num_exponentials=num_exponentials,
         plot_title_name="T2 decay",
     )
     return fig_T2spec_2Dmap, fig_T2specdecays_fit
@@ -153,6 +163,7 @@ def setup_fig_T1(
     T1spec_2Dmap: np.ndarray,
     peak_ppm_positions: np.ndarray,
     peak_T1decay: np.ndarray,
+    num_exponentials: Optional[int] = None,
 ) -> Tuple[go.Figure, go.Figure]:
     """
     Set up figures for T1 experiment.
@@ -164,6 +175,10 @@ def setup_fig_T1(
         T1spec_2Dmap (np.ndarray): The T1 spectroscopically resolved 2D map.
         peak_ppm_positions (np.ndarray): The peak positions in ppm.
         peak_T1decay (np.ndarray): The peak T1 decay data.
+        num_exponentials (Optional[int]): number of fitting exponentials (<=3)
+
+    Raises:
+        ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
         Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
@@ -178,12 +193,17 @@ def setup_fig_T1(
         "Spectroscopically resolved T1",
     )
 
+    if num_exponentials is None:
+        num_exponentials = 1
+    elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
+        raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
+
     fig_T1specdecays_fit = setup_fig_Tdecay_fit(
         file_path_name,
         T1_scale,
         peak_T1decay,
         "T1IR",
-        num_exponentials=1,
+        num_exponentials=num_exponentials,
         plot_title_name="T1 decay",
     )
     return fig_T1spec_2Dmap, fig_T1specdecays_fit

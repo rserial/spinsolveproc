@@ -93,7 +93,14 @@ def get_initial_phase(file_path: Path) -> float:
             parameters_script[par_name] = par_value
     # Retrieve the "Phase" value from parameters_script, and ensure it's a float
     phase_value = parameters_script.get("Phase")
-    if isinstance(phase_value, (float, int)):
+
+    if isinstance(phase_value, tuple):
+        if len(phase_value) > 0:
+            # Use the first element of the tuple as the phase value
+            phase = float(phase_value[0])
+        else:
+            phase = 0.0
+    elif isinstance(phase_value, (float, int)):
         phase = float(phase_value)
     elif isinstance(phase_value, str):
         # If "Phase" is a string, attempt to convert it to a float

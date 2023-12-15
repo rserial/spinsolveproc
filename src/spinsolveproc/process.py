@@ -4,7 +4,6 @@ import warnings
 from pathlib import Path
 from typing import Optional, Tuple
 
-import nmrglue as ng
 import numpy as np
 from numpy import ndarray
 
@@ -177,9 +176,6 @@ def T1(
     data2D = np.reshape(data, (T1_scale.shape[0], ppm_scale.shape[0]))
 
     T1spec_2Dmap = utils.fft_autophase(file_path, data2D)
-
-    # fix inverted phase in spinsolve T1spec_2Dmap
-    T1spec_2Dmap = ng.proc_autophase.autops(T1spec_2Dmap, fn="acme", p0=180, disp=False)
 
     ppm_scale = ppm_scale[::-1]  # fix ordering of ppm scale
 

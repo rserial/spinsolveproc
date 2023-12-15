@@ -1,6 +1,6 @@
 """Plotting functions for spinsolveproc."""
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -239,6 +239,7 @@ def setup_fig_T2Bulk(
     file_path_name: str,
     T2_scale: np.ndarray,
     T2decay: np.ndarray,
+    num_exponentials: Optional[int] = None,
 ) -> go.Figure:
     """
     Setup a figure for T2Bulk decays fit.
@@ -247,12 +248,26 @@ def setup_fig_T2Bulk(
         file_path_name (str): File path name.
         T2_scale (np.ndarray): Array containing T2 time scale.
         T2decay (np.ndarray): Array containing T2 decay data.
+        num_exponentials (Optional[int]): number of fitting exponentials (<=3)
+
+    Raises:
+        ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
         go.Figure: A Plotly Figure.
     """
+    if num_exponentials is None:
+        num_exponentials = 1
+    elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
+        raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
+
     fig_T2Bulkdecays_fit = setup_fig_Tdecay_fit(
-        file_path_name, T2_scale, T2decay, "T2", num_exponentials=1, plot_title_name="T2 decay"
+        file_path_name,
+        T2_scale,
+        T2decay,
+        "T2",
+        num_exponentials=num_exponentials,
+        plot_title_name="T2 decay",
     )
     return fig_T2Bulkdecays_fit
 

@@ -115,12 +115,13 @@ class SpinsolveExperiment:
         else:
             raise FileNotFoundError(f"{self.name} data missing from output dictionary")
 
-    def plot(self, output_dict: Dict[str, Any]) -> tuple:
+    def plot(self, output_dict: Dict[str, Any], **kwargs: Any) -> tuple:
         """
         Generate and return plots for the processed data.
 
         Args:
             output_dict (Dict[str, Any]): A dictionary containing the processed data.
+            **kwargs (Any): Additional optional input parameters.
 
         Returns:
             tuple: A tuple containing figures and the experiment name.
@@ -143,7 +144,9 @@ class SpinsolveExperiment:
         if self.name not in plotting_functions:
             raise NameError(f"Plotting function not found for experiment type {self.name}")
 
-        figures = plotting_functions[self.name](self.experiment_path.name, *output_dict[self.name])
+        figures = plotting_functions[self.name](
+            self.experiment_path.name, *output_dict[self.name], **kwargs
+        )
         if not isinstance(figures, tuple):
             figures = (figures,)
         return figures, self.name

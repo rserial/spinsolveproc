@@ -186,15 +186,22 @@ def create_time_scale_T1(
     dic: Dict[str, Union[str, int, float]], log_scale: bool = True
 ) -> np.ndarray:
     """
-    Creates a time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.
+    Create time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.
 
     Args:
         dic (dict): The dictionary file of the Spinsolve T1 data file.
-        log_scale (bool): If True, creates a logarithmic scale; otherwise, creates a linear scale.
+        log_scale (bool): If True, create a logarithmic scale; otherwise, create a linear scale.
 
     Returns:
         An array containing the time scale for T1 decay of the acquired spectra.
+
+    Raises:
+        ValueError: If the dictionary format is invalid or required values are missing.
     """
+    min_delay: Optional[float] = None
+    max_delay: Optional[float] = None
+    nr_steps: Optional[int] = None
+
     if "acqu" in dic and isinstance(dic["acqu"], dict):
         acqu = dic["acqu"]
 
@@ -205,12 +212,19 @@ def create_time_scale_T1(
         if "nrSteps" in acqu and isinstance(acqu["nrSteps"], (int, float)):
             nr_steps = int(acqu["nrSteps"])
 
-    if log_scale:
-        t1_scale = np.logspace(np.log10(min_delay * 1e-3), np.log10(max_delay * 1e-3), nr_steps)
-    else:
-        t1_scale = np.linspace(min_delay * 1e-3, max_delay * 1e-3, nr_steps)  # Linear scale
+    if min_delay is not None and max_delay is not None and nr_steps is not None:
+        if log_scale:
+            t1_scale = np.logspace(
+                np.log10(min_delay * 1e-3), np.log10(max_delay * 1e-3), nr_steps
+            )
+        else:
+            t1_scale = np.linspace(min_delay * 1e-3, max_delay * 1e-3, nr_steps)  # Linear scale
+        return t1_scale
 
-    return t1_scale
+    # Raise an error if the necessary values are not available
+    raise ValueError(
+        "Invalid dictionary format or missing required values for time scale creation."
+    )
 
 
 def find_Tpeaks(

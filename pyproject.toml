@@ -48,7 +48,7 @@ nox-poetry = "^1.0.3"
 ipykernel = "^6.27.1"
 nbformat = "^5.9.2"
 pyflint = {git = "https://github.com/rserial/pyflint.git"}
-nmrglue = "0.09"
+nmrglue = "0.10"
 
 
 [tool.poetry.dev-dependencies]

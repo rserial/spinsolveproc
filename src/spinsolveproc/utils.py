@@ -249,7 +249,7 @@ def find_Tpeaks(
     peaks = ng.peakpick.pick(
         np.abs(Tspec_2Dmap[0, :]),
         pthres=threshold * np.max(np.abs(Tspec_2Dmap[0, :])),
-        algorithm="downward",
+        algorithm="connected",
         table=True,
     )
 

@@ -248,9 +248,8 @@ def find_Tpeaks(
     # Find spectrum peaks
     peaks = ng.peakpick.pick(
         np.abs(Tspec_2Dmap[0, :]),
-        threshold * np.max(np.abs(Tspec_2Dmap[0, :])),
-        algorithm="thres",
-        msep=int(msep_factor * Tspec_2Dmap[0, :].shape[0]),
+        pthres=threshold * np.max(np.abs(Tspec_2Dmap[0, :])),
+        algorithm="downward",
         table=True,
     )
 

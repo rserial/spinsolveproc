@@ -316,7 +316,7 @@ def setup_fig_Tdecay_fit(
     """
     fitting_kernel, num_params = utils.get_fitting_kernel(kernel_name, num_exponentials)
 
-    fitted_parameters, R2 = utils.fit_multiexponential(
+    fitted_parameters, R2, cov = utils.fit_multiexponential(
         T_scale, np.real(Tdecay), kernel_name, num_exponentials
     )
 

@@ -504,7 +504,7 @@ def fit_multiexponential(
     kernel_name: str,
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
-) -> Tuple[np.ndarray, float]:
+) -> Tuple[np.ndarray, float, np.ndarray]:
     """
     Fit multiexponential data using the specified kernel.
 
@@ -516,7 +516,8 @@ def fit_multiexponential(
         initial_guesses (List[float]): Initial parameter guesses.
 
     Returns:
-        Tuple[np.ndarray, float]: A tuple containing the fitted parameters and the R-squared value.
+        Tuple[np.ndarray, float, np.ndarray]: A tuple containing the fitted parameters,
+        the R-squared value and the covariance 2D array.
     """
     fitting_kernel, num_params = get_fitting_kernel(kernel_name, num_exponentials)
 
@@ -530,14 +531,16 @@ def fit_multiexponential(
         p0 = initial_guesses
 
     # Perform the fit using the specified function
-    fitted_parameters, _ = scipy.optimize.curve_fit(fitting_kernel, time_values, signal_values, p0)
+    fitted_parameters, cov = scipy.optimize.curve_fit(
+        fitting_kernel, time_values, signal_values, p0
+    )
 
     # Determine quality of the fit
     squared_diffs = np.square(signal_values - fitting_kernel(time_values, *fitted_parameters))
     squared_diffs_from_mean = np.square(signal_values - np.mean(signal_values))
     R2 = 1 - np.sum(squared_diffs) / np.sum(squared_diffs_from_mean)
 
-    return fitted_parameters, R2
+    return fitted_parameters, R2, cov
 
 
 def mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:

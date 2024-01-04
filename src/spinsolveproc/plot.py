@@ -319,13 +319,18 @@ def setup_fig_Tdecay_fit(
     fitted_parameters, R2, cov = utils.fit_multiexponential(
         T_scale, np.real(Tdecay), kernel_name, num_exponentials
     )
+    err = np.sqrt(np.diag(cov))
 
     amplitude = []
+    err_amplitude = []
     time_decay = []
+    err_time_decay = []
 
     for i in range(num_exponentials):
         amplitude.append(fitted_parameters[i * 2])
         time_decay.append(1 / fitted_parameters[i * 2 + 1])
+        err_amplitude.append(err[i * 2])
+        err_time_decay.append(err[i * 2 + 1] / fitted_parameters[i * 2 + 1] ** 2)
 
     trace1_real = go.Scatter(
         x=T_scale,
@@ -363,8 +368,16 @@ def setup_fig_Tdecay_fit(
 
     fig.update_layout(height=500, width=800)
 
-    list_fitTdecay = {"Amplitude": amplitude, "Time decay [s]": time_decay}
-    df = pd.DataFrame(list_fitTdecay, columns=["Amplitude", "Time decay [s]"])
+    list_fitTdecay = {
+        "Amplitude [a.u]": amplitude,
+        "Err Amplitude [a.u]": err_amplitude,
+        "Time decay [s]": time_decay,
+        "Err Time decay [s]": err_time_decay,
+    }
+    df = pd.DataFrame(
+        list_fitTdecay,
+        columns=["Amplitude [a.u]", "Err Amplitude [a.u]", "Time decay [s]", "Err Time decay [s]"],
+    )
     print(f"Results {num_exponentials} exp. fit from plot\n{df}")
 
     return fig

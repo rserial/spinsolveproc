@@ -290,7 +290,9 @@ def save_T_decay_fit_parameters(
     save_dir: Path,
     fitTdecay_filename: str,
     amplitude: List[Any],
+    err_amplitude: List[Any],
     decay: List[Any],
+    err_decay: List[Any],
     intercept: List[Any],
 ) -> None:
     """
@@ -300,15 +302,23 @@ def save_T_decay_fit_parameters(
         save_dir (Path): The directory where the CSV file will be saved.
         fitTdecay_filename (str): The name of the CSV file.
         amplitude (List[Any]): The amplitude of the fit.
+        err_amplitude (List[Any]): The error of the amplitude of the fit.
         decay (List[Any]): The decay time in seconds.
+        err_decay (List[Any]): The error of the decay time in seconds.
         intercept (List[Any]): The fit intercept.
     """
     list_fitTdecay = {
         "Amplitude": [amplitude],
+        "Err Amplitude [a.u]": err_amplitude,
         "Time decay [s]": [decay],
+        "Err Time decay [s]": err_decay,
         "fit intercept": [intercept],
     }
-    df = pd.DataFrame(list_fitTdecay, columns=["Amplitude", "Time decay [s]", "fit intercept"])
+
+    df = pd.DataFrame(
+        list_fitTdecay,
+        columns=["Amplitude [a.u]", "Err Amplitude [a.u]", "Time decay [s]", "Err Time decay [s]"],
+    )
     df.to_csv(save_dir / fitTdecay_filename, sep="\t", index=False)
     print(f"Saved datafile: {fitTdecay_filename}\n")
 
@@ -358,20 +368,28 @@ def data_Tdecay(
 
     # Fitting
     exponentials = 1
-    fitted_parameters, R2 = utils.fit_multiexponential(
+    fitted_parameters, R2, cov = utils.fit_multiexponential(
         T_scale, np.real(Tdecay), kernel_name=kernel_name, num_exponentials=exponentials
     )
+    err = np.sqrt(np.diag(cov))
 
     amplitude = []
     time_decay = []
     intercept = []
 
+    err_amplitude = []
+    err_time_decay = []
+
     for i in range(exponentials):
         amplitude.append(fitted_parameters[i * 2])
         time_decay.append(1 / fitted_parameters[i * 2 + 1])
+        err_amplitude.append(err[i * 2])
+        err_time_decay.append(err[i * 2 + 1] / fitted_parameters[i * 2 + 1] ** 2)
     intercept.append(fitted_parameters[-1])
 
-    save_T_decay_fit_parameters(save_dir, filename_fitting, amplitude, time_decay, intercept)
+    save_T_decay_fit_parameters(
+        save_dir, filename_fitting, amplitude, err_amplitude, time_decay, err_time_decay, intercept
+    )
 
 
 def fig_T2Bulk(save_dir: Path, fig_T2Bulkdecays_fit: go.Figure) -> None:

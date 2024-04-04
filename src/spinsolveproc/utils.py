@@ -227,6 +227,48 @@ def create_time_scale_T1(
     )
 
 
+def create_diff_scale(
+    dic: Dict[str, Union[str, int, float]],
+    grad_scale: ndarray,
+) -> np.ndarray:
+    """
+    Create diffusion scale for PGSTE decay from the dictionary file of a Spinsolve PGSTE data file.
+
+    Args:
+        dic (dict): The dictionary file of the Spinsolve T1 data file.
+        grad_scale(ndarray): array containing gradient intensities.
+
+    Returns:
+        An array containing the diffusion axis for PGSTE experiment.
+
+    Raises:
+        ValueError: If the dictionary format is invalid or required values are missing.
+    """
+    gamma_1h = 267.52218744
+    small_delta: Optional[float] = None
+    big_delta: Optional[float] = None
+    nr_steps: Optional[int] = None
+
+    if "acqu" in dic and isinstance(dic["acqu"], dict):
+        acqu = dic["acqu"]
+
+        if "lDelta" in acqu and isinstance(acqu["lDelta"], (float, int)):
+            small_delta = float(acqu["lDelta"])
+        if "bDelta" in acqu and isinstance(acqu["bDelta"], (float, int)):
+            big_delta = float(acqu["bDelta"])
+        if "nrSteps" in acqu and isinstance(acqu["nrSteps"], (int, float)):
+            nr_steps = int(acqu["nrSteps"])
+
+    if small_delta is not None and big_delta is not None and nr_steps is not None:
+        diff_scale = gamma_1h ^ 2 * grad_scale ^ 2 * small_delta ^ 2(big_delta - small_delta / 3)
+        return diff_scale
+
+    # Raise an error if the necessary values are not available
+    raise ValueError(
+        "Invalid dictionary format or missing required values for time scale creation."
+    )
+
+
 def find_Tpeaks(
     Tspec_2Dmap: np.ndarray,
     ppm_scale: np.ndarray,

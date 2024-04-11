@@ -495,6 +495,7 @@ def get_fitting_kernel(kernel_name: str, num_exponentials: int) -> Tuple[Callabl
     kernel_names = {
         "T2": ["mono_exponential", "bi_exponential", "tri_exponential"],
         "T1IR": ["IR_mono_exponential", "IR_bi_exponential", "IR_tri_exponential"],
+        "PGSTE": ["mono_exponential", "bi_exponential", "tri_exponential"],
     }
 
     if kernel_name not in kernel_names:

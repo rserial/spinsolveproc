@@ -209,6 +209,59 @@ def setup_fig_T1(
     return fig_T1spec_2Dmap, fig_T1specdecays_fit
 
 
+def setup_fig_PGSTE(
+    file_path_name: str,
+    ppm_scale: np.ndarray,
+    diff_scale: np.ndarray,
+    diff_spec_2Dmap: np.ndarray,
+    peak_ppm_positions: np.ndarray,
+    peak_diff_decay: np.ndarray,
+    num_exponentials: Optional[int] = None,
+) -> Tuple[go.Figure, go.Figure]:
+    """
+    Set up figures for T1 experiment.
+
+    Args:
+        file_path_name (str): The name of the file path.
+        ppm_scale (np.ndarray): The scale of ppm values.
+        diff_scale (np.ndarray): The diffusion scale.
+        diff_spec_2Dmap (np.ndarray): The diffusion spectroscopically resolved 2D map.
+        peak_ppm_positions (np.ndarray): The peak positions in ppm.
+        peak_diff_decay (np.ndarray): The diffusion peak decay data.
+        num_exponentials (Optional[int]): number of fitting exponentials (<=3)
+
+    Raises:
+        ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
+
+    Returns:
+        Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
+    """
+    fig_T1spec_2Dmap = setup_fig_Tspec_2Dmap(
+        file_path_name,
+        ppm_scale,
+        diff_scale,
+        diff_spec_2Dmap,
+        peak_ppm_positions,
+        peak_diff_decay,
+        "Spectroscopically resolved T1",
+    )
+
+    if num_exponentials is None:
+        num_exponentials = 1
+    elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
+        raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
+
+    fig_T1specdecays_fit = setup_fig_Tdecay_fit(
+        file_path_name,
+        diff_scale,
+        peak_diff_decay,
+        "T1IR",
+        num_exponentials=num_exponentials,
+        plot_title_name="Diffusion decay",
+    )
+    return fig_T1spec_2Dmap, fig_T1specdecays_fit
+
+
 def setup_fig_Tspec_2Dmap(
     file_path_name: str,
     frequency_axis: np.ndarray,
@@ -290,6 +343,95 @@ def setup_fig_T2Bulk(
         plot_title_name="T2 decay",
     )
     return fig_T2Bulkdecays_fit
+
+
+def setup_fig_diff_decay_fit(
+    file_path_name: str,
+    diff_scale: np.ndarray,
+    diff_decay: np.ndarray,
+    kernel_name: str,
+    num_exponentials: int,
+    plot_title_name: str,
+) -> go.Figure:
+    """
+    Setup a figure for Tdecay fit.
+
+    Args:
+        file_path_name (str): File path name.
+        diff_scale (np.ndarray): Array containing diffusion scale.
+        diff_decay (np.ndarray): Array containing diffusion decay data.
+        kernel_name (str): Kernel name.
+        num_exponentials (int): Number of exponentials.
+        plot_title_name (str): Plot title name.
+
+    Returns:
+        go.Figure: A Plotly Figure.
+    """
+    fitting_kernel, num_params = utils.get_fitting_kernel(kernel_name, num_exponentials)
+
+    fitted_parameters, R2, cov = utils.fit_multiexponential(
+        diff_scale, np.real(diff_decay), kernel_name, num_exponentials
+    )
+    err = np.sqrt(np.diag(cov))
+
+    amplitude = []
+    err_amplitude = []
+    diffusion_decay = []
+    err_diffusion_decay = []
+
+    for i in range(num_exponentials):
+        amplitude.append(fitted_parameters[i * 2])
+        diffusion_decay.append(fitted_parameters[i * 2 + 1])
+        err_amplitude.append(err[i * 2])
+        err_diffusion_decay.append(err[i * 2 + 1])
+
+    trace1_real = go.Scatter(
+        x=diff_scale,
+        y=np.abs(diff_decay) / np.max(np.abs(diff_decay)),
+        mode="markers",
+        name="T Decay - magnitude",
+        marker=dict(color="#2C7FB8"),
+    )
+    trace2 = go.Scatter(
+        x=diff_scale,
+        y=fitting_kernel(diff_scale, *fitted_parameters[:num_params])
+        / np.max(fitting_kernel(diff_scale, *fitted_parameters[:num_params])),
+        mode="lines",
+        name=(
+            f"{num_exponentials}exp. fit, Long component time decay = "
+            f"{np.max(np.round(diffusion_decay,3))} s, R² = {np.round(R2, 6)}"
+        ),
+        marker=dict(color="#636363"),
+    )
+
+    layout = go.Layout(
+        title=plot_title_name + ": " + str(file_path_name),
+        xaxis_title="Time (s)",
+        yaxis_title="Normalized intensity (a.u)",
+    )
+
+    fig = go.Figure(data=[trace1_real, trace2], layout=layout)
+
+    fig.update_layout(height=500, width=800)
+
+    list_fitTdecay = {
+        "Amplitude [a.u]": amplitude,
+        "Err Amplitude [a.u]": err_amplitude,
+        "Diffusion decay [s]": diffusion_decay,
+        "Err Diffusion decay [s]": err_diffusion_decay,
+    }
+    df = pd.DataFrame(
+        list_fitTdecay,
+        columns=[
+            "Amplitude [a.u]",
+            "Err Amplitude [a.u]",
+            "Diffusion decay [s]",
+            "Err Diffusion decay [s]",
+        ],
+    )
+    print(f"Results {num_exponentials} exp. fit from plot\n{df}")
+
+    return fig
 
 
 def setup_fig_Tdecay_fit(

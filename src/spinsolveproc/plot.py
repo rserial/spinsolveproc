@@ -236,7 +236,7 @@ def setup_fig_PGSTE(
     Returns:
         Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
     """
-    fig_T1spec_2Dmap = setup_fig_Tspec_2Dmap(
+    fig_diff_spec_2Dmap = setup_fig_Tspec_2Dmap(
         file_path_name,
         ppm_scale,
         diff_scale,
@@ -251,15 +251,15 @@ def setup_fig_PGSTE(
     elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
         raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
 
-    fig_T1specdecays_fit = setup_fig_Tdecay_fit(
+    fig_diff_specdecays_fit = setup_fig_diff_decay_fit(
         file_path_name,
         diff_scale,
         peak_diff_decay,
-        "T1IR",
+        "PGSTE",
         num_exponentials=num_exponentials,
         plot_title_name="Diffusion decay",
     )
-    return fig_T1spec_2Dmap, fig_T1specdecays_fit
+    return fig_diff_spec_2Dmap, fig_diff_specdecays_fit
 
 
 def setup_fig_Tspec_2Dmap(

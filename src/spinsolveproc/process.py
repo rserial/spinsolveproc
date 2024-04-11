@@ -269,9 +269,8 @@ def PGSTE(
     if not (file_path / "data.2d").exists():
         raise FileNotFoundError("Data file not found")
 
-    dic, data = ngread_modified.read(
-        file_path, "data.2d", acqupar="acqu.par", procpar="gradients.par"
-    )
+    dic, data = ngread_modified.read(file_path, "data.2d", acqupar="acqu.par")
+
     ppm_scale = utils.create_ppm_scale(dic)
     grad_scale = np.loadtxt(file_path / "gradients.par")
     diff_scale = utils.create_diff_scale(dic, grad_scale)

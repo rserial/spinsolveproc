@@ -261,7 +261,7 @@ def create_diff_scale(
 
     if small_delta is not None and big_delta is not None and nr_steps is not None:
         diff_scale = (
-            gamma_1h**2 * grad_scale**2 * small_delta**2(big_delta - small_delta / 3)
+            gamma_1h**2 * grad_scale**2 * small_delta**2 * (big_delta - small_delta / 3)
         )
         return diff_scale
 

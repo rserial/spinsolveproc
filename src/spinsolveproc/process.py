@@ -260,7 +260,7 @@ def PGSTE(
             T1_scale (ndarray): T1 time scale of acquired spectra.
             T1spec_2Dmap (ndarray): Processed 2D T1 spectrum.
             peak_ppm_positions (ndarray): Ppm positions of detected peaks.
-            peak_T1decay (ndarray): T1 decay values associated with detected peaks.
+            peak_diff_decay (ndarray): T1 decay values associated with detected peaks.
 
     Raises:
         FileNotFoundError: If the data file is not found.
@@ -300,10 +300,10 @@ def PGSTE(
         ppm_end = integration_center + np.abs(np.round(integration_width / 2))
 
     diff_spec_2Dmap_autophased = utils.autophase_2D(diff_spec_2Dmap, 0, -1)
-    peak_T1decay = utils.integrate_2D(diff_spec_2Dmap_autophased, ppm_scale, ppm_start, ppm_end)
-    peak_T1decay = peak_T1decay[0]
+    peak_diff_decay = utils.integrate_2D(diff_spec_2Dmap_autophased, ppm_scale, ppm_start, ppm_end)
+    peak_diff_decay = peak_T1decay[0]
 
     print("... Done!!", "\n")
     print("Peaks ppm positions: ", peak_ppm_positions)
     print("Integration width around peak for calculating signal decay:", ppm_start, ppm_end)
-    return ppm_scale, diff_scale, diff_spec_2Dmap_autophased, peak_ppm_positions, peak_T1decay
+    return ppm_scale, diff_scale, diff_spec_2Dmap_autophased, peak_ppm_positions, peak_diff_decay

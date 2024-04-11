@@ -229,7 +229,7 @@ def create_time_scale_T1(
 
 def create_diff_scale(
     dic: Dict[str, Union[str, int, float]],
-    grad_scale: ndarray,
+    grad_scale: np.ndarray,
 ) -> np.ndarray:
     """
     Create diffusion scale for PGSTE decay from the dictionary file of a Spinsolve PGSTE data file.

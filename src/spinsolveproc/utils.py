@@ -568,11 +568,16 @@ def fit_multiexponential(
     fitting_kernel, num_params = get_fitting_kernel(kernel_name, num_exponentials)
 
     # Create initial parameter guesses based on the number of exponentials
-    inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
     if not initial_guesses:
-        p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
-        p0.extend([inverse_decay_time_0 / (i + 1) for i in range(num_exponentials)])
-        p0.append(np.min(signal_values))
+        if fitting_kernel == "PGSTE":
+            p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
+            p0.extend([2.3e-9 / (i + 1) for i in range(num_exponentials)])
+            p0.append(np.min(signal_values))
+        else:
+            inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
+            p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
+            p0.extend([inverse_decay_time_0 / (i + 1) for i in range(num_exponentials)])
+            p0.append(np.min(signal_values))
     else:
         p0 = initial_guesses
 

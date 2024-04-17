@@ -272,14 +272,14 @@ def PGSTE(
     dic, data = ngread_modified.read(file_path, "data.2d", acqupar="acqu.par")
 
     ppm_scale = utils.create_ppm_scale(dic)
-    grad_scale = np.loadtxt(file_path / "gradients.par")
+    grad_scale = np.loadtxt(file_path / "gradients.par")  # in T/m
     diff_scale = utils.create_diff_scale(dic, grad_scale)
 
     data2D = np.reshape(data, (grad_scale.shape[0], ppm_scale.shape[0]))
 
     diff_spec_2Dmap = utils.fft_autophase(file_path, data2D)
 
-    ppm_scale = ppm_scale[::-1]  # fix ordering of ppm scale
+    # ppm_scale = ppm_scale[::-1]  # fix ordering of ppm scale
 
     peak_ppm_positions, peak_T1decay = utils.find_Tpeaks(
         diff_spec_2Dmap, ppm_scale, threshold=0.1, msep_factor=0.2

@@ -236,7 +236,7 @@ def create_diff_scale(
 
     Args:
         dic (dict): The dictionary file of the Spinsolve T1 data file.
-        grad_scale(ndarray): array containing gradient intensities.
+        grad_scale(ndarray): array containing gradient intensities in T/m
 
     Returns:
         An array containing the diffusion axis for PGSTE experiment.
@@ -244,18 +244,17 @@ def create_diff_scale(
     Raises:
         ValueError: If the dictionary format is invalid or required values are missing.
     """
-    gamma_1h = 267.52218744
+    gamma_1h = 267.52218744e6  # in rad/s-1 T-1
     small_delta: Optional[float] = None
     big_delta: Optional[float] = None
     nr_steps: Optional[int] = None
-
     if "acqu" in dic and isinstance(dic["acqu"], dict):
         acqu = dic["acqu"]
 
         if "lDelta" in acqu and isinstance(acqu["lDelta"], (float, int)):
-            small_delta = float(acqu["lDelta"])
+            small_delta = float(acqu["lDelta"]) * 1e-3  # in seconds
         if "bDelta" in acqu and isinstance(acqu["bDelta"], (float, int)):
-            big_delta = float(acqu["bDelta"])
+            big_delta = float(acqu["bDelta"]) * 1e-3  # in seconds
         if "nrSteps" in acqu and isinstance(acqu["nrSteps"], (int, float)):
             nr_steps = int(acqu["nrSteps"])
 
@@ -569,21 +568,27 @@ def fit_multiexponential(
 
     # Create initial parameter guesses based on the number of exponentials
     if not initial_guesses:
-        if fitting_kernel == "PGSTE":
-            p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
-            p0.extend([2.3e-9 / (i + 1) for i in range(num_exponentials)])
+        p0 = []
+        if kernel_name == "PGSTE":
+            for i in range(num_exponentials):
+                p0.extend([np.max(signal_values) / (i + 1), 1e-9 / (i + 1)])
             p0.append(np.min(signal_values))
+        elif kernel_name == "T1IR":
+            inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
+            for i in range(num_exponentials):
+                p0.extend([np.max(signal_values) / (i + 1), inverse_decay_time_0 / (i + 1)])
+            p0.append(0)
         else:
             inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
-            p0 = [np.max(signal_values) / (i + 1) for i in range(num_exponentials)]
-            p0.extend([inverse_decay_time_0 / (i + 1) for i in range(num_exponentials)])
+            for i in range(num_exponentials):
+                p0.extend([np.max(signal_values) / (i + 1), inverse_decay_time_0 / (i + 1)])
             p0.append(np.min(signal_values))
     else:
         p0 = initial_guesses
 
     # Perform the fit using the specified function
     fitted_parameters, cov = scipy.optimize.curve_fit(
-        fitting_kernel, time_values, signal_values, p0
+        fitting_kernel, time_values, np.real(signal_values), p0
     )
 
     # Determine quality of the fit

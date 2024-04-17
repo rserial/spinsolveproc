@@ -1,6 +1,6 @@
 """Plotting functions for spinsolveproc."""
 
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -217,6 +217,7 @@ def setup_fig_PGSTE(
     peak_ppm_positions: np.ndarray,
     peak_diff_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
+    initial_guesses_expfit: List[float] = None,
 ) -> Tuple[go.Figure, go.Figure]:
     """
     Set up figures for T1 experiment.
@@ -229,6 +230,7 @@ def setup_fig_PGSTE(
         peak_ppm_positions (np.ndarray): The peak positions in ppm.
         peak_diff_decay (np.ndarray): The diffusion peak decay data.
         num_exponentials (Optional[int]): number of fitting exponentials (<=3)
+        initial_guesses_expfit (List[float]): initial guesses for fitting.
 
     Raises:
         ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
@@ -236,14 +238,14 @@ def setup_fig_PGSTE(
     Returns:
         Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
     """
-    fig_diff_spec_2Dmap = setup_fig_Tspec_2Dmap(
+    fig_diff_spec_2Dmap = setup_fig_diff_spec_2Dmap(
         file_path_name,
         ppm_scale,
         diff_scale,
         diff_spec_2Dmap,
         peak_ppm_positions,
         peak_diff_decay,
-        "Spectroscopically resolved T1",
+        "Spectroscopically resolved PGSTE",
     )
 
     if num_exponentials is None:
@@ -258,8 +260,55 @@ def setup_fig_PGSTE(
         "PGSTE",
         num_exponentials=num_exponentials,
         plot_title_name="Diffusion decay",
+        initial_guesses_expfit=initial_guesses_expfit,
     )
     return fig_diff_spec_2Dmap, fig_diff_specdecays_fit
+
+
+def setup_fig_diff_spec_2Dmap(
+    file_path_name: str,
+    frequency_axis: np.ndarray,
+    diff_axis: np.ndarray,
+    data: np.ndarray,
+    peak_ppm_positions: np.ndarray,
+    peak_diff_decay: np.ndarray,
+    plot_title_name: str,
+) -> go.Figure:
+    """
+    Set up a figure for spectroscopically resolved T1.
+
+    Args:
+        file_path_name (str): File path name.
+        diff_axis (np.ndarray): Diffusion axis.
+        frequency_axis (np.ndarray): Frequency axis.
+        data (np.ndarray): Data for the heatmap.
+        peak_ppm_positions (np.ndarray): Chemical shift positions of the T1 peaks.
+        peak_diff_decay (np.ndarray): Diffusion decay associated with each peak.
+        plot_title_name (str): Title for the plot.
+
+    Returns:
+        go.Figure: A Plotly Figure object.
+    """
+    fig_Tspec_2Dmap = go.Figure(
+        data=go.Heatmap(
+            x=np.squeeze(frequency_axis),
+            y=np.squeeze(diff_axis) * 1e-9,
+            z=np.real(data),
+            colorscale="Blues",
+            showscale=False,
+        )
+    )
+
+    # Set the layout
+    fig_Tspec_2Dmap.update_layout(
+        title=plot_title_name + ": " + str(file_path_name),
+        xaxis=dict(title="Chemical Shift (ppm)"),
+        yaxis=dict(title="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)"),
+        showlegend=True,
+    )
+
+    fig_Tspec_2Dmap.update_layout(height=500, width=800)
+    return fig_Tspec_2Dmap
 
 
 def setup_fig_Tspec_2Dmap(
@@ -352,6 +401,7 @@ def setup_fig_diff_decay_fit(
     kernel_name: str,
     num_exponentials: int,
     plot_title_name: str,
+    initial_guesses_expfit: List[float] = None,
 ) -> go.Figure:
     """
     Setup a figure for Tdecay fit.
@@ -363,6 +413,7 @@ def setup_fig_diff_decay_fit(
         kernel_name (str): Kernel name.
         num_exponentials (int): Number of exponentials.
         plot_title_name (str): Plot title name.
+        initial_guesses_expfit (List[float]): initial guess for fitting.
 
     Returns:
         go.Figure: A Plotly Figure.
@@ -370,7 +421,11 @@ def setup_fig_diff_decay_fit(
     fitting_kernel, num_params = utils.get_fitting_kernel(kernel_name, num_exponentials)
 
     fitted_parameters, R2, cov = utils.fit_multiexponential(
-        diff_scale, np.real(diff_decay), kernel_name, num_exponentials
+        diff_scale,
+        np.real(diff_decay),
+        kernel_name,
+        num_exponentials,
+        initial_guesses_expfit,
     )
     err = np.sqrt(np.diag(cov))
 
@@ -386,28 +441,28 @@ def setup_fig_diff_decay_fit(
         err_diffusion_decay.append(err[i * 2 + 1])
 
     trace1_real = go.Scatter(
-        x=diff_scale,
-        y=np.abs(diff_decay) / np.max(np.abs(diff_decay)),
+        x=diff_scale * 1e-9,
+        y=np.real(diff_decay) / np.max(np.abs(diff_decay)),
         mode="markers",
         name="T Decay - magnitude",
         marker=dict(color="#2C7FB8"),
     )
     trace2 = go.Scatter(
-        x=diff_scale,
+        x=diff_scale * 1e-9,
         y=fitting_kernel(diff_scale, *fitted_parameters[:num_params])
         / np.max(fitting_kernel(diff_scale, *fitted_parameters[:num_params])),
         mode="lines",
         name=(
-            f"{num_exponentials}exp. fit, Long component time decay = "
-            f"{np.max(np.round(diffusion_decay,3))} s, R² = {np.round(R2, 6)}"
+            f"{num_exponentials}exp. fit, Shortest diffusion component = "
+            f"{format(np.min(diffusion_decay), '.1e')} s, R² = {np.round(R2, 6)}"
         ),
         marker=dict(color="#636363"),
     )
 
     layout = go.Layout(
         title=plot_title_name + ": " + str(file_path_name),
-        xaxis_title="Time (s)",
-        yaxis_title="Normalized intensity (a.u)",
+        xaxis_title="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)",
+        yaxis_title="Normalized integral intensity (a.u)",
     )
 
     fig = go.Figure(data=[trace1_real, trace2], layout=layout)

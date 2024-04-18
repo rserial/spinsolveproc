@@ -208,6 +208,7 @@ class SpinsolveExperiment:
                 "T2Bulk": save.data_T2Bulk,
                 "T1": save.data_T1,
                 "T1IRT2": save.data_T1IRT2,
+                "PGSTE": save.data_PGSTE,
             }
 
             if experiment_name in saving_functions:

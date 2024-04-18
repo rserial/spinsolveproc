@@ -3,7 +3,6 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -420,26 +419,17 @@ def setup_fig_diff_decay_fit(
     """
     fitting_kernel, num_params = utils.get_fitting_kernel(kernel_name, num_exponentials)
 
-    fitted_parameters, R2, cov = utils.fit_multiexponential(
+    fitted_parameters, R2, cov, kernel_name, num_exponentials = utils.fit_multiexponential(
         diff_scale,
         np.real(diff_decay),
         kernel_name,
         num_exponentials,
         initial_guesses_expfit,
     )
-    err = np.sqrt(np.diag(cov))
 
-    amplitude = []
-    err_amplitude = []
-    diffusion_decay = []
-    err_diffusion_decay = []
-
-    for i in range(num_exponentials):
-        amplitude.append(fitted_parameters[i * 2])
-        diffusion_decay.append(fitted_parameters[i * 2 + 1])
-        err_amplitude.append(err[i * 2])
-        err_diffusion_decay.append(err[i * 2 + 1])
-
+    df = utils.convert_multiexponential_fit_to_dataframe(
+        fitted_parameters, cov, num_exponentials, kernel_name
+    )
     trace1_real = go.Scatter(
         x=diff_scale * 1e-9,
         y=np.real(diff_decay) / np.max(np.abs(diff_decay)),
@@ -454,7 +444,7 @@ def setup_fig_diff_decay_fit(
         mode="lines",
         name=(
             f"{num_exponentials}exp. fit, Shortest diffusion component = "
-            f"{format(np.min(diffusion_decay), '.1e')} s, R² = {np.round(R2, 6)}"
+            f"{format(np.min(df['Diffusion decay [s]']), '.1e')} s, R² = {np.round(R2, 6)}"
         ),
         marker=dict(color="#636363"),
     )
@@ -469,21 +459,6 @@ def setup_fig_diff_decay_fit(
 
     fig.update_layout(height=500, width=800)
 
-    list_fitTdecay = {
-        "Amplitude [a.u]": amplitude,
-        "Err Amplitude [a.u]": err_amplitude,
-        "Diffusion decay [s]": diffusion_decay,
-        "Err Diffusion decay [s]": err_diffusion_decay,
-    }
-    df = pd.DataFrame(
-        list_fitTdecay,
-        columns=[
-            "Amplitude [a.u]",
-            "Err Amplitude [a.u]",
-            "Diffusion decay [s]",
-            "Err Diffusion decay [s]",
-        ],
-    )
     print(f"Results {num_exponentials} exp. fit from plot\n{df}")
 
     return fig
@@ -513,22 +488,12 @@ def setup_fig_Tdecay_fit(
     """
     fitting_kernel, num_params = utils.get_fitting_kernel(kernel_name, num_exponentials)
 
-    fitted_parameters, R2, cov = utils.fit_multiexponential(
+    fitted_parameters, R2, cov, kernel_name, num_exponentials = utils.fit_multiexponential(
         T_scale, np.real(Tdecay), kernel_name, num_exponentials
     )
-    err = np.sqrt(np.diag(cov))
-
-    amplitude = []
-    err_amplitude = []
-    time_decay = []
-    err_time_decay = []
-
-    for i in range(num_exponentials):
-        amplitude.append(fitted_parameters[i * 2])
-        time_decay.append(1 / fitted_parameters[i * 2 + 1])
-        err_amplitude.append(err[i * 2])
-        err_time_decay.append(err[i * 2 + 1] / fitted_parameters[i * 2 + 1] ** 2)
-
+    df = utils.convert_multiexponential_fit_to_dataframe(
+        fitted_parameters, cov, num_exponentials, kernel_name
+    )
     trace1_real = go.Scatter(
         x=T_scale,
         y=np.real(Tdecay) / np.max(np.real(Tdecay)),
@@ -550,7 +515,7 @@ def setup_fig_Tdecay_fit(
         mode="lines",
         name=(
             f"{num_exponentials}exp. fit, Long component time decay = "
-            f"{np.max(np.round(time_decay,3))} s, R² = {np.round(R2, 6)}"
+            f"{np.max(np.round(df['Time decay [s]'],3))} s, R² = {np.round(R2, 6)}"
         ),
         marker=dict(color="#636363"),
     )
@@ -565,16 +530,6 @@ def setup_fig_Tdecay_fit(
 
     fig.update_layout(height=500, width=800)
 
-    list_fitTdecay = {
-        "Amplitude [a.u]": amplitude,
-        "Err Amplitude [a.u]": err_amplitude,
-        "Time decay [s]": time_decay,
-        "Err Time decay [s]": err_time_decay,
-    }
-    df = pd.DataFrame(
-        list_fitTdecay,
-        columns=["Amplitude [a.u]", "Err Amplitude [a.u]", "Time decay [s]", "Err Time decay [s]"],
-    )
     print(f"Results {num_exponentials} exp. fit from plot\n{df}")
 
     return fig

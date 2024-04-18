@@ -3,6 +3,7 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -110,7 +111,7 @@ def setup_fig_T2(
     peak_ppm_positions: np.ndarray,
     peak_T2decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> Tuple[go.Figure, Optional[pd.DataFrame]]:
     """
     Set up figures for T2 experiment.
 
@@ -127,7 +128,7 @@ def setup_fig_T2(
         ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
-        Tuple[plt.Figure, plt.Figure]: Tuple containing two figures.
+        Tuple[plt.Figure, plt.Figure]: Tuple containing two plotly figures and fit dataframe.
     """
     fig_T2spec_2Dmap = setup_fig_Tspec_2Dmap(
         file_path_name,
@@ -144,7 +145,7 @@ def setup_fig_T2(
     elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
         raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
 
-    fig_T2specdecays_fit = setup_fig_Tdecay_fit(
+    fig_T2specdecays_fit, fit_df = setup_fig_Tdecay_fit(
         file_path_name,
         T2_scale,
         peak_T2decay,
@@ -152,7 +153,30 @@ def setup_fig_T2(
         num_exponentials=num_exponentials,
         plot_title_name="T2 decay",
     )
-    return fig_T2spec_2Dmap, fig_T2specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved T2", "T2 decay"),
+    )
+    fig.add_trace(fig_T2spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_T2specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_T2specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_T2specdecays_fit["data"][2], row=1, col=2)
+
+    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(title_text="Time (s)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Time (s)",
+        # type="log",
+        # tickformat=".1e",
+        # tickvals=np.logspace(np.log10(np.min(T2_scale)), np.log10(np.max(T2_scale)), 4),
+        row=1,
+        col=1,
+    )
+
+    fig.update_layout(height=500, width=1200, title_text=f"T2 Experiment: {file_path_name}")
+    return fig, fit_df
 
 
 def setup_fig_T1(
@@ -163,7 +187,7 @@ def setup_fig_T1(
     peak_ppm_positions: np.ndarray,
     peak_T1decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> Tuple[go.Figure, Optional[pd.DataFrame]]:
     """
     Set up figures for T1 experiment.
 
@@ -180,7 +204,7 @@ def setup_fig_T1(
         ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
-        Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
+        Tuple[go.Figure, Optional[pd.DataFrame]]: Plotly figure for T1 experiment and fit dataframe
     """
     fig_T1spec_2Dmap = setup_fig_Tspec_2Dmap(
         file_path_name,
@@ -197,7 +221,7 @@ def setup_fig_T1(
     elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
         raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
 
-    fig_T1specdecays_fit = setup_fig_Tdecay_fit(
+    fig_T1specdecays_fit, fit_df = setup_fig_Tdecay_fit(
         file_path_name,
         T1_scale,
         peak_T1decay,
@@ -205,7 +229,30 @@ def setup_fig_T1(
         num_exponentials=num_exponentials,
         plot_title_name="T1 decay",
     )
-    return fig_T1spec_2Dmap, fig_T1specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved T1", "T1 decay"),
+    )
+    fig.add_trace(fig_T1spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_T1specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_T1specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_T1specdecays_fit["data"][2], row=1, col=2)
+
+    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(title_text="Time (s)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Time (s)",
+        # type="log",
+        # tickformat=".1e",
+        # tickvals=np.logspace(np.log10(np.min(T1_scale)), np.log10(np.max(T1_scale)), 4),
+        row=1,
+        col=1,
+    )
+
+    fig.update_layout(height=500, width=1200, title_text=f"T1 Experiment: {file_path_name}")
+    return fig, fit_df
 
 
 def setup_fig_PGSTE(
@@ -217,7 +264,7 @@ def setup_fig_PGSTE(
     peak_diff_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
     initial_guesses_expfit: List[float] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> Tuple[Tuple[go.Figure, go.Figure], Optional[pd.DataFrame]]:
     """
     Set up figures for T1 experiment.
 
@@ -235,7 +282,7 @@ def setup_fig_PGSTE(
         ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
-        Tuple[go.Figure, go.Figure]: Two Plotly figures for T1 experiment.
+        Tuple[Tuple[go.Figure, go.Figure], Optional[pd.DataFrame]]:Plotly figure and fit dataframe.
     """
     fig_diff_spec_2Dmap = setup_fig_diff_spec_2Dmap(
         file_path_name,
@@ -252,16 +299,39 @@ def setup_fig_PGSTE(
     elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
         raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
 
-    fig_diff_specdecays_fit = setup_fig_diff_decay_fit(
+    fig_diff_specdecays_fit, fit_df = setup_fig_diff_decay_fit(
         file_path_name,
         diff_scale,
         peak_diff_decay,
         "PGSTE",
         num_exponentials=num_exponentials,
-        plot_title_name="Diffusion decay",
+        plot_title_name="PGSTE decay",
         initial_guesses_expfit=initial_guesses_expfit,
     )
-    return fig_diff_spec_2Dmap, fig_diff_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved PGSTE", "PGSTE decay"),
+    )
+    fig.add_trace(fig_diff_spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_diff_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_diff_specdecays_fit["data"][1], row=1, col=2)
+
+    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_yaxes(
+        title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)",
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Integral amplitude (a.u)",
+        row=1,
+        col=2,
+    )
+    fig.update_layout(height=500, width=1200, title_text=f"PGSTE Experiment: {file_path_name}")
+    return fig, fit_df
 
 
 def setup_fig_diff_spec_2Dmap(
@@ -361,7 +431,7 @@ def setup_fig_T2Bulk(
     T2_scale: np.ndarray,
     T2decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> go.Figure:
+) -> Tuple[go.Figure, Optional[pd.DataFrame]]:
     """
     Setup a figure for T2Bulk decays fit.
 
@@ -375,14 +445,14 @@ def setup_fig_T2Bulk(
         ValueError: If num_exponentials is not an integer or is not between 1 and 3 (inclusive).
 
     Returns:
-        go.Figure: A Plotly Figure.
+        go.Figure: A Plotly Figure and optional fit dataframe.
     """
     if num_exponentials is None:
         num_exponentials = 1
     elif not isinstance(num_exponentials, int) or num_exponentials > 3 or num_exponentials < 1:
         raise ValueError("num_exponentials must be an integer between 1 and 3 (inclusive).")
 
-    fig_T2Bulkdecays_fit = setup_fig_Tdecay_fit(
+    fig_T2Bulkdecays_fit, fit_df = setup_fig_Tdecay_fit(
         file_path_name,
         T2_scale,
         T2decay,
@@ -390,7 +460,7 @@ def setup_fig_T2Bulk(
         num_exponentials=num_exponentials,
         plot_title_name="T2 decay",
     )
-    return fig_T2Bulkdecays_fit
+    return fig_T2Bulkdecays_fit, fit_df
 
 
 def setup_fig_diff_decay_fit(
@@ -401,7 +471,7 @@ def setup_fig_diff_decay_fit(
     num_exponentials: int,
     plot_title_name: str,
     initial_guesses_expfit: List[float] = None,
-) -> go.Figure:
+) -> Tuple[go.Figure, Optional[pd.DataFrame]]:
     """
     Setup a figure for Tdecay fit.
 
@@ -416,6 +486,7 @@ def setup_fig_diff_decay_fit(
 
     Returns:
         go.Figure: A Plotly Figure.
+        fit_df:
     """
     fitting_kernel, num_params = utils.get_fitting_kernel(kernel_name, num_exponentials)
 
@@ -427,7 +498,7 @@ def setup_fig_diff_decay_fit(
         initial_guesses_expfit,
     )
 
-    df = utils.convert_multiexponential_fit_to_dataframe(
+    fit_df = utils.convert_multiexponential_fit_to_dataframe(
         fitted_parameters, cov, num_exponentials, kernel_name
     )
     trace1_real = go.Scatter(
@@ -444,7 +515,7 @@ def setup_fig_diff_decay_fit(
         mode="lines",
         name=(
             f"{num_exponentials}exp. fit, Shortest diffusion component = "
-            f"{format(np.min(df['Diffusion decay [s]']), '.1e')} s, R² = {np.round(R2, 6)}"
+            f"{format(np.min(fit_df['Diffusion decay [s]']), '.1e')} s, R² = {np.round(R2, 6)}"
         ),
         marker=dict(color="#636363"),
     )
@@ -453,15 +524,15 @@ def setup_fig_diff_decay_fit(
         title=plot_title_name + ": " + str(file_path_name),
         xaxis_title="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)",
         yaxis_title="Normalized integral intensity (a.u)",
+        yaxis=dict(type="log"),
     )
-
     fig = go.Figure(data=[trace1_real, trace2], layout=layout)
 
     fig.update_layout(height=500, width=800)
 
-    print(f"Results {num_exponentials} exp. fit from plot\n{df}")
+    print(f"Results {num_exponentials} exp. fit from plot\n{fit_df}")
 
-    return fig
+    return fig, fit_df
 
 
 def setup_fig_Tdecay_fit(
@@ -471,7 +542,7 @@ def setup_fig_Tdecay_fit(
     kernel_name: str,
     num_exponentials: int,
     plot_title_name: str,
-) -> go.Figure:
+) -> Tuple[go.Figure, Optional[pd.DataFrame]]:
     """
     Setup a figure for Tdecay fit.
 
@@ -491,7 +562,7 @@ def setup_fig_Tdecay_fit(
     fitted_parameters, R2, cov, kernel_name, num_exponentials = utils.fit_multiexponential(
         T_scale, np.real(Tdecay), kernel_name, num_exponentials
     )
-    df = utils.convert_multiexponential_fit_to_dataframe(
+    fit_df = utils.convert_multiexponential_fit_to_dataframe(
         fitted_parameters, cov, num_exponentials, kernel_name
     )
     trace1_real = go.Scatter(
@@ -515,7 +586,7 @@ def setup_fig_Tdecay_fit(
         mode="lines",
         name=(
             f"{num_exponentials}exp. fit, Long component time decay = "
-            f"{np.max(np.round(df['Time decay [s]'],3))} s, R² = {np.round(R2, 6)}"
+            f"{np.max(np.round(fit_df['Time decay [s]'],3))} s, R² = {np.round(R2, 6)}"
         ),
         marker=dict(color="#636363"),
     )
@@ -530,9 +601,9 @@ def setup_fig_Tdecay_fit(
 
     fig.update_layout(height=500, width=800)
 
-    print(f"Results {num_exponentials} exp. fit from plot\n{df}")
+    print(f"Results {num_exponentials} exp. fit from plot\n{fit_df}")
 
-    return fig
+    return fig, fit_df
 
 
 def setup_fig_T1IRT2(

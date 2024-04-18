@@ -1,6 +1,5 @@
 """Plotting save for spinsolveproc."""
 from pathlib import Path
-from typing import Any, List
 
 import h5py
 import numpy as np
@@ -331,43 +330,6 @@ def save_dataframe_to_text(
     filename = "multiexponential_fit_parameters.dat"
     dataframe.to_csv(save_dir / filename, sep="\t", index=False)
     print(f"Saved fit parameters in: {filename}\n")
-
-
-def save_T_decay_fit_parameters(
-    save_dir: Path,
-    fitTdecay_filename: str,
-    amplitude: List[Any],
-    err_amplitude: List[Any],
-    decay: List[Any],
-    err_decay: List[Any],
-    intercept: List[Any],
-) -> None:
-    """
-    Save T decay fit parameters to a CSV file.
-
-    Args:
-        save_dir (Path): The directory where the CSV file will be saved.
-        fitTdecay_filename (str): The name of the CSV file.
-        amplitude (List[Any]): The amplitude of the fit.
-        err_amplitude (List[Any]): The error of the amplitude of the fit.
-        decay (List[Any]): The decay time in seconds.
-        err_decay (List[Any]): The error of the decay time in seconds.
-        intercept (List[Any]): The fit intercept.
-    """
-    list_fitTdecay = {
-        "Amplitude": [amplitude],
-        "Err Amplitude [a.u]": err_amplitude,
-        "Time decay [s]": [decay],
-        "Err Time decay [s]": err_decay,
-        "fit intercept": [intercept],
-    }
-
-    df = pd.DataFrame(
-        list_fitTdecay,
-        columns=["Amplitude [a.u]", "Err Amplitude [a.u]", "Time decay [s]", "Err Time decay [s]"],
-    )
-    df.to_csv(save_dir / fitTdecay_filename, sep="\t", index=False)
-    print(f"Saved datafile: {fitTdecay_filename}\n")
 
 
 def data_T2Bulk(save_dir: Path, T2_scale: np.ndarray, T2decay: np.ndarray) -> None:

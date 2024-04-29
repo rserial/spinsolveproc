@@ -550,7 +550,7 @@ def fit_multiexponential(
     kernel_name: str,
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
-    bounds: Optional[List[float]] = None,
+    bounds: Optional[Tuple[List[float]]] = None,
 ) -> Tuple[np.ndarray, float, np.ndarray]:
     """
     Fit multiexponential data using the specified kernel.
@@ -561,7 +561,7 @@ def fit_multiexponential(
         kernel_name (str): The name of the kernel.
         num_exponentials (int): The number of exponentials.
         initial_guesses (List[float]): Initial parameter guesses.
-        bounds (List[float]): bounds variables
+        bounds (Tuple[List[float]]): Bounds for each parameter.
 
     Returns:
         Tuple[np.ndarray, float]: A tuple containing the fitted parameters,

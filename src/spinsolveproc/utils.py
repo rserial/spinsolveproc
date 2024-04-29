@@ -550,6 +550,7 @@ def fit_multiexponential(
     kernel_name: str,
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
+    bounds: Optional[List[float]] = None,
 ) -> Tuple[np.ndarray, float, np.ndarray]:
     """
     Fit multiexponential data using the specified kernel.
@@ -560,6 +561,7 @@ def fit_multiexponential(
         kernel_name (str): The name of the kernel.
         num_exponentials (int): The number of exponentials.
         initial_guesses (List[float]): Initial parameter guesses.
+        bounds (List[float]): bounds variables
 
     Returns:
         Tuple[np.ndarray, float]: A tuple containing the fitted parameters,
@@ -589,7 +591,7 @@ def fit_multiexponential(
 
     # Perform the fit using the specified function
     fitted_parameters, cov = scipy.optimize.curve_fit(
-        fitting_kernel, time_values, np.real(signal_values), p0
+        fitting_kernel, time_values, np.real(signal_values), p0, bounds=bounds
     )
 
     # Determine quality of the fit

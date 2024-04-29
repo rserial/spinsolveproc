@@ -3,7 +3,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
@@ -551,7 +551,7 @@ def fit_multiexponential(
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
     bounds: Optional[Tuple[List[float]]] = None,
-) -> Tuple[np.ndarray, float, np.ndarray]:
+) -> Tuple[Any, Any, Any, str, int]:
     """
     Fit multiexponential data using the specified kernel.
 

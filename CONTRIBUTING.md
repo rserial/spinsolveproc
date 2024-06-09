@@ -66,10 +66,10 @@ work, tests, or other changes before your pull request can be ultimately accepte
 
 ### Python Code Style
 
-All Python code is linted with [Flake8](https://github.com/PyCQA/flake8) and formated with
+All Python code is linted with [Ruff](https://github.com/astral-sh/ruff) and formated with
 [Isort](https://github.com/PyCQA/isort) and [Black](https://github.com/psf/black). You can
 execute `inv[oke] lint` and `inv[oke] format`.
 
 ## Additional Notes
 
-If you have any question feel free to contact us at raquel.serial@tuhh.de.
+If you have any question feel free to contact us at @rserial.

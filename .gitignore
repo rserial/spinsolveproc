@@ -1,5 +1,3 @@
-# Processed output files
-**/processed_data/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -78,6 +76,8 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+.jupyter/*
+!.jupyter/jupyter_lab_config.py
 
 # IPython
 profile_default/
@@ -132,3 +132,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Macos
+.DS_Store
+
+# Code editors
+.vscode
+
+# Processed output files
+**/processed_data/

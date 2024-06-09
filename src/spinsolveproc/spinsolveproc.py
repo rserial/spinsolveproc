@@ -1,4 +1,5 @@
 """Main functions for spinsolveproc."""
+
 import logging
 from pathlib import Path
 from typing import Any, Callable, Dict, Tuple
@@ -14,8 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class SpinsolveExperiment:
-    """
-    Represents an experiment conducted with a Spinsolve NMR spectrometer.
+    """Represents an experiment conducted with a Spinsolve NMR spectrometer.
 
     This class provides methods for loading experiment parameters, processing data,
     plotting figures, and saving results.
@@ -56,8 +56,7 @@ class SpinsolveExperiment:
     procpar_file = "proc.par"
 
     def __init__(self, experiment_path: Path) -> None:
-        """
-        Initialize a SpinsolveExperiment instance.
+        """Initialize a SpinsolveExperiment instance.
 
         Args:
             experiment_path (Path): The path to the experiment directory.
@@ -81,14 +80,13 @@ class SpinsolveExperiment:
         return
 
     def process(self, **kwargs: Any) -> Dict:
-        """
-        Process the experiment data.
+        """Process the experiment data.
 
         Parameters:
             **kwargs (Any): Additional optional input parameters.
 
         Returns:
-            Dict: A dictionary containing the processed data.
+            A dictionary containing the processed data.
 
         Raises:
             FileNotFoundError: If the data file is not found.
@@ -98,11 +96,11 @@ class SpinsolveExperiment:
         processing_functions: Dict[str, Callable[..., Tuple[Any, ...]]] = {
             "Proton": process.proton,
             "1D EXTENDED+": process.proton,
-            "T2": process.T2,
-            "T2Bulk": process.T2Bulk,
-            "T1": process.T1,
-            "T1IRT2": process.T1IRT2,
-            "PGSTE": process.PGSTE,
+            "T2": process.t2,
+            "T2Bulk": process.t2_bulk,
+            "T1": process.t1,
+            "T1IRT2": process.t1ir_t2,
+            "PGSTE": process.pgste,
         }
 
         if self.name in processing_functions:
@@ -117,15 +115,14 @@ class SpinsolveExperiment:
             raise FileNotFoundError(f"{self.name} data missing from output dictionary")
 
     def plot(self, output_dict: Dict[str, Any], **kwargs: Any) -> tuple:
-        """
-        Generate and return plots for the processed data.
+        """Generate and return plots for the processed data.
 
         Args:
             output_dict (Dict[str, Any]): A dictionary containing the processed data.
             **kwargs (Any): Additional optional input parameters.
 
         Returns:
-            tuple: A tuple containing figures and the experiment name.
+            A tuple containing figures and the experiment name.
 
         Raises:
             NameError: If the experiment name is not found in the output dictionary.
@@ -136,11 +133,11 @@ class SpinsolveExperiment:
         plotting_functions: Dict[str, Callable[..., Tuple[Any, ...]]] = {
             "Proton": plot.setup_fig_proton,
             "1D EXTENDED+": plot.setup_fig_proton,
-            "T2": plot.setup_fig_T2,
-            "T2Bulk": plot.setup_fig_T2Bulk,
-            "T1": plot.setup_fig_T1,
-            "T1IRT2": plot.setup_fig_T1IRT2,
-            "PGSTE": plot.setup_fig_PGSTE,
+            "T2": plot.setup_fig_t2,
+            "T2Bulk": plot.setup_fig_t2_bulk,
+            "T1": plot.setup_fig_t1,
+            "T1IRT2": plot.setup_fig_t1ir_t2,
+            "PGSTE": plot.setup_fig_pgste,
         }
 
         if self.name not in plotting_functions:
@@ -154,8 +151,7 @@ class SpinsolveExperiment:
         return figures, self.name
 
     def save_fig(self, figure: go.Figure, experiment_name: str) -> None:
-        """
-        Save a figure to the processed_data directory.
+        """Save a figure to the processed_data directory.
 
         Args:
             figure: The figure to be saved.
@@ -171,10 +167,10 @@ class SpinsolveExperiment:
         saving_functions: Dict[str, Callable[..., None]] = {
             "Proton": save.fig_proton,
             "1D EXTENDED+": save.fig_proton,
-            "T2": save.fig_T2,
-            "T2Bulk": save.fig_T2Bulk,
-            "T1": save.fig_T1,
-            "T1IRT2": save.fig_T1IRT2,
+            "T2": save.fig_t2,
+            "T2Bulk": save.fig_t2_bulk,
+            "T1": save.fig_t1,
+            "T1IRT2": save.fig_t1ir_t2,
         }
         if experiment_name in saving_functions:
             saving_function = saving_functions[experiment_name]
@@ -186,8 +182,7 @@ class SpinsolveExperiment:
             raise NameError(f"Saving figure function not found for experiment type {self.name}")
 
     def save_data(self, output_dict: dict, experiment_name: str) -> None:
-        """
-        Save processed data to the processed_data directory.
+        """Save processed data to the processed_data directory.
 
         Args:
             output_dict (dict): A dictionary containing the processed data.
@@ -204,10 +199,10 @@ class SpinsolveExperiment:
             saving_functions: Dict[str, Callable[..., None]] = {
                 "Proton": save.data_proton,
                 "1D EXTENDED+": save.data_proton,
-                "T2": save.data_T2,
-                "T2Bulk": save.data_T2Bulk,
-                "T1": save.data_T1,
-                "T1IRT2": save.data_T1IRT2,
+                "T2": save.data_t2,
+                "T2Bulk": save.data_t2_bulk,
+                "T1": save.data_t1,
+                "T1IRT2": save.data_t1ir_t2,
             }
 
             if experiment_name in saving_functions:
@@ -218,12 +213,11 @@ class SpinsolveExperiment:
             print(f'Error: "{self.name}" data missing from output dictionary')
 
     @property
-    def name(self) -> str:
-        """
-        Get the name of the experiment.
+    def name(self) -> Any:
+        """Get the name of the experiment.
 
         Returns:
-            str: The experiment name.
+            The experiment name.
         """
         if "Solvent" in self.parameters:
             name = self.parameters["Protocol"]
@@ -233,11 +227,10 @@ class SpinsolveExperiment:
 
     @property
     def spinsolve_type(self) -> str:
-        """
-        Get the type of Spinsolve experiment.
+        """Get the type of Spinsolve experiment.
 
         Returns:
-            str: The Spinsolve experiment type.
+            The Spinsolve experiment type.
         """
         if "Solvent" in self.parameters:
             spinsolve_type = "standard"

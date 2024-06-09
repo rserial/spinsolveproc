@@ -1,5 +1,3 @@
-# Processed output files
-**/processed_data/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -132,3 +130,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Code editors
+.vscode
+
+# Processed output files
+**/processed_data/

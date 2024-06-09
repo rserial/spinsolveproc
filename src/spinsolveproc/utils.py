@@ -529,8 +529,10 @@ def fit_multiexponential(
     kernel_name: str,
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
-) -> Tuple[np.ndarray, float, np.ndarray]:
-    """Fit multiexponential data using the specified kernel.
+    bounds: Optional[Tuple[List[float]]] = (-np.inf, np.inf),
+) -> Tuple[Any, Any, Any, str, int]:
+    """
+    Fit multiexponential data using the specified kernel.
 
     Args:
         time_values (np.ndarray): An array of time values.

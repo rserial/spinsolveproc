@@ -150,10 +150,33 @@ def setup_fig_t2(
         num_exponentials=num_exponentials,
         plot_title_name="T2 decay",
     )
-    return fig_t2_spec_2d_map, fig_t2_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved T2", "T2 decay"),
+    )
+    fig.add_trace(fig_T2spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_T2specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_T2specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_T2specdecays_fit["data"][2], row=1, col=2)
+
+    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(title_text="Time (s)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Time (s)",
+        # type="log",
+        # tickformat=".1e",
+        # tickvals=np.logspace(np.log10(np.min(T2_scale)), np.log10(np.max(T2_scale)), 4),
+        row=1,
+        col=1,
+    )
+
+    fig.update_layout(height=500, width=1200, title_text=f"T2 Experiment: {file_path_name}")
+    return fig
 
 
-def setup_fig_t1(
+def setup_fig_T1(
     file_path_name: str,
     ppm_scale: np.ndarray,
     t1_scale: np.ndarray,
@@ -202,10 +225,33 @@ def setup_fig_t1(
         num_exponentials=num_exponentials,
         plot_title_name="T1 decay",
     )
-    return fig_t1_spec_2d_map, fig_t1_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved T1", "T1 decay"),
+    )
+    fig.add_trace(fig_T1spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_T1specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_T1specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_T1specdecays_fit["data"][2], row=1, col=2)
+
+    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(title_text="Time (s)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Time (s)",
+        # type="log",
+        # tickformat=".1e",
+        # tickvals=np.logspace(np.log10(np.min(T1_scale)), np.log10(np.max(T1_scale)), 4),
+        row=1,
+        col=1,
+    )
+
+    fig.update_layout(height=500, width=1200, title_text=f"T1 Experiment: {file_path_name}")
+    return fig
 
 
-def setup_fig_pgste(
+def setup_fig_PGSTE(
     file_path_name: str,
     ppm_scale: np.ndarray,
     diff_scale: np.ndarray,
@@ -257,7 +303,30 @@ def setup_fig_pgste(
         plot_title_name="Diffusion decay",
         initial_guesses_expfit=initial_guesses_expfit,
     )
-    return fig_diff_spec_2d_map, fig_diff_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved PGSTE", "PGSTE decay"),
+    )
+    fig.add_trace(fig_diff_spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_diff_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_diff_specdecays_fit["data"][1], row=1, col=2)
+
+    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_yaxes(
+        title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)",
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Integral amplitude (a.u)",
+        row=1,
+        col=2,
+    )
+    fig.update_layout(height=500, width=1200, title_text=f"PGSTE Experiment: {file_path_name}")
+    return fig
 
 
 def setup_fig_diff_spec_2d_map(
@@ -629,6 +698,8 @@ def setup_fig_t1ir_t2_2d_map(
         title=title_name + ": " + str(file_path_name),
         xaxis_title="Time T1 (s)",
         yaxis_title="Time T2 (s)",
+        height=500,
+        width=800,
     )
 
     return fig_t1ir_t2_2d_map

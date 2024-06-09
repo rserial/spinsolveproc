@@ -114,7 +114,7 @@ select = [
   "ISC",  # flake8-implicit-str-concat
   "RUF",  # Ruff-specific rules
 ]
-ignore = ["ANN101"]
+ignore = ["ANN101", "ANN401"]
 unfixable = [
   "ERA",  # Don't remove commented-out code
 ]

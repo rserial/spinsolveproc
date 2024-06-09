@@ -176,7 +176,7 @@ def setup_fig_T2(
     )
 
     fig.update_layout(height=500, width=1200, title_text=f"T2 Experiment: {file_path_name}")
-    return fig, fit_df
+    return fig
 
 
 def setup_fig_T1(
@@ -252,7 +252,7 @@ def setup_fig_T1(
     )
 
     fig.update_layout(height=500, width=1200, title_text=f"T1 Experiment: {file_path_name}")
-    return fig, fit_df
+    return fig
 
 
 def setup_fig_PGSTE(
@@ -331,7 +331,7 @@ def setup_fig_PGSTE(
         col=2,
     )
     fig.update_layout(height=500, width=1200, title_text=f"PGSTE Experiment: {file_path_name}")
-    return fig, fit_df
+    return fig
 
 
 def setup_fig_diff_spec_2Dmap(
@@ -460,7 +460,7 @@ def setup_fig_T2Bulk(
         num_exponentials=num_exponentials,
         plot_title_name="T2 decay",
     )
-    return fig_T2Bulkdecays_fit, fit_df
+    return fig_T2Bulkdecays_fit
 
 
 def setup_fig_diff_decay_fit(
@@ -667,6 +667,8 @@ def setup_fig_T1IRT2_2Dmap(
         title=title_name + ": " + str(file_path_name),
         xaxis_title="Time T1 (s)",
         yaxis_title="Time T2 (s)",
+        height=500,
+        width=800,
     )
 
     return fig_T1IRT2_2Dmap

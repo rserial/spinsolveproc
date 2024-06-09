@@ -149,14 +149,13 @@ class SpinsolveExperiment:
         if self.name not in plotting_functions:
             raise NameError(f"Plotting function not found for experiment type {self.name}")
 
-        figure, *rest = plotting_functions[self.name](
+        figure = plotting_functions[self.name](
             self.experiment_path.name, *output_dict[self.name], **kwargs
         )
-        df = rest[0] if rest else None
 
         if not isinstance(figure, tuple):
             figure = (figure,)
-        return figure, df, self.name
+        return figure[0], self.name
 
     def save_fig(self, figure: go.Figure, experiment_name: str) -> None:
         """

@@ -89,7 +89,12 @@ def setup_fig_proton(
 
     # Configure axes labels
     fig.update_xaxes(title_text="Time (ms)", row=1, col=1)
-    fig.update_xaxes(title_text="Chemical Shift (ppm)", row=1, col=2)
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=2,
+    )
     fig.update_yaxes(title_text="Signal Intensity (a.u.)", row=1, col=1)
     fig.update_yaxes(title_text="Signal Intensity (a.u.)", row=1, col=2)
 
@@ -164,7 +169,12 @@ def setup_fig_T2(
     fig.add_trace(fig_T2specdecays_fit["data"][1], row=1, col=2)
     fig.add_trace(fig_T2specdecays_fit["data"][2], row=1, col=2)
 
-    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=1,
+    )
     fig.update_xaxes(title_text="Time (s)", row=1, col=2)
     fig.update_yaxes(
         title_text="Time (s)",
@@ -240,7 +250,12 @@ def setup_fig_T1(
     fig.add_trace(fig_T1specdecays_fit["data"][1], row=1, col=2)
     fig.add_trace(fig_T1specdecays_fit["data"][2], row=1, col=2)
 
-    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=1,
+    )
     fig.update_xaxes(title_text="Time (s)", row=1, col=2)
     fig.update_yaxes(
         title_text="Time (s)",
@@ -318,7 +333,12 @@ def setup_fig_PGSTE(
     fig.add_trace(fig_diff_specdecays_fit["data"][0], row=1, col=2)
     fig.add_trace(fig_diff_specdecays_fit["data"][1], row=1, col=2)
 
-    fig.update_xaxes(title_text="Chemical shift (ppm)", row=1, col=1)
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=1,
+    )
     fig.update_yaxes(
         title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)",
         row=1,
@@ -336,7 +356,7 @@ def setup_fig_PGSTE(
 
 def setup_fig_diff_spec_2Dmap(
     file_path_name: str,
-    frequency_axis: np.ndarray,
+    ppm_axis: np.ndarray,
     diff_axis: np.ndarray,
     data: np.ndarray,
     peak_ppm_positions: np.ndarray,
@@ -349,7 +369,7 @@ def setup_fig_diff_spec_2Dmap(
     Args:
         file_path_name (str): File path name.
         diff_axis (np.ndarray): Diffusion axis.
-        frequency_axis (np.ndarray): Frequency axis.
+        ppm_axis (np.ndarray): ppm axis.
         data (np.ndarray): Data for the heatmap.
         peak_ppm_positions (np.ndarray): Chemical shift positions of the T1 peaks.
         peak_diff_decay (np.ndarray): Diffusion decay associated with each peak.
@@ -360,7 +380,7 @@ def setup_fig_diff_spec_2Dmap(
     """
     fig_Tspec_2Dmap = go.Figure(
         data=go.Heatmap(
-            x=np.squeeze(frequency_axis),
+            x=np.squeeze(ppm_axis),
             y=np.squeeze(diff_axis) * 1e-9,
             z=np.real(data),
             colorscale="Blues",
@@ -371,11 +391,12 @@ def setup_fig_diff_spec_2Dmap(
     # Set the layout
     fig_Tspec_2Dmap.update_layout(
         title=plot_title_name + ": " + str(file_path_name),
-        xaxis=dict(title="Chemical Shift (ppm)"),
+        xaxis=dict(
+            title="Chemical Shift (ppm)",
+        ),
         yaxis=dict(title="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)"),
         showlegend=True,
     )
-
     fig_Tspec_2Dmap.update_layout(height=500, width=800)
     return fig_Tspec_2Dmap
 

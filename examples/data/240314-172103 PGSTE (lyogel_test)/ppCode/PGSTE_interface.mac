@@ -1,0 +1,102 @@
+procedure(status)
+
+endproc("readonly")
+
+procedure(interfaceDescription)
+
+   interface = [
+      "nucleus","Nucleus","tb","readonly_string","",
+      "b1Freq1H","B1 Frequency (MHz)","tb","double","[1,400]",
+      "offFreq","Offset Frequency (Hz)","tb","float","",
+      "90Amplitude1H","90° pulse amplitude (dB)","tb","float","[-85,0]",
+      "pulseLength1H","90° pulse length (us)","tb","float","[0.5,1000]",
+      "intRange","Bulk integ. range (ppm)","tb","array","[0.5,1000]",
+      "bDelta","Big DELTA (ms)","tb","float","[2e-3,167e3]",
+      "lDelta","Little delta (ms)","tb","float","[0.1,100]",
+      "gradMax","Max. gradient mT/m","tb","float","[0,2000]",
+      "gradAmpPC","Max. expt gradient (%)","tb","float","[0,100]",
+      "nrSteps","Nr. of gradient steps","tb","integer","[1,1e8]",
+      "gradRamp","Gradient ramp time (ms)","tb","float","[0.1,100]",
+      "rampSteps","Number of ramp steps","tb","integer","[2,100]",
+      "gradStab","Grad. stab. delay (ms)","tb","float","[0.1,100]",
+      "ndummyGrads","Dummy gradient pulses","tb","integer","[1,10]",
+      "gSpoil","Spoil amplitude","tb","integer","[-32000,32000]",
+      "durSpoil","Spoil duration (ms)","tb","float","[1,100]",
+      "dummyCycles","Dummy cycles","tb","integer","[0,10]",
+      "flipAngle1","flip angle1","tb","float","[1,500]",
+      "flipAngle2","flip angle2","tb","float","[1,500]",
+      "flipAngle3","flip angle3","tb","float","[1,500]",
+      "repTime","Repetition time (ms)","tb","float","[1,1e+008]",
+      "acquDiv","Acquisition","dv", "", "",
+      "rxGain","Receiver gain","tm","integer","[\"-20\",\"-17\",\"-14\",\"-11\",\"-8\",\"-5\",\"-2\",\"1\",\"4\",\"7\",\"10\",\"13\",\"16\",\"19\",\"22\",\"25\",\"28\",\"31\",\"34\",\"37\",\"40\",\"43\",\"46\",\"49\",\"52\",\"55\",\"58\",\"61\",\"64\",\"67\",\"70\"]",
+      "rxChannel","Receiver channel","tm","string","[\"1H\",\"13C\",\"15N\",\"19F\",\"29Si\",\"31P\",\"X\"]",
+      "rxPhase","Receiver phase","tb","float","[-360,360]",
+      "nrPnts","Number of points","tm","integer","[\"4\",\"8\",\"16\",\"32\",\"64\",\"128\",\"256\",\"512\",\"1024\",\"2048\",\"4096\",\"8192\",\"16384\",\"32768\"]",
+      "dwellTime","Dwell time (us)","tm","float","[\"1\",\"2\",\"5\",\"10\",\"20\",\"50\",\"100\",\"200\",\"500\",\"1000\",\"2000\"]",
+      "nrScans","Number of scans","tb","float","[1,1e8]",
+      "flatFilter","Flat filter","cb","string","no,yes",
+      "accumulate","Accumulate data","cb","string","no,yes",
+      "usePhaseCycle","Phase cycle","cb","string","no,yes",
+      "bandwidth","Bandwidth (kHz)","tb2","float","",
+      "acqTime","Acquisition time (ms)","tb","float","",
+      "procDiv","Processing","dv", "", "",
+      "zf","Zero fill factor?","tm","integer","[\"1\",\"2\",\"4\",\"8\",\"16\"]",
+      "filter","Apodisation filter?","cb","string","no,yes",
+      "filterType","Filter type","tm","string","[\"none\",\"exp:1\",\"exponential\",\"sinebellsquared\"]",
+      "autoPhase","Auto-phase?","cb","string","no,yes",
+      "dispDiv","Display","dv", "", "",
+      "usePPMScale","Use ppm scale?","cb","string","no,yes",
+      "dispRangeMinPPM","Minimum ppm value","tb","float","[-2000,2000]",
+      "dispRangeMaxPPM","Maximum ppm value","tb","float","[-2000,2000]",
+      "dispRange","Display range (Hz)","tb","float","[0,2e6]",
+      "fileDiv","Files","dv", "", "",
+      "saveData","Save data?","cb","string","false,true"]
+
+
+endproc(interface)
+
+procedure(plot_run_layout)
+
+   layout = ["pt1","pt2";"pt3","pt4"]
+
+endproc(layout)
+
+procedure(plot_load_layout)
+
+   layout = ["pt3";"pt4"]
+
+endproc(layout)
+
+#####################################################
+# Defines the controls which will appear to the 
+# right of the plots below the default conrols.
+# If 'null' is returned or this proceudre is missing
+# then only default controls will be added.
+#####################################################
+
+procedure(processing_controls)
+
+    layout = struct(buttonLabel = "Invert",    plotName = "pt4", macroToRun = "AnalyseDiffusionPlot()";
+                   buttonLabel = "Toggle",    plotName = "pt3", macroToRun = "IntegrateRegionsPGSE:TogglePlotsDisplayed()",
+                      iconFile = "FourToTwo.png",      active = "true", toolTip = "Toggle between 4 and 2 plots.";
+                   buttonLabel = "Integ.",   plotName = "pt3", macroToRun = "IntegrateRegionsPGSE:AddIntegral(\"PGSTE\")",
+                      iconFile = "AddIntegral.png",    active = "true", toolTip = "Select a region in the stacked plot for integration.";
+                   buttonLabel = "Rm Int",   plotName = "pt3", macroToRun = "IntegrateRegionsPGSE:RemoveIntegral(\"PGSTE\")",
+                      iconFile = "RemoveIntegral.png", active = "true", toolTip = "Select an integral in the stacked plot for removal.";
+                   buttonLabel = "Clear",    plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:ClearIntegrals()",
+                      iconFile = "ClearIntegrals.png", active = "true", toolTip = "Remove all integrals.";
+                   buttonLabel = "Clear",    plotName = "pt3", macroToRun = "IntegrateRegionsPGSE:ClearIntegrals()",
+                      iconFile = "ClearIntegrals.png", active = "true", toolTip = "Remove all integrals.";
+                   buttonLabel = "Print",    plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:PrintIntegrals(\"PGSTE\")",
+                      iconFile = "PrintIntegrals.png", active = "true", toolTip = "Print all integral results to the CLI.";  
+                   buttonLabel = "Phase",    plotName = "pt3", macroToRun = "manualPhaseStackedPlot()", toolTip = "Phase the stacked plot.";       
+                   buttonLabel = "View",     plotName = "pt3", macroToRun = "StackedPlotSetup()";
+                   buttonLabel = "MNova",    plotName = "pt3", macroToRun = "exportMNova2D()";
+                   buttonLabel = "MNova",    plotName = "pt4", macroToRun = "exportMNova2D()";
+                   buttonLabel = "DOSY",     plotName = "pt3", macroToRun = "DOSYAnalysis(\"pt3\")";
+                   buttonLabel = "Log/Lin",  plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:LogLin()",
+                                                       active = "true", toolTip = "Toggle log or linear y-axis"; 
+                   buttonLabel = "Norm",  plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:Normalise()",
+                                                       active = "true", toolTip = "Toggle y-axis normalisation")
+ 
+endproc(layout)

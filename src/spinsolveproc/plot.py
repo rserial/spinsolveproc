@@ -277,7 +277,7 @@ def setup_fig_PGSTE(
     diff_spec_2Dmap: np.ndarray,
     peak_ppm_positions: np.ndarray,
     peak_diff_decay: np.ndarray,
-    num_exponentials: Optional[int] = 1,
+    num_exponentials: Optional[int] = None,
     initial_guesses_expfit: Optional[List[float]] = None,
 ) -> Tuple[Tuple[go.Figure, go.Figure], Optional[pd.DataFrame]]:
     """

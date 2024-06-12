@@ -245,15 +245,15 @@ def data_PGSTE(
         peak_ppm_positions (np.ndarray): An array of peak ppm positions.
         peak_diff_decay (np.ndarray): A 1D array of diffusion decay data.
     """
-    filename_T1decay = "pgste_decay.dat"
-    filename_T1fitting = "pgste_decay_1exp_fitting.dat"
+    filename_PGSTEdecay = "pgste_decay.dat"
+    filename_PGSTEfitting = "pgste_decay_1exp_fitting.dat"
     data_diff_decay(
         save_dir,
-        diff_scale,
+        diff_scale * 1e-9,
         peak_diff_decay.reshape(-1),
         "PGSTE",
-        filename_T1decay,
-        filename_T1fitting,
+        filename_PGSTEdecay,
+        filename_PGSTEfitting,
     )
 
 

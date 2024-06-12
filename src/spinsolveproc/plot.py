@@ -277,8 +277,8 @@ def setup_fig_PGSTE(
     diff_spec_2Dmap: np.ndarray,
     peak_ppm_positions: np.ndarray,
     peak_diff_decay: np.ndarray,
-    num_exponentials: Optional[int] = None,
-    initial_guesses_expfit: List[float] = None,
+    num_exponentials: Optional[int] = 1,
+    initial_guesses_expfit: Optional[List[float]] = None,
 ) -> Tuple[Tuple[go.Figure, go.Figure], Optional[pd.DataFrame]]:
     """
     Set up figures for T1 experiment.
@@ -491,7 +491,7 @@ def setup_fig_diff_decay_fit(
     kernel_name: str,
     num_exponentials: int,
     plot_title_name: str,
-    initial_guesses_expfit: List[float] = None,
+    initial_guesses_expfit: Optional[List[float]] = None,
 ) -> Tuple[go.Figure, Optional[pd.DataFrame]]:
     """
     Setup a figure for Tdecay fit.

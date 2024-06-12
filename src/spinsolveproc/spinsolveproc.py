@@ -1,9 +1,8 @@
 """Main functions for spinsolveproc."""
 import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Tuple
 
-import pandas as pd
 import plotly.graph_objects as go
 
 import spinsolveproc.plot as plot
@@ -117,9 +116,7 @@ class SpinsolveExperiment:
         else:
             raise FileNotFoundError(f"{self.name} data missing from output dictionary")
 
-    def plot(
-        self, output_dict: Dict[str, Any], **kwargs: Any
-    ) -> Tuple[go.Figure, Optional[pd.DataFrame], str]:
+    def plot(self, output_dict: Dict[str, Any], **kwargs: Any) -> Tuple[go.Figure, str]:
         """
         Generate and return plots for the processed data.
 

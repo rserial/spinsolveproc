@@ -273,7 +273,7 @@ def PGSTE(
 
     ppm_scale = utils.create_ppm_scale(dic)
     grad_scale = np.loadtxt(file_path / "gradients.par")  # in T/m
-    diff_scale = utils.create_diff_scale(dic, grad_scale)
+    diff_scale = utils.create_diff_scale(dic, grad_scale) * 1e-9  # (10⁹ s/m²)
 
     data2D = np.reshape(data, (grad_scale.shape[0], ppm_scale.shape[0]))
 

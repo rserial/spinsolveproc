@@ -281,7 +281,7 @@ def setup_fig_PGSTE(
     initial_guesses_expfit: Optional[List[float]] = None,
 ) -> Tuple[Tuple[go.Figure, go.Figure], Optional[pd.DataFrame]]:
     """
-    Set up figures for T1 experiment.
+    Set up figures for PGSTE experiment.
 
     Args:
         file_path_name (str): The name of the file path.
@@ -523,14 +523,14 @@ def setup_fig_diff_decay_fit(
         fitted_parameters, cov, num_exponentials, kernel_name
     )
     trace1_real = go.Scatter(
-        x=diff_scale * 1e-9,
+        x=diff_scale,
         y=np.real(diff_decay) / np.max(np.abs(diff_decay)),
         mode="markers",
         name="T Decay - magnitude",
         marker=dict(color="#2C7FB8"),
     )
     trace2 = go.Scatter(
-        x=diff_scale * 1e-9,
+        x=diff_scale,
         y=fitting_kernel(diff_scale, *fitted_parameters[:num_params])
         / np.max(fitting_kernel(diff_scale, *fitted_parameters[:num_params])),
         mode="lines",

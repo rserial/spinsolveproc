@@ -3,10 +3,11 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
+import pandas as pd
 import scipy.optimize
 from numpy import ndarray
 
@@ -549,7 +550,8 @@ def fit_multiexponential(
     kernel_name: str,
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
-) -> Tuple[np.ndarray, float, np.ndarray]:
+    bounds: Optional[Tuple[float, float]] = (-np.inf, np.inf),
+) -> Tuple[Any, Any, Any, str, int]:
     """
     Fit multiexponential data using the specified kernel.
 
@@ -559,6 +561,7 @@ def fit_multiexponential(
         kernel_name (str): The name of the kernel.
         num_exponentials (int): The number of exponentials.
         initial_guesses (List[float]): Initial parameter guesses.
+        bounds (Tuple[List[float]]): Bounds for each parameter.
 
     Returns:
         Tuple[np.ndarray, float]: A tuple containing the fitted parameters,
@@ -588,7 +591,7 @@ def fit_multiexponential(
 
     # Perform the fit using the specified function
     fitted_parameters, cov = scipy.optimize.curve_fit(
-        fitting_kernel, time_values, np.real(signal_values), p0
+        fitting_kernel, time_values, np.real(signal_values), p0, bounds=bounds
     )
 
     # Determine quality of the fit
@@ -596,7 +599,76 @@ def fit_multiexponential(
     squared_diffs_from_mean = np.square(signal_values - np.mean(signal_values))
     R2 = 1 - np.sum(squared_diffs) / np.sum(squared_diffs_from_mean)
 
-    return fitted_parameters, R2, cov
+    return fitted_parameters, R2, cov, kernel_name, num_exponentials
+
+
+def convert_multiexponential_fit_to_dataframe(
+    fitted_parameters: np.ndarray, cov: np.ndarray, num_exponentials: int, kernel_name: str
+) -> pd.DataFrame:
+    """
+    Convert fit parameters to a dataframe based on the kernel type.
+
+    Args:
+        fitted_parameters (np.ndarray): The fitted parameters obtained from fit_multiexponential().
+        cov (np.ndarray): Covariance matrix obtained from fit_multiexponential().
+        num_exponentials (int): Number of exponentials.
+        kernel_name (str): Kernel name.
+
+    Returns:
+        pd.DataFrame: A dataframe containing the fit parameters.
+    """
+    if kernel_name == "PGSTE":
+        amplitude = []
+        err_amplitude = []
+        diffusion_decay = []
+        err_diffusion_decay = []
+
+        for i in range(num_exponentials):
+            amplitude.append(fitted_parameters[i * 2])
+            diffusion_decay.append(fitted_parameters[i * 2 + 1])
+            err_amplitude.append(np.sqrt(cov[i * 2, i * 2]))
+            err_diffusion_decay.append(np.sqrt(cov[i * 2 + 1, i * 2 + 1]))
+
+        columns = [
+            "Amplitude [a.u]",
+            "Err Amplitude [a.u]",
+            "Diffusion decay [s]",
+            "Err Diffusion decay [s]",
+        ]
+        data = {
+            columns[0]: amplitude,
+            columns[1]: err_amplitude,
+            columns[2]: diffusion_decay,
+            columns[3]: err_diffusion_decay,
+        }
+    else:
+        amplitude = []
+        err_amplitude = []
+        time_decay = []
+        err_time_decay = []
+
+        for i in range(num_exponentials):
+            amplitude.append(fitted_parameters[i * 2])
+            time_decay.append(1 / fitted_parameters[i * 2 + 1])
+            err_amplitude.append(np.sqrt(cov[i * 2, i * 2]))
+            err_time_decay.append(
+                np.sqrt(cov[i * 2 + 1, i * 2 + 1]) / fitted_parameters[i * 2 + 1] ** 2
+            )
+
+        columns = [
+            "Amplitude [a.u]",
+            "Err Amplitude [a.u]",
+            "Time decay [s]",
+            "Err Time decay [s]",
+        ]
+        data = {
+            columns[0]: amplitude,
+            columns[1]: err_amplitude,
+            columns[2]: time_decay,
+            columns[3]: err_time_decay,
+        }
+
+    return pd.DataFrame(data, columns=columns)
 
 
 def mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:

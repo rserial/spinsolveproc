@@ -37,6 +37,8 @@ The library currently supports the following experiments:
 
 * ✅ T1IRT2
 
+* ✅ PGSTE: 1D diffusion experiments.
+
 * ❌ Cannot process reaction monitoring experiments yet.
 
 ## Quickstart

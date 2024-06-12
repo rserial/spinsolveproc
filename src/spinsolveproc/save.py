@@ -222,7 +222,34 @@ def data_t1(
 def data_t1ir_t2(
     save_dir: Path, time_t1: np.ndarray, time_t2: np.ndarray, t1ir_t2_array: np.ndarray
 ) -> None:
-    """Save T1IRT2 data to an HDF5 file.
+    """
+    Save diffusion data to specified directory.
+
+    Args:
+        save_dir (Path): The directory where data will be saved.
+        ppm_scale (np.ndarray): An array of ppm scale values.
+        diff_scale (np.ndarray): An array of diffusion scale values in seconds.
+        diff_spec_2Dmap (np.ndarray): A 2D map of spectroscopically resolved diffusion data.
+        peak_ppm_positions (np.ndarray): An array of peak ppm positions.
+        peak_diff_decay (np.ndarray): A 1D array of diffusion decay data.
+    """
+    filename_PGSTEdecay = "pgste_decay.dat"
+    filename_PGSTEfitting = "pgste_decay_1exp_fitting.dat"
+    data_diff_decay(
+        save_dir,
+        diff_scale * 1e-9,
+        peak_diff_decay.reshape(-1),
+        "PGSTE",
+        filename_PGSTEdecay,
+        filename_PGSTEfitting,
+    )
+
+
+def data_T1IRT2(
+    save_dir: Path, timeT1: np.ndarray, timeT2: np.ndarray, T1IRT2array: np.ndarray
+) -> None:
+    """
+    Save T1IRT2 data to an HDF5 file.
 
     Args:
         save_dir (Path): Directory to save the data.

@@ -8,15 +8,14 @@ from nmrglue import jcampdx
 from nmrglue.fileio.spinsolve import parse_spinsolve_par_line
 
 
-def read(
+def read(  # noqa: C901
     directory: Path,
     specfile: Optional[str] = None,
     acqupar: str = "acqu.par",
     procpar: str = "proc.par",
     split_opt: str = "yes",
 ) -> Tuple[dict, np.ndarray]:
-    """
-    Reads SpinSolve files from a directory.
+    """Reads SpinSolve files from a directory.
 
     When no spectrum filename is given (specfile), the following list is tried, in
     that specific order:

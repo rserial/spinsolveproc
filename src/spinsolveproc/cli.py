@@ -1,4 +1,5 @@
 """Console script for spinsolveproc."""
+
 from pathlib import Path
 
 import click

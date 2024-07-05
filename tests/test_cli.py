@@ -1,23 +1,29 @@
 """Tests for `spinsolveproc`.cli module."""
+
 from typing import List
 
 import pytest
-from click.testing import CliRunner
+from typer.testing import CliRunner
 
 import spinsolveproc
 from spinsolveproc import cli
+
+runner = CliRunner()
 
 
 @pytest.mark.parametrize(
     "options,expected",
     [
-        (["--help"], "Usage: main [OPTIONS]"),
-        (["--version"], f"main, version { spinsolveproc.__version__ }\n"),
+        ([], "Console script for spinsolveproc."),
+        (["--help"], "Console script for spinsolveproc."),
+        (
+            ["--version"],
+            f"spinsolveproc, version { spinsolveproc.__version__ }\n",
+        ),
     ],
 )
 def test_command_line_interface(options: List[str], expected: str) -> None:
     """Test the CLI."""
-    runner = CliRunner()
-    result = runner.invoke(cli.main, options)
+    result = runner.invoke(cli.app, options)
     assert result.exit_code == 0
-    assert expected in result.output
+    assert expected in result.stdout

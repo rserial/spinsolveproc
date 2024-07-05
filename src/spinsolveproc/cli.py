@@ -1,32 +1,63 @@
 """Console script for spinsolveproc."""
-from pathlib import Path
 
-import click
+from pathlib import Path
+from typing import Annotated, Optional
+
+import typer
 
 from spinsolveproc import __version__
 from spinsolveproc.spinsolveproc import SpinsolveExperiment
 
+app = typer.Typer(no_args_is_help=True, context_settings={"help_option_names": ["-h", "--help"]})
 
-@click.group()
-@click.version_option(version=__version__)
-def main() -> None:
+
+def version_callback(value: bool) -> None:
+    """Callback function for the --version option.
+
+    Parameters:
+        - value: The value provided for the --version option.
+
+    Raises:
+        - typer.Exit: Raises an Exit exception if the --version option is provided,
+        printing the Awesome CLI version and exiting the program.
+    """
+    if value:
+        typer.echo(f"spinsolveproc, version {__version__}")
+        raise typer.Exit()
+
+
+@app.callback()
+def main(
+    version: Annotated[
+        Optional[bool],
+        typer.Option(
+            "--version",
+            "-v",
+            help="Show the current version and exit.",
+            callback=version_callback,
+            is_eager=True,
+        ),
+    ] = None,
+) -> None:
     """Console script for spinsolveproc."""
 
 
-@main.command(name="process_exp")
-@click.argument("directory", type=click.Path(exists=True, file_okay=False, dir_okay=True))
-@click.argument("experiment", required=False)
-@click.option(
-    "--all", "process_all", is_flag=True, help="Process all experiments in the directory"
-)
-def process_exp(directory: str, experiment: str, process_all: bool) -> None:
+@app.command(name="process_exp")
+def process_exp(
+    directory: Annotated[Path, typer.Argument(exists=True, file_okay=False, dir_okay=True)],
+    experiment: Annotated[Optional[str], typer.Argument()] = None,
+    process_all: Annotated[
+        bool,
+        typer.Option(help="Process all experiments in the directory."),
+    ] = True,
+) -> None:
     """Process Spinsolve data in a directory."""
     path_entry = Path(directory)
 
     if path_entry.exists():
         if path_entry.joinpath("acqu.par").is_file():
             sample_dir_list = [path_entry]
-            click.echo("Processing current file directory\n")
+            typer.echo("Processing current file directory\n")
         elif experiment:
             experiment_names = [f"-{experiment}-", f" {experiment} "]
             sample_dir_list = []
@@ -35,18 +66,18 @@ def process_exp(directory: str, experiment: str, process_all: bool) -> None:
                     diracqu.parent for diracqu in path_entry.glob(f"*{experiment_name}*/acqu.par")
                 ]
             if not sample_dir_list:
-                click.echo(f"Error: No directories found for experiment {experiment}")
+                typer.echo(f"Error: No directories found for experiment {experiment}")
             else:
-                click.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
+                typer.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
         elif process_all:
             sample_dir_list = [diracqu.parent for diracqu in path_entry.glob("*/acqu.par")]
 
             if not sample_dir_list:
-                click.echo("Error: No directories found in the specified directory.")
+                typer.echo("Error: No directories found in the specified directory.")
             else:
-                click.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
+                typer.echo(f"Number of directories to be processed: {len(sample_dir_list)}\n")
         else:
-            click.echo(
+            typer.echo(
                 "Error: Please provide an experiment name or use --all to process all experiments."
             )
             return
@@ -60,8 +91,8 @@ def process_exp(directory: str, experiment: str, process_all: bool) -> None:
             experiment_instance.save_data(output_dict, experiment_name)
 
     else:
-        click.echo("Error! Directory does not exist")
+        typer.echo("Error! Directory does not exist")
 
 
 if __name__ == "__main__":
-    process_exp()
+    app()

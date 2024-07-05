@@ -3,7 +3,7 @@
 import re
 import warnings
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import nmrglue as ng
 import numpy as np
@@ -14,14 +14,13 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 def parse_spinsolve_par_line(line: str) -> Tuple[str, Union[str, int, float]]:
-    """
-    Parse lines in acqu.par and return a tuple (parameter name, parameter value).
+    """Parse lines in acqu.par and return a tuple (parameter name, parameter value).
 
     Args:
         line (str): The line to be parsed from the acqu.par file.
 
     Returns:
-        tuple: A tuple containing the parameter name (str) and its value (str, int, or float).
+        A tuple containing the parameter name (str) and its value (str, int, or float).
     """
     line = line.strip()  # Drop newline
     name, value = line.split(
@@ -50,15 +49,14 @@ def parse_spinsolve_par_line(line: str) -> Tuple[str, Union[str, int, float]]:
 def parse_spinsolve_script_line(
     line: str,
 ) -> Tuple[Optional[str], Optional[Union[str, Tuple[float, int]]]]:
-    """
-    Parse a line from a Spinsolve script file and extract relevant information.
+    """Parse a line from a Spinsolve script file and extract relevant information.
 
     Args:
         line (str): The line to be parsed.
 
     Returns:
-        Tuple: A tuple containing the parsed parameter name (str) and its value (various types).
-               If the line does not match the expected format, (None, None) is returned.
+        A tuple containing the parsed parameter name (str) and its value (various types).
+        If the line does not match the expected format, (None, None) is returned.
     """
     # Define regular expression to match the Phase line
     phase_regex = r"Phase\((\d+\.\d+),(\d+)\);"
@@ -70,14 +68,13 @@ def parse_spinsolve_script_line(
 
 
 def get_initial_phase(file_path: Path) -> float:
-    """
-    Read processing.script to get the initial phase.
+    """Read processing.script to get the initial phase.
 
     Args:
         file_path (Path): The path to the directory containing the processing script.
 
     Returns:
-        float: The initial phase value.
+        The initial phase value.
     """
     # Read processing.script to get the initial phase
     parameters_script = {}
@@ -117,49 +114,48 @@ def get_initial_phase(file_path: Path) -> float:
 
 
 def read_autophase_data1d(file_path: Path) -> Tuple[dict, List]:
-    """
-    Read data.1d file and perform autophasing on FIDdecay.
+    """Read data.1d file and perform autophasing on fid_decay.
 
     Args:
         file_path (Path): The path to the data directory.
 
     Returns:
-        Tuple: A tuple containing the dictionary (dic) and the autophased FIDdecay.
+        A tuple containing the dictionary (dic) and the autophased fid_decay.
     """
-    dic, FIDdecay = ng.spinsolve.read(file_path, "data.1d", acqupar="acqu.par", procpar="proc.par")
+    dic, fid_decay = ng.spinsolve.read(
+        file_path, "data.1d", acqupar="acqu.par", procpar="proc.par"
+    )
     phase = get_initial_phase(file_path)
-    # Autophase FIDdecay
-    FIDdecay = ng.proc_autophase.autops(FIDdecay, fn="acme", p0=phase, disp=False)
-    return dic, FIDdecay
+    # Autophase fid_decay
+    fid_decay = ng.proc_autophase.autops(fid_decay, fn="acme", p0=phase, disp=False)
+    return dic, fid_decay
 
 
-def fft_autophase(file_path: Path, FIDdecay: ndarray) -> ndarray:
-    """
-    Perform Fourier transformation and autophase on the spectrum.
+def fft_autophase(file_path: Path, fid_decay: ndarray) -> Any:
+    """Perform Fourier transformation and autophase on the spectrum.
 
     Args:
         file_path (Path): The path to the data directory.
-        FIDdecay (ndarray): The FIDdecay data.
+        fid_decay (ndarray): The fid_decay data.
 
     Returns:
-        Spectrum (ndarray): The autophased spectrum.
+        The autophased spectrum.
     """
-    spectrum = ng.proc_base.fft(FIDdecay)  # Fourier transformation
+    spectrum = ng.proc_base.fft(fid_decay)  # Fourier transformation
     # Autophase spectrum
     phase = get_initial_phase(file_path)
     spectrum = ng.proc_autophase.autops(spectrum, fn="acme", p0=phase, disp=False)
     return spectrum
 
 
-def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
-    """
-    Creates a PPM scale from the dictionary file of a Spinsolve T1 data file.
+def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> Any:
+    """Creates a PPM scale from the dictionary file of a Spinsolve T1 data file.
 
     Args:
         dic (Dict[str, Union[str, int, float]]): The dictionary file of the Spinsolve T1 data file.
 
     Returns:
-        np.ndarray: An array containing the PPM scale of the acquired spectra.
+        An array containing the PPM scale of the acquired spectra.
     """
     udic = ng.fileiobase.create_blank_udic(1)
 
@@ -170,9 +166,9 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
         if "bandwidth" in acqu and isinstance(acqu["bandwidth"], (int, float)):
             udic[0]["sw"] = float(acqu["bandwidth"]) * 1000  # Spectral width in Hz
 
-        if "b1Freq" in acqu and isinstance(acqu["b1Freq"], (str, int, float)):
-            b1Freq = str(acqu["b1Freq"]).rstrip("d")
-            udic[0]["obs"] = float(b1Freq)
+        if "b1_freq" in acqu and isinstance(acqu["b1Freq"], (str, int, float)):
+            b1_freq = str(acqu["b1Freq"]).rstrip("d")
+            udic[0]["obs"] = float(b1_freq)
 
         if "nrPnts" in acqu and isinstance(acqu["nrPnts"], (int, float)):
             udic[0]["size"] = float(acqu["nrPnts"])  # Number of points
@@ -182,11 +178,10 @@ def create_ppm_scale(dic: Dict[str, Union[str, int, float]]) -> np.ndarray:
     return ppm_scale
 
 
-def create_time_scale_T1(
+def create_time_scale_t1(
     dic: Dict[str, Union[str, int, float]], log_scale: bool = True
 ) -> np.ndarray:
-    """
-    Create time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.
+    """Create time scale for T1 decay from the dictionary file of a Spinsolve T1 data file.
 
     Args:
         dic (dict): The dictionary file of the Spinsolve T1 data file.
@@ -231,8 +226,7 @@ def create_diff_scale(
     dic: Dict[str, Union[str, int, float]],
     grad_scale: np.ndarray,
 ) -> np.ndarray:
-    """
-    Create diffusion scale for PGSTE decay from the dictionary file of a Spinsolve PGSTE data file.
+    """Create diffusion scale for PGSTE decay from the dictionary file of a Spinsolve PGSTE data.
 
     Args:
         dic (dict): The dictionary file of the Spinsolve T1 data file.
@@ -259,9 +253,7 @@ def create_diff_scale(
             nr_steps = int(acqu["nrSteps"])
 
     if small_delta is not None and big_delta is not None and nr_steps is not None:
-        diff_scale = (
-            gamma_1h**2 * grad_scale**2 * small_delta**2 * (big_delta - small_delta / 3)
-        )
+        diff_scale = gamma_1h**2 * grad_scale**2 * small_delta**2 * (big_delta - small_delta / 3)
         return diff_scale
 
     # Raise an error if the necessary values are not available
@@ -270,30 +262,29 @@ def create_diff_scale(
     )
 
 
-def find_Tpeaks(
-    Tspec_2Dmap: np.ndarray,
+def find_time_peaks(
+    t_spec_2d_map: np.ndarray,
     ppm_scale: np.ndarray,
     threshold: float = 0.1,
     msep_factor: float = 0.2,
 ) -> tuple:
-    """
-    Find peaks in a 2D spectrum.
+    """Find peaks in a 2D spectrum.
 
     Args:
-        Tspec_2Dmap (np.ndarray): 2D spectrum map.
+        t_spec_2d_map (np.ndarray): 2D spectrum map.
         ppm_scale (np.ndarray): PPM scale.
         threshold (float): Peak detection threshold.
         msep_factor (float): Multiplet separation factor.
 
     Returns:
-        tuple: Tuple containing peak ppm positions and peak T2 decay data.
+        Tuple containing peak ppm positions and peak T2 decay data.
     """
     # Find spectrum peaks
     peaks = ng.peakpick.pick(
-        np.abs(Tspec_2Dmap[0, :]),
-        threshold * np.max(np.abs(Tspec_2Dmap[0, :])),
+        np.abs(t_spec_2d_map[0, :]),
+        threshold * np.max(np.abs(t_spec_2d_map[0, :])),
         algorithm="thres",
-        msep=int(msep_factor * Tspec_2Dmap[0, :].shape[0]),
+        msep=int(msep_factor * t_spec_2d_map[0, :].shape[0]),
         table=True,
     )
 
@@ -301,20 +292,19 @@ def find_Tpeaks(
     peak_ppm_positions = np.array([ppm_scale[int(peak["X_AXIS"])] for peak in peaks])
 
     # Construct peaks T2 decay data
-    peak_T2decay = np.array([Tspec_2Dmap[:, int(peak["X_AXIS"])] for peak in peaks])
+    peak_t2_decay = np.array([t_spec_2d_map[:, int(peak["X_AXIS"])] for peak in peaks])
 
-    return peak_ppm_positions, peak_T2decay
+    return peak_ppm_positions, peak_t2_decay
 
 
 def autophase_time_decay(v: np.ndarray) -> np.ndarray:
-    """
-    Autophase a time decay signal.
+    """Autophase a time decay signal.
 
     Args:
         v (np.ndarray): Input time decay signal.
 
     Returns:
-        np.ndarray: Autophased time decay signal.
+        Autophased time decay signal.
     """
     vsub = v
     s = np.zeros(360, dtype=np.complex128)
@@ -326,9 +316,8 @@ def autophase_time_decay(v: np.ndarray) -> np.ndarray:
     return v
 
 
-def autophase_2D(v: ndarray, index_left: int, index_right: int) -> ndarray:
-    """
-    Autophases the input data along the chemical shift axis for each row.
+def autophase_2d(v: ndarray, index_left: int, index_right: int) -> ndarray:
+    """Autophases the input data along the chemical shift axis for each row.
 
     Args:
         v (ndarray): 2D array containing complex data.
@@ -336,7 +325,7 @@ def autophase_2D(v: ndarray, index_left: int, index_right: int) -> ndarray:
         index_right (int): Index of the right boundary for autophasing.
 
     Returns:
-        ndarray: Autophased data.
+        Autophased data.
     """
     for x in range(v.shape[0]):
         vsub = v[x, index_left : index_right + 1]
@@ -344,37 +333,36 @@ def autophase_2D(v: ndarray, index_left: int, index_right: int) -> ndarray:
         for p in range(0, 359 + 1, 1):
             vph = vsub * np.exp(-1j * p / 180 * np.pi)
             s[p] = np.sum((vph))
-            # s[p] = np.trapz(np.imag(vph))
+
         xm = np.argmax(s)
         v[x, :] = v[x, :] * np.exp(-1j * xm * np.pi / 180)
     return v
 
 
-def integrate_2D(data2D: ndarray, ppm_scale: ndarray, ppm_start: float, ppm_end: float) -> ndarray:
-    """
-    Integrates a 2D data array within a specified chemical shift range.
+def integrate_2d(data_2d: ndarray, ppm_scale: ndarray, ppm_start: float, ppm_end: float) -> Any:
+    """Integrates a 2D data array within a specified chemical shift range.
 
     Args:
-        data2D (ndarray): 2D array of data.
+        data_2d (ndarray): 2D array of data.
         ppm_scale (ndarray): Array containing chemical shift values.
         ppm_start (float): Starting point for integration.
         ppm_end (float): Ending point for integration.
 
     Returns:
-        ndarray: Integrated data along the ppm_scale axis.
+        Integrated data along the ppm_scale axis.
     """
     # Find the indices corresponding to the start and end positions
     start_idx = np.abs(ppm_scale - ppm_start).argmin()
     end_idx = np.abs(ppm_scale - ppm_end).argmin()
 
-    # Slice the data2D array within the specified range
-    data_slice = data2D[:, start_idx : end_idx + 1]
+    # Slice the data_2d array within the specified range
+    data_slice = data_2d[:, start_idx : end_idx + 1]
 
     # Integrate along the ppm_scale axis
-    int_Tdecay = np.trapz(data_slice, x=ppm_scale[start_idx : end_idx + 1], axis=1)
-    int_Tdecay = int_Tdecay.reshape(1, -1)
+    integral = np.trapz(data_slice, x=ppm_scale[start_idx : end_idx + 1], axis=1)
+    integral = integral.reshape(1, -1)
 
-    return int_Tdecay
+    return integral
 
 
 def fit_monoexponential(
@@ -382,8 +370,7 @@ def fit_monoexponential(
     signal_values: np.ndarray,
     fitting_function: Callable[[np.ndarray, float, float, float], np.ndarray],
 ) -> Tuple[float, float, float, float]:
-    """
-    Performs a monoexponential fit on time and signal data.
+    """Performs a monoexponential fit on time and signal data.
 
     Args:
         time_values (np.ndarray): An array of time values.
@@ -391,11 +378,11 @@ def fit_monoexponential(
         fitting_function: A fitting function to use for the exponential fit.
 
     Returns:
-        tuple: A tuple containing the following fitted parameters:
+        A tuple containing the following fitted parameters:
             amplitude (float): The amplitude of the fit.
             decay_time (float): The decay time of the fit.
             intercept (float): The intercept of the fit.
-            R2 (float): The coefficient of determination (R-squared) of the fit.
+            r2 (float): The coefficient of determination (R-squared) of the fit.
     """
     inverse_decay_time_0 = 1 / (np.max(time_values) / 2)
     p0 = [np.max(signal_values), inverse_decay_time_0, np.min(signal_values)]
@@ -411,20 +398,19 @@ def fit_monoexponential(
     decay_time = 1 / inverse_decay_time
 
     # Determine quality of the fit
-    squaredDiffs = np.square(
+    squared_diffs = np.square(
         signal_values - fitting_function(time_values, amplitude, inverse_decay_time, intercept)
     )
-    squaredDiffsFromMean = np.square(signal_values - np.mean(signal_values))
-    R2 = 1 - np.sum(squaredDiffs) / np.sum(squaredDiffsFromMean)
+    squared_diffs_from_mean = np.square(signal_values - np.mean(signal_values))
+    r2 = 1 - np.sum(squared_diffs) / np.sum(squared_diffs_from_mean)
 
-    return amplitude, decay_time, intercept, R2
+    return amplitude, decay_time, intercept, r2
 
 
-def create_time_scale_T2(
+def create_time_scale_t2(
     file_path: Union[str, Path], dic: dict, spinsolve_type: str
 ) -> np.ndarray:
-    """
-    Create a time scale for T2 relaxation measurements.
+    """Create a time scale for T2 relaxation measurements.
 
     Args:
         file_path (Union[str, Path]): The file path to the directory.
@@ -432,15 +418,15 @@ def create_time_scale_T2(
         spinsolve_type (str): The type of SpinSolve measurement ("standard" or "expert").
 
     Returns:
-        np.ndarray: An array representing the T2 time scale.
+        An array representing the T2 time scale.
     """
     if spinsolve_type == "standard":
         # Reads T2 steps from 'delayTimes.txt'
-        delayTimes_path = Path(file_path) / "delayTimes.txt"
-        with open(delayTimes_path, "r") as f:
-            T2_scale = np.array([float(t.replace(",", ".")) for t in f.read().split("\n") if t])
+        delay_times_path = Path(file_path) / "delayTimes.txt"
+        with open(delay_times_path, "r") as f:
+            t2_scale = np.array([float(t.replace(",", ".")) for t in f.read().split("\n") if t])
     elif spinsolve_type == "expert":
-        T2_scale = np.array(
+        t2_scale = np.array(
             [
                 echo_number
                 * np.array(dic["acqu"]["techo"] * 1e-6)
@@ -448,52 +434,48 @@ def create_time_scale_T2(
                 for echo_number in range(0, int(dic["acqu"]["nrSteps"]), 1)
             ]
         )
-    return T2_scale
+    return t2_scale
 
 
-def create_time_scale_T2Bulk(dic: dict, spinsolve_type: str) -> Union[np.ndarray, None]:
-    """
-    Create a time scale for T2 relaxation.
+def create_time_scale_t2_bulk(dic: dict, spinsolve_type: str) -> Union[np.ndarray, None]:
+    """Create a time scale for T2 relaxation.
 
     Args:
         dic (dict): A dictionary containing acquisition parameters.
         spinsolve_type (str): The type of spinsolve data.
 
     Returns:
-        Union[np.ndarray, None]: An array of time values in seconds
-        or None if spinsolve_type is not 'expert'.
+        An array of time values in seconds or None if spinsolve_type is not 'expert'.
     """
     if spinsolve_type != "expert":
         print("This function requires a SpinSolve expert file, but a standard file was given.")
         return None
     elif spinsolve_type == "expert":
-        T2_scale = np.array(
+        t2_scale = np.array(
             [
                 echo_number * np.array(dic["acqu"]["echoTime"] * 1e-6)
                 for echo_number in range(0, np.array(dic["acqu"]["nrEchoes"]), 1)
             ]
         )
-    return T2_scale
+    return t2_scale
 
 
 def get_fitting_kernel(kernel_name: str, num_exponentials: int) -> Tuple[Callable, int]:
-    """
-    Get the fitting kernel function and the number of parameters.
+    """Get the fitting kernel function and the number of parameters.
 
     Args:
         kernel_name (str): The name of the kernel.
         num_exponentials (int): The number of exponentials.
 
     Returns:
-        Tuple[callable, int]: A tuple containing the fitting kernel function
-        and the number of parameters.
+        A tuple containing the fitting kernel function and the number of parameters.
 
     Raises:
         ValueError: If an invalid kernel name or number of exponentials is provided.
     """
     kernel_names = {
         "T2": ["mono_exponential", "bi_exponential", "tri_exponential"],
-        "T1IR": ["IR_mono_exponential", "IR_bi_exponential", "IR_tri_exponential"],
+        "T1IR": ["ir_mono_exponential", "ir_bi_exponential", "ir_tri_exponential"],
         "PGSTE": ["mono_exponential", "bi_exponential", "tri_exponential"],
     }
 
@@ -515,32 +497,30 @@ def get_fitting_kernel(kernel_name: str, num_exponentials: int) -> Tuple[Callabl
     return fitting_kernel, num_params
 
 
-def load_T1IRT2_timedat_files(file_path: Path) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Load time data from T1IR and T2 experiments.
+def load_t1_ir_t2_timedat_files(file_path: Path) -> Tuple[np.ndarray, np.ndarray]:
+    """Load time data from T1IR and T2 experiments.
 
     Args:
         file_path (Path): The path to the data directory.
 
     Returns:
-        tuple[np.ndarray, np.ndarray]: Time data for T1 and T2 experiments,
-        in seconds.
+        Time data for T1 and T2 experiments, in seconds.
 
     Raises:
         FileNotFoundError: If the required time data files are not found.
     """
     data1d_path = file_path / "1D_T1IRT2"
 
-    timeT1_path = data1d_path / "timeT1_s.dat"
-    timeT2_path = data1d_path / "timeT2_s.dat"
+    time_t1_path = data1d_path / "timeT1_s.dat"
+    time_t2_path = data1d_path / "timeT2_s.dat"
 
-    if not timeT1_path.exists() or not timeT2_path.exists():
+    if not time_t1_path.exists() or not time_t2_path.exists():
         raise FileNotFoundError("Time data files not found in the specified directory.")
 
-    timeT1 = np.loadtxt(timeT1_path) * 1e-6  # in seconds
-    timeT2 = np.loadtxt(timeT2_path)  # in seconds
+    time_t1 = np.loadtxt(time_t1_path) * 1e-6  # in seconds
+    time_t2 = np.loadtxt(time_t2_path)  # in seconds
 
-    return timeT1, timeT2
+    return time_t1, time_t2
 
 
 def fit_multiexponential(
@@ -550,8 +530,7 @@ def fit_multiexponential(
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
 ) -> Tuple[np.ndarray, float, np.ndarray]:
-    """
-    Fit multiexponential data using the specified kernel.
+    """Fit multiexponential data using the specified kernel.
 
     Args:
         time_values (np.ndarray): An array of time values.
@@ -561,8 +540,7 @@ def fit_multiexponential(
         initial_guesses (List[float]): Initial parameter guesses.
 
     Returns:
-        Tuple[np.ndarray, float]: A tuple containing the fitted parameters,
-        the R-squared value and the covariance 2D array.
+        A tuple containing the fitted parameters, the R-squared value and the covariance 2D array.
     """
     fitting_kernel, num_params = get_fitting_kernel(kernel_name, num_exponentials)
 
@@ -594,14 +572,13 @@ def fit_multiexponential(
     # Determine quality of the fit
     squared_diffs = np.square(signal_values - fitting_kernel(time_values, *fitted_parameters))
     squared_diffs_from_mean = np.square(signal_values - np.mean(signal_values))
-    R2 = 1 - np.sum(squared_diffs) / np.sum(squared_diffs_from_mean)
+    r2 = 1 - np.sum(squared_diffs) / np.sum(squared_diffs_from_mean)
 
-    return fitted_parameters, R2, cov
+    return fitted_parameters, r2, cov
 
 
-def mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
-    """
-    Calculate the result of a monoexponential function.
+def mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> Any:
+    """Calculate the result of a monoexponential function.
 
     Args:
         x (np.ndarray): Input values.
@@ -610,16 +587,13 @@ def mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
         b (float): Intercept parameter.
 
     Returns:
-        np.ndarray: Result of the monoexponential function.
+        Result of the monoexponential function.
     """
     return m * np.exp(-t * x) + b
 
 
-def bi_exponential(
-    x: np.ndarray, m1: float, t1: float, m2: float, t2: float, b: float
-) -> np.ndarray:
-    """
-    Calculate the bi-exponential function.
+def bi_exponential(x: np.ndarray, m1: float, t1: float, m2: float, t2: float, b: float) -> Any:
+    """Calculate the bi-exponential function.
 
     Args:
         x (np.ndarray): An array of input values.
@@ -630,16 +604,15 @@ def bi_exponential(
         b (float): Intercept.
 
     Returns:
-        np.ndarray: The calculated bi-exponential function values.
+        The calculated bi-exponential function values.
     """
     return m1 * np.exp(-t1 * x) + m2 * np.exp(-t2 * x) + b
 
 
 def tri_exponential(
     x: np.ndarray, m1: float, t1: float, m2: float, t2: float, m3: float, t3: float, b: float
-) -> np.ndarray:
-    """
-    Calculate the tri-exponential function.
+) -> Any:
+    """Calculate the tri-exponential function.
 
     Args:
         x (np.ndarray): An array of input values.
@@ -652,14 +625,13 @@ def tri_exponential(
         b (float): Intercept.
 
     Returns:
-        np.ndarray: The calculated tri-exponential function values.
+        The calculated tri-exponential function values.
     """
     return m1 * np.exp(-t1 * x) + m2 * np.exp(-t2 * x) + m3 * np.exp(-t3 * x) + b
 
 
-def IR(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
-    """
-    Inversion recovery (IR) function with a mono-exponential decay.
+def ir(x: np.ndarray, m: float, t: float, b: float) -> Any:
+    """Inversion recovery (IR) function with a mono-exponential decay.
 
     Args:
         x (np.ndarray): Time values.
@@ -668,14 +640,13 @@ def IR(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
         b (float): Offset.
 
     Returns:
-        np.ndarray: IR function values.
+        IR function values.
     """
     return m * (1 - 2 * np.exp(-t * x)) + b
 
 
-def IR_mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarray:
-    """
-    Mono-exponential inversion recovery (IR) function.
+def ir_mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> Any:
+    """Mono-exponential inversion recovery (IR) function.
 
     Args:
         x (np.ndarray): Time values.
@@ -684,16 +655,13 @@ def IR_mono_exponential(x: np.ndarray, m: float, t: float, b: float) -> np.ndarr
         b (float): Offset.
 
     Returns:
-        np.ndarray: IR function values.
+        IR function values.
     """
     return m * (1 - 2 * np.exp(-t * x)) + b
 
 
-def IR_bi_exponential(
-    x: np.ndarray, m1: float, t1: float, m2: float, t2: float, b: float
-) -> np.ndarray:
-    """
-    Bi-exponential inversion recovery (IR) function.
+def ir_bi_exponential(x: np.ndarray, m1: float, t1: float, m2: float, t2: float, b: float) -> Any:
+    """Bi-exponential inversion recovery (IR) function.
 
     Args:
         x (np.ndarray): Time values.
@@ -704,16 +672,15 @@ def IR_bi_exponential(
         b (float): Offset.
 
     Returns:
-        np.ndarray: IR function values.
+        IR function values.
     """
     return m1 * (1 - 2 * np.exp(-t1 * x)) + m2 * (1 - 2 * np.exp(-t2 * x)) + b
 
 
-def IR_tri_exponential(
+def ir_tri_exponential(
     x: np.ndarray, m1: float, t1: float, m2: float, t2: float, m3: float, t3: float, b: float
-) -> np.ndarray:
-    """
-    Tri-exponential inversion recovery (IR) function.
+) -> Any:
+    """Tri-exponential inversion recovery (IR) function.
 
     Args:
         x (np.ndarray): Time values.
@@ -726,7 +693,7 @@ def IR_tri_exponential(
         b (float): Offset.
 
     Returns:
-        np.ndarray: IR function values.
+        IR function values.
     """
     return (
         m1 * (1 - 2 * np.exp(-t1 * x))

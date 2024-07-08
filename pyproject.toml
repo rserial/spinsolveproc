@@ -17,6 +17,7 @@ classifiers=[
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
 [tool.poetry.urls]
@@ -26,14 +27,14 @@ classifiers=[
 spinsolveproc = 'spinsolveproc.cli:app'
 
 [tool.poetry.dependencies]
-python = "<3.12,>=3.9"
+python = "<3.13,>=3.9"
 typer = {extras = ["all"], version = "^0.12.3"}
 plotly = "^5.22.0"
-numpy = "^1.26.4"
+numpy = "^2.0.0"
 pandas = "^2.2.2"
 h5py = "^3.11.0"
 nmrglue = {git = "https://github.com/jjhelmus/nmrglue.git"}
-pyflint = {git = "https://github.com/rserial/pyflint.git"}
+flintpy = {git = "https://github.com/rserial/flintpy.git"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"

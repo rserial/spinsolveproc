@@ -62,7 +62,7 @@ mypy = "^1.11.1"
 pandas-stubs = "^2.2.2.240603"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^7.3.7"
+sphinx = "^8.0.2"
 recommonmark = "^0.7.1"
 
 [tool.coverage.paths]

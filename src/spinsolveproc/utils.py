@@ -359,7 +359,7 @@ def integrate_2d(data_2d: ndarray, ppm_scale: ndarray, ppm_start: float, ppm_end
     data_slice = data_2d[:, start_idx : end_idx + 1]
 
     # Integrate along the ppm_scale axis
-    integral = np.trapz(data_slice, x=ppm_scale[start_idx : end_idx + 1], axis=1)
+    integral = np.trapezoid(data_slice, x=ppm_scale[start_idx : end_idx + 1], axis=1)  # type: ignore[attr-defined]
     integral = integral.reshape(1, -1)
 
     return integral

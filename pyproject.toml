@@ -14,7 +14,6 @@ classifiers=[
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Natural Language :: English",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -27,7 +26,7 @@ classifiers=[
 spinsolveproc = 'spinsolveproc.cli:app'
 
 [tool.poetry.dependencies]
-python = "<3.13,>=3.9"
+python = "<3.13,>=3.10"
 typer = {extras = ["all"], version = "^0.12.3"}
 plotly = "^5.22.0"
 numpy = "^2.0.1"
@@ -91,7 +90,7 @@ show_missing = true
 directory = "htmlcov"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 output-format = "full"
 line-length = 99
 fix = true
@@ -144,7 +143,7 @@ known_third_party = ["invoke", "nox", "nox_poetry"]
 
 [tool.black]
 line-length = 99
-target-version = ["py39"]
+target-version = ["py310"]
 
 [tool.mypy]
 warn_return_any = true

@@ -823,23 +823,19 @@ testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", 
 typing = ["typing-extensions (>=4.8)"]
 
 [[package]]
-name = "flintpy"
+name = "flintpy-nmr"
 version = "0.1.0"
 description = "Python implementation of FLINT algorithm for NMR relaxation data."
 optional = false
-python-versions = "<3.13,>=3.9"
-files = []
-develop = false
+python-versions = "<3.13,>=3.10"
+files = [
+    {file = "flintpy_nmr-0.1.0-py3-none-any.whl", hash = "sha256:652a5aec023a4701d0779889a29fb6f765ff62f53c8ceda70e51da5c596bc1ce"},
+    {file = "flintpy_nmr-0.1.0.tar.gz", hash = "sha256:bb2e7df902cde6e73a6c43ce94d68afa3710f3005333ad766760c718f573f233"},
+]
 
 [package.dependencies]
-numpy = "^2.0.0"
-plotly = "^5.22.0"
-
-[package.source]
-type = "git"
-url = "https://github.com/rserial/flintpy.git"
-reference = "HEAD"
-resolved_reference = "eb46b54cfad9c07b9e02984cabc59dba3b6cdf23"
+numpy = ">=2.0.1,<3.0.0"
+plotly = ">=5.23.0,<6.0.0"
 
 [[package]]
 name = "fqdn"
@@ -2003,13 +1999,13 @@ type = ["mypy (>=1.8)"]
 
 [[package]]
 name = "plotly"
-version = "5.22.0"
+version = "5.23.0"
 description = "An open-source, interactive data visualization library for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "plotly-5.22.0-py3-none-any.whl", hash = "sha256:68fc1901f098daeb233cc3dd44ec9dc31fb3ca4f4e53189344199c43496ed006"},
-    {file = "plotly-5.22.0.tar.gz", hash = "sha256:859fdadbd86b5770ae2466e542b761b247d1c6b49daed765b95bb8c7063e7469"},
+    {file = "plotly-5.23.0-py3-none-any.whl", hash = "sha256:76cbe78f75eddc10c56f5a4ee3e7ccaade7c0a57465546f02098c0caed6c2d1a"},
+    {file = "plotly-5.23.0.tar.gz", hash = "sha256:89e57d003a116303a34de6700862391367dd564222ab71f8531df70279fc0193"},
 ]
 
 [package.dependencies]
@@ -3510,4 +3506,4 @@ tests-strict = ["pytest (==4.6.0)", "pytest (==4.6.0)", "pytest (==6.2.5)", "pyt
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.13,>=3.10"
-content-hash = "b067d8ec859230e976b925c61a2c7a829853906ff84101cb08755b5334f30771"
+content-hash = "78b47ba75308fc646abecfbfaa3020795917ee1d03eeb5ad0e72c13b0ef9a389"

@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+- Python 3.12 support.
 
 ### Changed
 - Naming conventions.
+- `pyflint` in favor of `flintpy`.
 
 ### Fixed
 - Development setup.
@@ -16,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Python 3.8 support.
+- Python 3.9 support.
 
 ## [0.1.0] - 2023-05-11
 ### Added

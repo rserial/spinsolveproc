@@ -823,25 +823,6 @@ testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", 
 typing = ["typing-extensions (>=4.8)"]
 
 [[package]]
-name = "flintpy"
-version = "0.1.0"
-description = "Python implementation of FLINT algorithm for NMR relaxation data."
-optional = false
-python-versions = "<3.13,>=3.9"
-files = []
-develop = false
-
-[package.dependencies]
-numpy = "^2.0.0"
-plotly = "^5.22.0"
-
-[package.source]
-type = "git"
-url = "https://github.com/rserial/flintpy.git"
-reference = "HEAD"
-resolved_reference = "eb46b54cfad9c07b9e02984cabc59dba3b6cdf23"
-
-[[package]]
 name = "flintpy-nmr"
 version = "0.1.0"
 description = "Python implementation of FLINT algorithm for NMR relaxation data."
@@ -3525,4 +3506,4 @@ tests-strict = ["pytest (==4.6.0)", "pytest (==4.6.0)", "pytest (==6.2.5)", "pyt
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.13,>=3.10"
-content-hash = "5d5431311eace7c4be017ac69722981a8723c14fcbfcdc844116f236b9aece53"
+content-hash = "da528b6347b0a86dcb460174624e338480daede958cb0d77b7726b8240a70064"

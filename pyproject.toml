@@ -33,7 +33,7 @@ numpy = "^2.0.1"
 pandas = "^2.2.2"
 h5py = "^3.11.0"
 nmrglue = {git = "https://github.com/jjhelmus/nmrglue.git"}
-flintpy-nmr = "^0.1.0"
+flintpy-nmr = "^0.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"

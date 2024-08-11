@@ -824,13 +824,13 @@ typing = ["typing-extensions (>=4.7.1)"]
 
 [[package]]
 name = "flintpy-nmr"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python implementation of FLINT algorithm for NMR relaxation data."
 optional = false
 python-versions = "<3.13,>=3.10"
 files = [
-    {file = "flintpy_nmr-0.1.0-py3-none-any.whl", hash = "sha256:652a5aec023a4701d0779889a29fb6f765ff62f53c8ceda70e51da5c596bc1ce"},
-    {file = "flintpy_nmr-0.1.0.tar.gz", hash = "sha256:bb2e7df902cde6e73a6c43ce94d68afa3710f3005333ad766760c718f573f233"},
+    {file = "flintpy_nmr-0.1.1-py3-none-any.whl", hash = "sha256:36aea70dac11a04a4d9b5cf9b498dae0a140d73dc54e857acd69de9c9187a54b"},
+    {file = "flintpy_nmr-0.1.1.tar.gz", hash = "sha256:366c0dbe9d677bc5af6521a137c9d8777ca214788898cce23b40e749cd74e249"},
 ]
 
 [package.dependencies]
@@ -3510,4 +3510,4 @@ tests-strict = ["pytest (==4.6.0)", "pytest (==4.6.0)", "pytest (==6.2.5)", "pyt
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.13,>=3.10"
-content-hash = "fb95a2dfbb573ac550d28c00a587d8ce649d1930280ab5e4d1c919b2f6de19f4"
+content-hash = "21aa77d2177f8c375f6913422992c11ae4680abe61dc14151585e82004f2068c"

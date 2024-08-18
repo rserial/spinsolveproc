@@ -219,37 +219,40 @@ def data_t1(
     print(f"Saved h5py file: {h5_filename} \n")
 
 
-def data_t1ir_t2(
-    save_dir: Path, time_t1: np.ndarray, time_t2: np.ndarray, t1ir_t2_array: np.ndarray
+def data_pgste(
+    save_dir: Path,
+    ppm_scale: np.ndarray,
+    diff_scale: np.ndarray,
+    diff_spec_2d_map: np.ndarray,
+    peak_ppm_positions: np.ndarray,
+    peak_diff_decay: np.ndarray,
 ) -> None:
-    """
-    Save diffusion data to specified directory.
+    """Save diffusion data to specified directory.
 
     Args:
         save_dir (Path): The directory where data will be saved.
         ppm_scale (np.ndarray): An array of ppm scale values.
         diff_scale (np.ndarray): An array of diffusion scale values in seconds.
-        diff_spec_2Dmap (np.ndarray): A 2D map of spectroscopically resolved diffusion data.
+        diff_spec_2d_map (np.ndarray): A 2D map of spectroscopically resolved diffusion data.
         peak_ppm_positions (np.ndarray): An array of peak ppm positions.
         peak_diff_decay (np.ndarray): A 1D array of diffusion decay data.
     """
-    filename_PGSTEdecay = "pgste_decay.dat"
-    filename_PGSTEfitting = "pgste_decay_1exp_fitting.dat"
+    filename_pgste_decay = "pgste_decay.dat"
+    filename_pgste_fitting = "pgste_decay_1exp_fitting.dat"
     data_diff_decay(
         save_dir,
         diff_scale * 1e-9,
         peak_diff_decay.reshape(-1),
         "PGSTE",
-        filename_PGSTEdecay,
-        filename_PGSTEfitting,
+        filename_pgste_decay,
+        filename_pgste_fitting,
     )
 
 
-def data_T1IRT2(
-    save_dir: Path, timeT1: np.ndarray, timeT2: np.ndarray, T1IRT2array: np.ndarray
+def data_t1ir_t2(
+    save_dir: Path, time_t1: np.ndarray, time_t2: np.ndarray, t1ir_t2_array: np.ndarray
 ) -> None:
-    """
-    Save T1IRT2 data to an HDF5 file.
+    """Save T1IRT2 data to an HDF5 file.
 
     Args:
         save_dir (Path): Directory to save the data.
@@ -416,3 +419,56 @@ def fig_t2_bulk(save_dir: Path, fig_t2_bulk_decays_fit: go.Figure) -> None:
     filename_save = "T2Bulkdecay.html"
     pio.write_html(fig_t2_bulk_decays_fit, save_dir / filename_save)
     print(f"Saved figure: {filename_save} \n")
+
+
+def data_diff_decay(
+    save_dir: Path,
+    diff_scale: np.ndarray,
+    diff_decay: np.ndarray,
+    kernel_name: str,
+    filename_decay: str,
+    filename_fitting: str,
+) -> None:
+    """Save diffusion decay data and perform exponential fitting.
+
+    Args:
+        save_dir (Path): Directory to save the data and fitting results.
+        diff_scale (np.ndarray): Array containing the diffusion scale for diffusion decay.
+        diff_decay (np.ndarray): Array containing the diffusion decay data.
+        kernel_name (str): Kernel name (options are: PGSTE).
+        filename_decay (str): filename of time decay.
+        filename_fitting (str): filename of exponential fitting parameters.
+    """
+    save_1d_decay_data(save_dir, diff_scale, diff_decay, filename_decay)
+
+    # Fitting
+    exponentials = 1
+    fitted_parameters, r2, cov, kernel_name, num_exponentials = utils.fit_multiexponential(
+        diff_scale,
+        np.real(diff_decay),
+        kernel_name,
+        num_exponentials=exponentials,
+    )
+
+    fit_dataframe = utils.convert_multiexponential_fit_to_dataframe(
+        fitted_parameters,
+        cov,
+        num_exponentials=exponentials,
+        kernel_name=kernel_name,
+    )
+    save_dataframe_to_text(save_dir, fit_dataframe)
+
+
+def save_dataframe_to_text(
+    save_dir: Path,
+    dataframe: pd.DataFrame,
+) -> None:
+    """Save a dataframe to a text file.
+
+    Args:
+        save_dir (Path): Path saving directory
+        dataframe (pd.DataFrame): The dataframe to be saved.
+    """
+    filename = "multiexponential_fit_parameters.dat"
+    dataframe.to_csv(save_dir / filename, sep="\t", index=False)
+    print(f"Saved fit parameters in: {filename}\n")

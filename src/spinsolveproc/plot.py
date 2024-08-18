@@ -161,10 +161,10 @@ def setup_fig_t2(
         cols=2,
         subplot_titles=("Spectroscopically resolved T2", "T2 decay"),
     )
-    fig.add_trace(fig_T2spec_2Dmap["data"][0], row=1, col=1)
-    fig.add_trace(fig_T2specdecays_fit["data"][0], row=1, col=2)
-    fig.add_trace(fig_T2specdecays_fit["data"][1], row=1, col=2)
-    fig.add_trace(fig_T2specdecays_fit["data"][2], row=1, col=2)
+    fig.add_trace(fig_t2_spec_2d_map["data"][0], row=1, col=1)
+    fig.add_trace(fig_t2_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_t2_specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_t2_specdecays_fit["data"][2], row=1, col=2)
 
     fig.update_xaxes(
         title_text="Chemical shift (ppm)",
@@ -175,9 +175,6 @@ def setup_fig_t2(
     fig.update_xaxes(title_text="Time (s)", row=1, col=2)
     fig.update_yaxes(
         title_text="Time (s)",
-        # type="log",
-        # tickformat=".1e",
-        # tickvals=np.logspace(np.log10(np.min(T2_scale)), np.log10(np.max(T2_scale)), 4),
         row=1,
         col=1,
     )
@@ -186,7 +183,7 @@ def setup_fig_t2(
     return fig
 
 
-def setup_fig_T1(
+def setup_fig_t1(
     file_path_name: str,
     ppm_scale: np.ndarray,
     t1_scale: np.ndarray,
@@ -241,10 +238,10 @@ def setup_fig_T1(
         cols=2,
         subplot_titles=("Spectroscopically resolved T1", "T1 decay"),
     )
-    fig.add_trace(fig_T1spec_2Dmap["data"][0], row=1, col=1)
-    fig.add_trace(fig_T1specdecays_fit["data"][0], row=1, col=2)
-    fig.add_trace(fig_T1specdecays_fit["data"][1], row=1, col=2)
-    fig.add_trace(fig_T1specdecays_fit["data"][2], row=1, col=2)
+    fig.add_trace(fig_t1_spec_2d_map["data"][0], row=1, col=1)
+    fig.add_trace(fig_t1_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_t1_specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_t1_specdecays_fit["data"][2], row=1, col=2)
 
     fig.update_xaxes(
         title_text="Chemical shift (ppm)",
@@ -255,9 +252,6 @@ def setup_fig_T1(
     fig.update_xaxes(title_text="Time (s)", row=1, col=2)
     fig.update_yaxes(
         title_text="Time (s)",
-        # type="log",
-        # tickformat=".1e",
-        # tickvals=np.logspace(np.log10(np.min(T1_scale)), np.log10(np.max(T1_scale)), 4),
         row=1,
         col=1,
     )
@@ -266,7 +260,7 @@ def setup_fig_T1(
     return fig
 
 
-def setup_fig_PGSTE(
+def setup_fig_pgste(
     file_path_name: str,
     ppm_scale: np.ndarray,
     diff_scale: np.ndarray,
@@ -324,7 +318,7 @@ def setup_fig_PGSTE(
         cols=2,
         subplot_titles=("Spectroscopically resolved PGSTE", "PGSTE decay"),
     )
-    fig.add_trace(fig_diff_spec_2Dmap["data"][0], row=1, col=1)
+    fig.add_trace(fig_diff_spec_2d_map["data"][0], row=1, col=1)
     fig.add_trace(fig_diff_specdecays_fit["data"][0], row=1, col=2)
     fig.add_trace(fig_diff_specdecays_fit["data"][1], row=1, col=2)
 

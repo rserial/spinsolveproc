@@ -25,19 +25,16 @@ Python library to process Spinsolve NMR experiments. The library can recognise b
 * Free software: GNU General Public License v3
 
 ## Features
-The library currently supports the following experiments:
 
-* ✅ Proton: Computes FID spectra and exports obtained data to `./processed data`.
+The library currently supports the following NMR experiments:
 
-* ✅ T2: Finds the peaks in the spectra and calculates the T2 decay associated to each peak. It exports the obtained data to `./processed data`.
-
-* ✅ T2Bulk: Constructs T2 decay array and performs a monoexponential fitting. It exports the obtained data to `./processed data`.
-
-* ✅ T1: Finds the peaks in the spectra and calculates the T1 decay associated to each peak. It exports the obtained data to `./processed data`.
-
-* ✅ T1IRT2
-
-* ❌ Cannot process reaction monitoring experiments yet.
+- **Proton**: Computes FID spectra and exports the processed data to `./processed data`.
+- **T2**: Detects peaks in the spectra and calculates the T2 decay for each peak. The data is exported to `./processed data`.
+- **T2Bulk**: Constructs a T2 decay array and performs monoexponential fitting. The resulting data is exported to `./processed data`.
+- **T1**: Detects peaks in the spectra and calculates the T1 decay for each peak. The data is exported to `./processed data`.
+- **T1IRT2**: Process experiment and saves 2d array to `./processed data`.
+- **PGSTE**: Construct a signal decay due to diffusion and performs a multiexponential fitting. The resulting data is exported to `./processed data`.
+- **Reaction Monitoring**: *Currently not supported.*
 
 ## Quickstart
 Install Spinsolveproc from this repo.

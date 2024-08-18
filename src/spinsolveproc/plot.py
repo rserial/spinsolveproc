@@ -1,6 +1,6 @@
 """Plotting functions for spinsolveproc."""
 
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -87,7 +87,12 @@ def setup_fig_proton(
 
     # Configure axes labels
     fig.update_xaxes(title_text="Time (ms)", row=1, col=1)
-    fig.update_xaxes(title_text="Chemical Shift (ppm)", row=1, col=2)
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=2,
+    )
     fig.update_yaxes(title_text="Signal Intensity (a.u.)", row=1, col=1)
     fig.update_yaxes(title_text="Signal Intensity (a.u.)", row=1, col=2)
 
@@ -109,7 +114,7 @@ def setup_fig_t2(
     peak_ppm_positions: np.ndarray,
     peak_t2_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> go.Figure:
     """Set up figures for T2 experiment.
 
     Args:
@@ -150,7 +155,32 @@ def setup_fig_t2(
         num_exponentials=num_exponentials,
         plot_title_name="T2 decay",
     )
-    return fig_t2_spec_2d_map, fig_t2_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved T2", "T2 decay"),
+    )
+    fig.add_trace(fig_t2_spec_2d_map["data"][0], row=1, col=1)
+    fig.add_trace(fig_t2_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_t2_specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_t2_specdecays_fit["data"][2], row=1, col=2)
+
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title_text="Time (s)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Time (s)",
+        row=1,
+        col=1,
+    )
+
+    fig.update_layout(height=500, width=1200, title_text=f"T2 Experiment: {file_path_name}")
+    return fig
 
 
 def setup_fig_t1(
@@ -161,7 +191,7 @@ def setup_fig_t1(
     peak_ppm_positions: np.ndarray,
     peak_t1_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> go.Figure:
     """Set up figures for T1 experiment.
 
     Args:
@@ -202,7 +232,32 @@ def setup_fig_t1(
         num_exponentials=num_exponentials,
         plot_title_name="T1 decay",
     )
-    return fig_t1_spec_2d_map, fig_t1_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved T1", "T1 decay"),
+    )
+    fig.add_trace(fig_t1_spec_2d_map["data"][0], row=1, col=1)
+    fig.add_trace(fig_t1_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_t1_specdecays_fit["data"][1], row=1, col=2)
+    fig.add_trace(fig_t1_specdecays_fit["data"][2], row=1, col=2)
+
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title_text="Time (s)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Time (s)",
+        row=1,
+        col=1,
+    )
+
+    fig.update_layout(height=500, width=1200, title_text=f"T1 Experiment: {file_path_name}")
+    return fig
 
 
 def setup_fig_pgste(
@@ -214,8 +269,8 @@ def setup_fig_pgste(
     peak_diff_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
     initial_guesses_expfit: Optional[List[float]] = None,
-) -> Tuple[go.Figure, go.Figure]:
-    """Set up figures for T1 experiment.
+) -> go.Figure:
+    """Set up figures for PGSTE experiment.
 
     Args:
         file_path_name (str): The name of the file path.
@@ -257,12 +312,40 @@ def setup_fig_pgste(
         plot_title_name="Diffusion decay",
         initial_guesses_expfit=initial_guesses_expfit,
     )
-    return fig_diff_spec_2d_map, fig_diff_specdecays_fit
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        subplot_titles=("Spectroscopically resolved PGSTE", "PGSTE decay"),
+    )
+    fig.add_trace(fig_diff_spec_2d_map["data"][0], row=1, col=1)
+    fig.add_trace(fig_diff_specdecays_fit["data"][0], row=1, col=2)
+    fig.add_trace(fig_diff_specdecays_fit["data"][1], row=1, col=2)
+
+    fig.update_xaxes(
+        title_text="Chemical shift (ppm)",
+        range=[np.max(ppm_scale), np.min(ppm_scale)],
+        row=1,
+        col=1,
+    )
+    fig.update_yaxes(
+        title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)",
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title_text="γ² g² δ² (Δ-δ/3) (10⁹ s/m²)", row=1, col=2)
+    fig.update_yaxes(
+        title_text="Integral amplitude (a.u)",
+        row=1,
+        col=2,
+    )
+    fig.update_layout(height=500, width=1200, title_text=f"PGSTE Experiment: {file_path_name}")
+    return fig
 
 
 def setup_fig_diff_spec_2d_map(
     file_path_name: str,
-    frequency_axis: np.ndarray,
+    ppm_axis: np.ndarray,
     diff_axis: np.ndarray,
     data: np.ndarray,
     peak_ppm_positions: np.ndarray,
@@ -274,7 +357,7 @@ def setup_fig_diff_spec_2d_map(
     Args:
         file_path_name (str): File path name.
         diff_axis (np.ndarray): Diffusion axis.
-        frequency_axis (np.ndarray): Frequency axis.
+        ppm_axis (np.ndarray): ppm axis.
         data (np.ndarray): Data for the heatmap.
         peak_ppm_positions (np.ndarray): Chemical shift positions of the T1 peaks.
         peak_diff_decay (np.ndarray): Diffusion decay associated with each peak.
@@ -285,7 +368,7 @@ def setup_fig_diff_spec_2d_map(
     """
     fig_t_spec_2d_map = go.Figure(
         data=go.Heatmap(
-            x=np.squeeze(frequency_axis),
+            x=np.squeeze(ppm_axis),
             y=np.squeeze(diff_axis) * 1e-9,
             z=np.real(data),
             colorscale="Blues",
@@ -432,14 +515,14 @@ def setup_fig_diff_decay_fit(
         err_diffusion_decay.append(err[i * 2 + 1])
 
     trace1_real = go.Scatter(
-        x=diff_scale * 1e-9,
+        x=diff_scale,
         y=np.real(diff_decay) / np.max(np.abs(diff_decay)),
         mode="markers",
         name="T Decay - magnitude",
         marker={"color": "#2C7FB8"},
     )
     trace2 = go.Scatter(
-        x=diff_scale * 1e-9,
+        x=diff_scale,
         y=fitting_kernel(diff_scale, *fitted_parameters[:num_params])
         / np.max(fitting_kernel(diff_scale, *fitted_parameters[:num_params])),
         mode="lines",
@@ -629,6 +712,8 @@ def setup_fig_t1ir_t2_2d_map(
         title=title_name + ": " + str(file_path_name),
         xaxis_title="Time T1 (s)",
         yaxis_title="Time T2 (s)",
+        height=500,
+        width=800,
     )
 
     return fig_t1ir_t2_2d_map

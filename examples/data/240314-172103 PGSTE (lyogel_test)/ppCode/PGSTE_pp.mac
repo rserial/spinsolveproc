@@ -1,0 +1,195 @@
+########################################################
+#
+#  90 - gradient - delay - 180 - delay - gradient - acq
+#
+########################################################
+
+procedure(pulse_program,dir,mode,pars)
+
+# Expose parameters for FX3 implementation
+   if(nrArgs == 3)
+      assignlist(pars)
+   endif
+
+# Interface description (name, label, ctrlType, varType)
+  interface = ["nucleus",       "Nucleus",                     "tb",  "readonly_string";
+               "b1Freq1H",      "B1 Frequency (MHz)",          "tb",  "freq";
+               "offFreq",       "Offset Frequency (Hz)",       "tb",  "float";
+               "90Amplitude1H", "90\176 pulse amplitude (dB)", "tb",  "pulseamp";
+               "pulseLength1H", "90\176 pulse length (us)",    "tb",  "pulselength";
+               "intRange",      "Bulk integ. range (ppm)",     "tb",  "array";
+               "bDelta",        "Big DELTA (ms)",              "tb",  "ldelayms";
+               "lDelta",        "Little delta (ms)",           "tb",  "float,[0.1,100]";
+               "gradMax",       "Max. gradient mT/m",          "tb",  "float,[0,2000]";
+               "gradAmpPC",     "Max. expt gradient (%)",      "tb",  "float,[0,100]";
+               "nrSteps",       "Nr. of gradient steps",       "tb",  "integer";
+               "gradRamp",      "Gradient ramp time (ms)",     "tb",  "float,[0.1,100]";
+               "rampSteps",     "Number of ramp steps",        "tb",  "integer,[2,100]";
+               "gradStab",      "Grad. stab. delay (ms)",      "tb",  "float,[0.1,100]";
+               "ndummyGrads",   "Dummy gradient pulses",       "tb",  "integer,[1,10]";
+               "gSpoil",        "Spoil amplitude",             "tb",  "integer,[-32000,32000]";
+               "durSpoil",      "Spoil duration (ms)",         "tb",  "float,[1,100]";
+               "dummyCycles",   "Dummy cycles",                "tb",  "integer,[0,10]";
+               "flipAngle1",    "flip angle1",                 "tb",  "float,[1,500]";
+               "flipAngle2",    "flip angle2",                 "tb",  "float,[1,500]";
+               "flipAngle3",    "flip angle3",                 "tb",  "float,[1,500]";
+               "repTime",       "Repetition time (ms)",        "tb",  "reptime"]
+
+# Relationships between pulse-sequence and GUI parameters
+   relationships = ["nPnts                = nrPnts",
+                    "a90H                 = 90Amplitude1H",
+                    "aOff                 = -85",
+                    "dFlip1               = 4*pulseLength1H*(flipAngle1/360)",
+                    "dFlip2               = 4*pulseLength1H*(flipAngle2/360)",
+                    "dFlip3               = 4*pulseLength1H*(flipAngle3/360)",
+                    "dStab                = gradStab*1000",
+                    "nRamp                = 10", #rampSteps",
+                    "dRampStep            = 10", #1000*gradRamp/nRamp",
+                    "dSmDelta             = 1000*lDelta",
+                    "acqShift             = PGSTE_pp:getAcqShift(dwellTime)",
+                    "dAcq                 = dStab+pgo-rxLat+acqShift",
+                    "dSpoil               = 1000*durSpoil",
+                    "wBgDelta             = 1000*bDelta-dStab-2000*gradRamp-dSmDelta-dSpoil-2*dFlip1-2*dFlip2-2*dFlip3-6*5",
+                    "(digGradAmp,gradAmp) = PGSTE_pp:getGradients(gradAmpPC,oshim)",
+                    "nGradShim            = 0", #oshim",
+                    "nGrad                = digGradAmp", #+oshim",
+                    "nXShim               = xshim",
+                    "nXSpoil              = xshim-(gSpoil*xshim/(abs(xshim)+0.1))",
+                    "O1                   = offFreq",
+                    "totPnts              = nrPnts",
+                    "totTime              = acqTime"]
+
+# Define the parameter groups and their order
+   groups = ["Pulse_sequence","Progress","Acquisition",
+             "Processing_filter_autophase","Display_Std","File_Settings"]
+
+# These parameters will be changed between experiments
+   variables = ["nGrad"]
+
+# Pulse sequence
+   initpp(dir)  # Reset internal parameter list
+
+      delay(10000) # Wait for lock scan to finish
+
+      loop(l1,ndummyGrads)
+
+         CompositePulse:PI_2(1, aOff, aOff, aOff, p3, p4, p3, dFlip1, dFlip2, dFlip3, 5)
+         delay(5)
+
+         gradramp(nGradShim,nGrad,10,10)
+         delay(dSmDelta)
+         gradramp(nGrad,nGradShim,10,10)
+         delay(dStab)
+
+         CompositePulse:PI_2(1, aOff, aOff, aOff, p3, p4, p3, dFlip1, dFlip2, dFlip3, 5)
+         delay(5)
+
+         Spoiler:X(nXSpoil,nXShim,dSpoil)
+
+         wait(wBgDelta)
+
+      endloop(l1)
+
+      CompositePulse:PI_2(1, a90H, a90H, a90H, p1, p2, p1, dFlip1, dFlip2, dFlip3, 5)
+      delay(5)
+
+      gradramp(nGradShim,nGrad,10,10)
+      delay(dSmDelta)
+      gradramp(nGrad,nGradShim,10,10)
+      delay(dStab)
+
+      CompositePulse:PI_2(1, a90H, a90H, a90H, p3, p4, p3, dFlip1, dFlip2, dFlip3, 5)
+      delay(5)
+
+      Spoiler:X(nXSpoil,nXShim,dSpoil)
+
+      wait(wBgDelta)
+
+      CompositePulse:PI_2(1, a90H, a90H, a90H, p5, p6, p5, dFlip1, dFlip2, dFlip3, 5)
+      delay(5)
+
+      gradramp(nGradShim,nGrad,10,10)
+      delay(dSmDelta)
+      gradramp(nGrad,nGradShim,10,10)
+
+      delay(dAcq)
+      acquire("overwrite",nPnts)
+
+   lst = endpp(0) # Return parameter list
+
+# Phase cycle
+   phaseList = [0,2,1,3; # 90 phase 1
+                2,0,3,1; # 90 phase 1
+                0,0,0,0; # 90 phase 2
+                2,2,2,2; # 90 phase 2
+                0,0,0,0; # 90 phase 3
+                2,2,2,2; # 90 phase 3
+                2,0,1,3] # Acquire phase
+
+
+endproc(lst,groups,interface,relationships,variables,null,phaseList)
+
+#####################################################
+# Assign those parameters which should take their
+# values from the factory defaults when making a
+# new experiment (run when experiment first added
+# to parameter display).
+#####################################################
+
+procedure(getFactoryBasedParameters, par)
+
+   specPar = SpinsolveParameterUpdater:readDSPPar(null)
+   if(specPar == null)
+      return(null)
+   endif
+   assignlist(specPar)
+
+   modelPar = ucsUtilities:getModelBasedParameters("1H",specPar)
+
+   par = ["gradMax = $MaxGradientValue$",
+          "rxGain = $modelPar->rxGain$",
+          "pulseLength1H = $PulseLength_1H$",
+          "90Amplitude1H = $PowerLevel_1H$"]
+
+endproc(par)
+
+########################################################
+# Return the acquisition time for a given dwellTime
+########################################################
+
+procedure(getAcqShift, dwellTime)
+
+   if(dwellTime == 500)
+      acqShift = -370
+   elseif(dwellTime == 200)
+      acqShift = -150
+   elseif(dwellTime == 100)
+      acqShift = -70
+   elseif(dwellTime == 50)
+      acqShift = -30
+   elseif(dwellTime == 20)
+      acqShift = -10
+   else
+      acqShift = 0
+   endif
+
+endproc(acqShift)
+
+########################################################
+# Return the gradient as a 16 bit digital value
+# and as a value in mT/m
+########################################################
+
+procedure(getGradients, gPercent, gOffset)
+
+   if(gData->specParameters != null)
+      resolution = 16
+      maxGradient = gData->specParameters->MaxGradientValue
+      digGradAmp  = gPercent/100*(2^(resolution-1)-1) # Digital - resolution bits
+      gradAmp     = gPercent/100*maxGradient
+   else
+      digGradAmp  = 10000
+      gradAmp     = 100
+   endif
+
+endproc(digGradAmp, gradAmp)

@@ -6,32 +6,32 @@
 #Complex Data (string)						 "Yes"
 #Data Origin (string) 						 "DOSY Toolbox"
 #Data Type (string) 						 "DOSY data"
-#Date (string) 							 "07-Aug-2015 15:43:13" 
-#DOSY Toolbox Format Version (string) 				 0.1 
-#DOSY Toolbox Version (string) 					 "DOSY Toolbox version 2.5" 
-#Number Of Arrays (integer)					 1  
-#Spectrometer/Data System (string)				 "Magritek Spinsolve"  
+#Date (string) 							 "07-Aug-2015 15:43:13"
+#DOSY Toolbox Format Version (string) 				 0.1
+#DOSY Toolbox Version (string) 					 "DOSY Toolbox version 2.5"
+#Number Of Arrays (integer)					 1
+#Spectrometer/Data System (string)				 "Magritek Spinsolve"
 #Title (string) 						 "DOSY FID"
-## ************ Matrix Format **********************************  
-#Complex Data (string)						 "Yes" 
-#Number Of Rows (integer) 					 512  
-#Points Per Row (integer) 					 512  
-#Y Axis Definition (string)					 "Gradient Amplitude"  
-#Y Label (null)						   
-## ************ Acquisition Parameters *************************  
-#Acquisition Time (double; s) 					 0.0512  
-#Complex Points Acquired (integer) 				 512  
-#Lowest Frequency (double ; ppm)				 -75.9783  
-#Observe Frequency (double ; MHz) 				 61.9438  
-#Observe Nucleus (string) 					 "1-H"  
-#Spectral Width (double ; ppm) 					 161.437  
-#Pulse Sequence Name (string) 					 "Unknown"  
-#Left Rotation (double)						 0.000000e+00  
-## ************ Processing parameters ***************************  
-#Fourier Number (integer) 					 512  
-#Left Phase (double; degree; First order) 			 0.000000e+00  
-#Right Phase (double; degree; Zeroth order) 			 0.000000e+00  
-#Left Phase Array [512] (double data 1 ; T m^-1)			 
+## ************ Matrix Format **********************************
+#Complex Data (string)						 "Yes"
+#Number Of Rows (integer) 					 512
+#Points Per Row (integer) 					 512
+#Y Axis Definition (string)					 "Gradient Amplitude"
+#Y Label (null)
+## ************ Acquisition Parameters *************************
+#Acquisition Time (double; s) 					 0.0512
+#Complex Points Acquired (integer) 				 512
+#Lowest Frequency (double ; ppm)				 -75.9783
+#Observe Frequency (double ; MHz) 				 61.9438
+#Observe Nucleus (string) 					 "1-H"
+#Spectral Width (double ; ppm) 					 161.437
+#Pulse Sequence Name (string) 					 "Unknown"
+#Left Rotation (double)						 0.000000e+00
+## ************ Processing parameters ***************************
+#Fourier Number (integer) 					 512
+#Left Phase (double; degree; First order) 			 0.000000e+00
+#Right Phase (double; degree; Zeroth order) 			 0.000000e+00
+#Left Phase Array [512] (double data 1 ; T m^-1)
 0.000000e+00
 0.000000e+00
 0.000000e+00
@@ -544,7 +544,7 @@
 0.000000e+00
 0.000000e+00
 0.000000e+00
-#Right Phase Array [512] (double data 1 ; T m^-1)			 
+#Right Phase Array [512] (double data 1 ; T m^-1)
 0.000000e+00
 0.000000e+00
 0.000000e+00
@@ -1063,10 +1063,10 @@
 #Dosygamma (double) 						 2.675246e+08
 #Dosytimecubed (double) 					 2.55678e-006
 #Gradient Shape (string) 					 "Square"
-#Pulse Sequence Type (string)					 "Other" 
-#Tau (null)					   
-## ************ Arrays *****************************************  
-#Gradient Amplitude [512] (double data 1 ; T m^-1)			
+#Pulse Sequence Type (string)					 "Other"
+#Tau (null)
+## ************ Arrays *****************************************
+#Gradient Amplitude [512] (double data 1 ; T m^-1)
 0.0109184
 0.0267445
 0.0362122

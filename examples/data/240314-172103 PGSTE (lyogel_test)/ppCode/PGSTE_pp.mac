@@ -1,6 +1,6 @@
 ########################################################
 #
-#  90 - gradient - delay - 180 - delay - gradient - acq 
+#  90 - gradient - delay - 180 - delay - gradient - acq
 #
 ########################################################
 
@@ -21,7 +21,7 @@ procedure(pulse_program,dir,mode,pars)
                "bDelta",        "Big DELTA (ms)",              "tb",  "ldelayms";
                "lDelta",        "Little delta (ms)",           "tb",  "float,[0.1,100]";
                "gradMax",       "Max. gradient mT/m",          "tb",  "float,[0,2000]";
-               "gradAmpPC",     "Max. expt gradient (%)",      "tb",  "float,[0,100]"; 
+               "gradAmpPC",     "Max. expt gradient (%)",      "tb",  "float,[0,100]";
                "nrSteps",       "Nr. of gradient steps",       "tb",  "integer";
                "gradRamp",      "Gradient ramp time (ms)",     "tb",  "float,[0.1,100]";
                "rampSteps",     "Number of ramp steps",        "tb",  "integer,[2,100]";
@@ -70,9 +70,9 @@ procedure(pulse_program,dir,mode,pars)
    initpp(dir)  # Reset internal parameter list
 
       delay(10000) # Wait for lock scan to finish
-   
+
       loop(l1,ndummyGrads)
-   
+
          CompositePulse:PI_2(1, aOff, aOff, aOff, p3, p4, p3, dFlip1, dFlip2, dFlip3, 5)
          delay(5)
 
@@ -80,16 +80,16 @@ procedure(pulse_program,dir,mode,pars)
          delay(dSmDelta)
          gradramp(nGrad,nGradShim,10,10)
          delay(dStab)
-   
+
          CompositePulse:PI_2(1, aOff, aOff, aOff, p3, p4, p3, dFlip1, dFlip2, dFlip3, 5)
          delay(5)
-      
+
          Spoiler:X(nXSpoil,nXShim,dSpoil)
-      
+
          wait(wBgDelta)
 
       endloop(l1)
-   
+
       CompositePulse:PI_2(1, a90H, a90H, a90H, p1, p2, p1, dFlip1, dFlip2, dFlip3, 5)
       delay(5)
 
@@ -100,21 +100,21 @@ procedure(pulse_program,dir,mode,pars)
 
       CompositePulse:PI_2(1, a90H, a90H, a90H, p3, p4, p3, dFlip1, dFlip2, dFlip3, 5)
       delay(5)
-   
+
       Spoiler:X(nXSpoil,nXShim,dSpoil)
-   
+
       wait(wBgDelta)
-   
+
       CompositePulse:PI_2(1, a90H, a90H, a90H, p5, p6, p5, dFlip1, dFlip2, dFlip3, 5)
       delay(5)
-   
-      gradramp(nGradShim,nGrad,10,10) 
+
+      gradramp(nGradShim,nGrad,10,10)
       delay(dSmDelta)
       gradramp(nGrad,nGradShim,10,10)
-   
-      delay(dAcq)      
-      acquire("overwrite",nPnts)   
- 
+
+      delay(dAcq)
+      acquire("overwrite",nPnts)
+
    lst = endpp(0) # Return parameter list
 
 # Phase cycle
@@ -130,8 +130,8 @@ procedure(pulse_program,dir,mode,pars)
 endproc(lst,groups,interface,relationships,variables,null,phaseList)
 
 #####################################################
-# Assign those parameters which should take their 
-# values from the factory defaults when making a 
+# Assign those parameters which should take their
+# values from the factory defaults when making a
 # new experiment (run when experiment first added
 # to parameter display).
 #####################################################
@@ -148,7 +148,7 @@ procedure(getFactoryBasedParameters, par)
 
    par = ["gradMax = $MaxGradientValue$",
           "rxGain = $modelPar->rxGain$",
-          "pulseLength1H = $PulseLength_1H$", 
+          "pulseLength1H = $PulseLength_1H$",
           "90Amplitude1H = $PowerLevel_1H$"]
 
 endproc(par)
@@ -184,7 +184,7 @@ procedure(getGradients, gPercent, gOffset)
 
    if(gData->specParameters != null)
       resolution = 16
-      maxGradient = gData->specParameters->MaxGradientValue 
+      maxGradient = gData->specParameters->MaxGradientValue
       digGradAmp  = gPercent/100*(2^(resolution-1)-1) # Digital - resolution bits
       gradAmp     = gPercent/100*maxGradient
    else

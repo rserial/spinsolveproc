@@ -68,7 +68,7 @@ procedure(plot_load_layout)
 endproc(layout)
 
 #####################################################
-# Defines the controls which will appear to the 
+# Defines the controls which will appear to the
 # right of the plots below the default conrols.
 # If 'null' is returned or this proceudre is missing
 # then only default controls will be added.
@@ -88,15 +88,15 @@ procedure(processing_controls)
                    buttonLabel = "Clear",    plotName = "pt3", macroToRun = "IntegrateRegionsPGSE:ClearIntegrals()",
                       iconFile = "ClearIntegrals.png", active = "true", toolTip = "Remove all integrals.";
                    buttonLabel = "Print",    plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:PrintIntegrals(\"PGSTE\")",
-                      iconFile = "PrintIntegrals.png", active = "true", toolTip = "Print all integral results to the CLI.";  
-                   buttonLabel = "Phase",    plotName = "pt3", macroToRun = "manualPhaseStackedPlot()", toolTip = "Phase the stacked plot.";       
+                      iconFile = "PrintIntegrals.png", active = "true", toolTip = "Print all integral results to the CLI.";
+                   buttonLabel = "Phase",    plotName = "pt3", macroToRun = "manualPhaseStackedPlot()", toolTip = "Phase the stacked plot.";
                    buttonLabel = "View",     plotName = "pt3", macroToRun = "StackedPlotSetup()";
                    buttonLabel = "MNova",    plotName = "pt3", macroToRun = "exportMNova2D()";
                    buttonLabel = "MNova",    plotName = "pt4", macroToRun = "exportMNova2D()";
                    buttonLabel = "DOSY",     plotName = "pt3", macroToRun = "DOSYAnalysis(\"pt3\")";
                    buttonLabel = "Log/Lin",  plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:LogLin()",
-                                                       active = "true", toolTip = "Toggle log or linear y-axis"; 
+                                                       active = "true", toolTip = "Toggle log or linear y-axis";
                    buttonLabel = "Norm",  plotName = "pt4", macroToRun = "IntegrateRegionsPGSE:Normalise()",
                                                        active = "true", toolTip = "Toggle y-axis normalisation")
- 
+
 endproc(layout)

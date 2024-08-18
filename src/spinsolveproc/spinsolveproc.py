@@ -122,7 +122,7 @@ class SpinsolveExperiment:
             **kwargs (Any): Additional optional input parameters.
 
         Returns:
-            A tuple containing figures and the experiment name.
+            Figure and the experiment name.
 
         Raises:
             NameError: If the experiment name is not found in the output dictionary.

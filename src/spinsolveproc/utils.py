@@ -529,7 +529,7 @@ def fit_multiexponential(
     kernel_name: str,
     num_exponentials: int,
     initial_guesses: Optional[List[float]] = None,
-) -> Tuple[Any, Any, Any, str, int]:
+) -> Tuple[Any, Any, Any]:
     """Fit multiexponential data using the specified kernel.
 
     Args:

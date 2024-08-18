@@ -1,6 +1,6 @@
 """Plotting functions for spinsolveproc."""
 
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -114,7 +114,7 @@ def setup_fig_t2(
     peak_ppm_positions: np.ndarray,
     peak_t2_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> go.Figure:
     """Set up figures for T2 experiment.
 
     Args:
@@ -191,7 +191,7 @@ def setup_fig_t1(
     peak_ppm_positions: np.ndarray,
     peak_t1_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> go.Figure:
     """Set up figures for T1 experiment.
 
     Args:
@@ -269,7 +269,7 @@ def setup_fig_pgste(
     peak_diff_decay: np.ndarray,
     num_exponentials: Optional[int] = None,
     initial_guesses_expfit: Optional[List[float]] = None,
-) -> Tuple[go.Figure, go.Figure]:
+) -> go.Figure:
     """Set up figures for PGSTE experiment.
 
     Args:

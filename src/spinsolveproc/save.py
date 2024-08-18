@@ -443,19 +443,42 @@ def data_diff_decay(
 
     # Fitting
     exponentials = 1
-    fitted_parameters, r2, cov, kernel_name, num_exponentials = utils.fit_multiexponential(
+    fitted_parameters, r2, cov = utils.fit_multiexponential(
         diff_scale,
         np.real(diff_decay),
         kernel_name,
         num_exponentials=exponentials,
     )
 
-    fit_dataframe = utils.convert_multiexponential_fit_to_dataframe(
-        fitted_parameters,
-        cov,
-        num_exponentials=exponentials,
-        kernel_name=kernel_name,
+    err = np.sqrt(np.diag(cov))
+
+    amplitude = []
+    err_amplitude = []
+    diffusion_decay = []
+    err_diffusion_decay = []
+
+    for i in range(exponentials):
+        amplitude.append(fitted_parameters[i * 2])
+        diffusion_decay.append(fitted_parameters[i * 2 + 1])
+        err_amplitude.append(err[i * 2])
+        err_diffusion_decay.append(err[i * 2 + 1])
+
+    list_fit_t_decay = {
+        "Amplitude [a.u]": amplitude,
+        "Err Amplitude [a.u]": err_amplitude,
+        "Diffusion decay [s]": diffusion_decay,
+        "Err Diffusion decay [s]": err_diffusion_decay,
+    }
+    fit_dataframe = pd.DataFrame(
+        list_fit_t_decay,
+        columns=[
+            "Amplitude [a.u]",
+            "Err Amplitude [a.u]",
+            "Diffusion decay [s]",
+            "Err Diffusion decay [s]",
+        ],
     )
+
     save_dataframe_to_text(save_dir, fit_dataframe)
 
 

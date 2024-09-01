@@ -59,7 +59,7 @@ safety = "^3.2.5"
 
 [tool.poetry.group.typing.dependencies]
 mypy = "^1.11.1"
-pandas-stubs = "^2.2.2.240603"
+pandas-stubs = "^2.2.2.240807"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^8.0.2"

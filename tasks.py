@@ -29,6 +29,7 @@ JUPYTER_ENV = {
 PYTHON_TARGETS = [
     SOURCE_DIR,
     TEST_DIR,
+    DOCS_DIR.joinpath("conf.py"),
     JUPYTER_CONFIG_DIR.joinpath("jupyter_lab_config.py"),
     ROOT_DIR.joinpath("noxfile.py"),
     Path(__file__),
@@ -95,14 +96,17 @@ def format_(c: Context, check: bool = False) -> None:
     """Format code."""
     isort_options = ["--check-only", "--diff"] if check else []
     _run(c, f"poetry run isort {' '.join(isort_options)} {PYTHON_TARGETS_STR}")
+    _run(c, f"poetry run nbqa isort {JUPYTER_NOTEBOOKS_DIR} {' '.join(isort_options)} ")
     black_options = ["--diff", "--check"] if check else ["--quiet"]
     _run(c, f"poetry run black {' '.join(black_options)} {PYTHON_TARGETS_STR}")
+    _run(c, f"poetry run nbqa black {JUPYTER_NOTEBOOKS_DIR} {' '.join(black_options)} ")
 
 
 @task()
 def ruff(c: Context) -> None:
     """Run ruff."""
     _run(c, f"poetry run ruff check {PYTHON_TARGETS_STR}")
+    _run(c, f"poetry run nbqa ruff {JUPYTER_NOTEBOOKS_DIR}")
 
 
 @task()

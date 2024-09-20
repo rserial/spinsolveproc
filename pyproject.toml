@@ -28,7 +28,7 @@ spinsolveproc = 'spinsolveproc.cli:app'
 [tool.poetry.dependencies]
 python = "<3.13,>=3.10"
 typer = {extras = ["all"], version = "^0.12.5"}
-plotly = "^5.22.0"
+plotly = "^5.24.1"
 numpy = "^2.0.1"
 pandas = "^2.2.2"
 h5py = "^3.11.0"

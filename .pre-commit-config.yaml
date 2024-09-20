@@ -40,3 +40,9 @@ repos:
     hooks:
       - id: poetry-check
       - id: poetry-install
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.9.0
+    hooks:
+      - id: nbqa-black
+      - id: nbqa-isort
+      - id: nbqa-ruff

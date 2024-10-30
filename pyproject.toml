@@ -59,7 +59,7 @@ nbqa = "^1.9.0"
 safety = "^3.2.10"
 
 [tool.poetry.group.typing.dependencies]
-mypy = "^1.11.2"
+mypy = "^1.13.0"
 pandas-stubs = "^2.2.2.240909"
 
 [tool.poetry.group.docs.dependencies]

@@ -31,7 +31,7 @@ typer = {extras = ["all"], version = "^0.12.5"}
 plotly = "^5.24.1"
 numpy = "^2.0.1"
 pandas = "^2.2.3"
-h5py = "^3.11.0"
+h5py = "^3.12.1"
 nmrglue = {git = "https://github.com/jjhelmus/nmrglue.git"}
 flintpy-nmr = "^0.1.1"
 

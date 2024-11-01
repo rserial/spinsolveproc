@@ -1772,25 +1772,21 @@ files = [
 
 [[package]]
 name = "nmrglue"
-version = "0.11-dev"
+version = "0.11"
 description = "A module for working with NMR data in Python"
 optional = false
 python-versions = "*"
-files = []
-develop = false
+files = [
+    {file = "nmrglue-0.11-py2.py3-none-any.whl", hash = "sha256:6e698b07cd71d12034664a3414ce0bb7bf5cd87cf750b03e33e439fb31dc13bd"},
+    {file = "nmrglue-0.11.tar.gz", hash = "sha256:9e740a02d34ce5df9eb0390274c6a5f37b4837d59139512a3dd169106a8e3fe1"},
+]
 
 [package.dependencies]
 numpy = "*"
 scipy = "*"
 
 [package.extras]
-docs = ["numpydoc", "sphinx", "sphinx_rtd_theme"]
-
-[package.source]
-type = "git"
-url = "https://github.com/jjhelmus/nmrglue.git"
-reference = "HEAD"
-resolved_reference = "e5007e70844d549c642a9cba067aa05319ba1eab"
+docs = ["numpydoc", "sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "nodeenv"
@@ -3637,4 +3633,4 @@ tests-strict = ["pytest (==4.6.0)", "pytest (==6.2.5)", "pytest-cov (==3.0.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.13,>=3.10"
-content-hash = "e4a02901f7a9d16011e22a6bca7bab9183ccfbcf37cc716b38bab10ce89e39de"
+content-hash = "0fbbd5aa48511f25143075523cc7adf3a24a25783a3579cf4fb2e358a63dd5fd"

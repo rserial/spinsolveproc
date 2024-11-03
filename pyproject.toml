@@ -29,7 +29,7 @@ spinsolveproc = 'spinsolveproc.cli:app'
 python = "<3.13,>=3.10"
 typer = {extras = ["all"], version = "^0.12.5"}
 plotly = "^5.24.1"
-numpy = "^2.1.2"
+numpy = "^2.1.3"
 pandas = "^2.2.3"
 h5py = "^3.12.1"
 nmrglue = {git = "https://github.com/jjhelmus/nmrglue.git"}

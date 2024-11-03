@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spinsolveproc"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python library to process Spinsolve NMR experiments."
 authors = ["Raquel Serial <raquel.serial@tuhh.de>"]
 readme = "README.md"

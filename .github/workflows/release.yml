@@ -34,13 +34,15 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
+          attestations: false
 
       - name: Publish package on TestPyPI
         uses: pypa/gh-action-pypi-publish@v1.11.0
         with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          repository-url: https://test.pypi.org/legacy/
+          attestations: false
 
   github_release:
     needs: release

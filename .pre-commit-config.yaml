@@ -27,7 +27,7 @@ repos:
     hooks:
       - id: black
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.2
+    rev: v0.8.2
     hooks:
       - id: ruff
         args: [ --fix ]
@@ -41,7 +41,7 @@ repos:
       - id: poetry-check
       - id: poetry-install
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.8.7
+    rev: 1.9.1
     hooks:
       - id: nbqa-black
       - id: nbqa-isort

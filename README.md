@@ -4,6 +4,10 @@
 
 <div align="center">
 
+<object data="_static/logo.png" type="image/png" width="300">
+   <img src="assets/logo.jpg" width="200"/>
+</object>
+
 [![PyPI - Version](https://img.shields.io/pypi/v/spinsolveproc.svg)](https://pypi.python.org/pypi/spinsolveproc)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spinsolveproc.svg)](https://pypi.python.org/pypi/spinsolveproc)
 [![Tests](https://github.com/rserial/spinsolveproc/workflows/tests/badge.svg)](https://github.com/rserial/spinsolveproc/actions?workflow=tests)

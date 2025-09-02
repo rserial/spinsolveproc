@@ -4,8 +4,8 @@
 
 <div align="center">
 
-<object data="_static/logo.png" type="image/png" width="300">
-   <img src="assets/logo.jpg" width="200"/>
+<object data="_static/logo.png" type="image/png" width="200">
+   <img src="assets/logo.jpg" width="150"/>
 </object>
 
 [![PyPI - Version](https://img.shields.io/pypi/v/spinsolveproc.svg)](https://pypi.python.org/pypi/spinsolveproc)

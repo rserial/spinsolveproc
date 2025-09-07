@@ -10,7 +10,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/spinsolveproc.svg)](https://pypi.python.org/pypi/spinsolveproc)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spinsolveproc.svg)](https://pypi.python.org/pypi/spinsolveproc)
-[![Tests](https://github.com/rserial/spinsolveproc/workflows/tests/badge.svg)](https://github.com/rserial/spinsolveproc/actions?workflow=tests)
+[![tests](https://github.com/rserial/spinsolveproc/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/rserial/spinsolveproc/actions/workflows/tests.yml)
 [![Codecov](https://codecov.io/gh/rserial/spinsolveproc/branch/main/graph/badge.svg)](https://codecov.io/gh/rserial/spinsolveproc)
 [![Read the Docs](https://readthedocs.org/projects/spinsolveproc/badge/)](https://spinsolveproc.readthedocs.io/)
 [![PyPI - License](https://img.shields.io/pypi/l/spinsolveproc.svg)](https://pypi.python.org/pypi/spinsolveproc)

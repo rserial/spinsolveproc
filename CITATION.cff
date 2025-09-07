@@ -10,6 +10,9 @@ type: software
 authors:
   - given-names: Raquel
     family-names: Serial
+    alias: rserial
+  - given-names: Federico
+    family-names: Jaureguialzo
     alias: fedejaure
 identifiers:
   - type: url
@@ -17,7 +20,7 @@ identifiers:
       https://github.com/rserial/spinsolveproc/releases/tag/v0.2.1
     description: The Software Heritage link for version 0.2.1.
 repository-code: 'https://github.com/rserial/spinsolveproc'
-abstract: Cookiecutter template for a modern Python package.
+abstract: Python library to process Spinsolve NMR experiments.
 keywords:
   - spinsolveproc
 license: MIT

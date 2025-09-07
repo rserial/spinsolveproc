@@ -54,6 +54,7 @@ jobs:
           pip install nox-poetry
           pip install poetry
           poetry config virtualenvs.in-project true
+          poetry self add poetry-plugin-export
 
       - name: Run mypy with nox
         shell: bash
@@ -93,6 +94,7 @@ jobs:
           pip install nox-poetry
           pip install poetry
           poetry config virtualenvs.in-project true
+          poetry self add poetry-plugin-export
 
       - name: Download coverage data
         uses: actions/download-artifact@v4.1.8

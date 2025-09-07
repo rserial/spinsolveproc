@@ -1,12 +1,12 @@
-[tool.poetry]
+[project]
 name = "spinsolveproc"
 version = "0.2.1"
 description = "Python library to process Spinsolve NMR experiments."
-authors = ["Raquel Serial <raquel.serial@tuhh.de>"]
+authors = [
+  {name = "Raquel Serial", email = "raquelserial@gmail.com>"},
+  {name = "Federico Jaureguialzo", email = "fedejaure@gmail.com"}
+]
 readme = "README.md"
-homepage = "https://github.com/rserial/spinsolveproc"
-repository = "https://github.com/rserial/spinsolveproc"
-documentation = "https://spinsolveproc.readthedocs.io"
 keywords = ["spinsolveproc"]
 classifiers=[
     "Development Status :: 2 - Pre-Alpha",
@@ -18,22 +18,25 @@ classifiers=[
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
+requires-python = "<3.13,>=3.10"
+dependencies = [
+  "typer[all] (>=0.12.5,<1.0.0)",
+  "plotly (>=5.24.1,<6.0.0)",
+  "numpy (>=2.1.3,<3.0.0)",
+  "pandas (>=2.2.3,<3.0.0)",
+  "h5py (>=3.12.1,<4.0.0)",
+  "nmrglue (>=0.11,<1.0)",
+  "flintpy-nmr (>=0.1.1,<1.0.0)",
+]
 
 [tool.poetry.urls]
+homepage = "https://github.com/rserial/spinsolveproc"
+repository = "https://github.com/rserial/spinsolveproc"
+documentation = "https://spinsolveproc.readthedocs.io"
 "Bug Tracker" = "https://github.com/rserial/spinsolveproc/issues"
 
 [tool.poetry.scripts]
 spinsolveproc = 'spinsolveproc.cli:app'
-
-[tool.poetry.dependencies]
-python = "<3.13,>=3.10"
-typer = {extras = ["all"], version = "^0.12.5"}
-plotly = "^5.24.1"
-numpy = "^2.1.3"
-pandas = "^2.2.3"
-h5py = "^3.12.1"
-nmrglue = "^0.11"
-flintpy-nmr = "^0.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
@@ -167,5 +170,5 @@ warn_unreachable = true
 warn_no_return = true
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -50,7 +50,7 @@ jupyterlab-templates = "^0.5.2"
 pytest = "^8.3.3"
 xdoctest = "^1.2.0"
 coverage = {version = "^7.10.6", extras = ["toml"]}
-pytest-cov = "^6.0.0"
+pytest-cov = "^6.3.0"
 
 [tool.poetry.group.linters.dependencies]
 isort = "^5.13.2"

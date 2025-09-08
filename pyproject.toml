@@ -49,7 +49,7 @@ jupyterlab-templates = "^0.5.2"
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.3"
 xdoctest = "^1.2.0"
-coverage = {version = "^7.6.4", extras = ["toml"]}
+coverage = {version = "^7.10.6", extras = ["toml"]}
 pytest-cov = "^6.0.0"
 
 [tool.poetry.group.linters.dependencies]

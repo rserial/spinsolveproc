@@ -1,6 +1,6 @@
 [project]
 name = "spinsolveproc"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python library to process Spinsolve NMR experiments."
 authors = [
   {name = "Raquel Serial", email = "raquelserial@gmail.com>"},

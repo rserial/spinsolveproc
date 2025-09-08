@@ -17,11 +17,11 @@ authors:
 identifiers:
   - type: url
     value: >-
-      https://github.com/rserial/spinsolveproc/releases/tag/v0.2.1
-    description: The Software Heritage link for version 0.2.1.
+      https://github.com/rserial/spinsolveproc/releases/tag/v0.2.2
+    description: The Software Heritage link for version 0.2.2.
 repository-code: 'https://github.com/rserial/spinsolveproc'
 abstract: Python library to process Spinsolve NMR experiments.
 keywords:
   - spinsolveproc
 license: MIT
-version: 0.2.1
+version: 0.2.2

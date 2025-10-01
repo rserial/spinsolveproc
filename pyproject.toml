@@ -53,7 +53,7 @@ coverage = {version = "^7.10.6", extras = ["toml"]}
 pytest-cov = "^6.3.0"
 
 [tool.poetry.group.linters.dependencies]
-isort = "^5.13.2"
+isort = "^6.0.1"
 black = "^25.1.0"
 ruff = "^0.12.12"
 nbqa = "^1.9.1"

@@ -97,7 +97,7 @@ jobs:
           poetry self add poetry-plugin-export
 
       - name: Download coverage data
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           pattern: "*.coverage-data"
           merge-multiple: true
